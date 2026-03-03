@@ -1,3 +1,8 @@
+---
+name: wizard-shared-rules
+description: Shared rules for feature ID derivation and wave detection used by /nw:new, /nw:continue, and /nw:fast-forward wizards
+---
+
 # Wizard Shared Rules
 
 Shared rules referenced by `/nw:new`, `/nw:continue`, and `/nw:fast-forward` wizards.

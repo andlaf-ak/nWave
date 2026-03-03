@@ -7,7 +7,6 @@ packages = ["nwave_ai"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "nWave/agents" = "nWave/agents"
-"nWave/data" = "nWave/data"
 "nWave/hooks" = "nWave/hooks"
 "nWave/scripts" = "nWave/scripts"
 "nWave/skills" = "nWave/skills"
@@ -21,7 +20,7 @@ packages = ["nwave_ai"]
 
 [project]
 name = "nwave-ai"
-version = "1.7.4"
+version = "1.8.0"
 description = "Modern CLI installer for nwave with rich terminal UI"
 readme = "README.md"
 license = {text = "MIT"}
@@ -281,7 +280,7 @@ line-ending = "auto"
 [tool.commitizen]
 # WARNING: the tool.commitizen.version is tracking the LAST STABLE version and is updated by the pipeline!
 # DON'T TOUCH IT!
-version = "1.7.4"
+version = "1.8.0"
 version_scheme = "pep440"
 version_files = [
     "nWave/VERSION",
