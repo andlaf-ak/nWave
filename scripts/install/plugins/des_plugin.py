@@ -568,15 +568,30 @@ class DESPlugin(InstallationPlugin):
             # Uses $HOME for portability across machines
             lib_path = "$HOME/.claude/lib/python"
             python_path = self._resolve_python_path()
-            write_guard_command = (
-                f"test -f .nwave/des/deliver-session.json || exit 0; "
+            # Buffer stdin so we can check for execution-log.json before fast-path.
+            # If the target is execution-log.json, always invoke Python (guard is
+            # unconditional). Otherwise, use the deliver-session fast-path.
+            python_cmd_write = (
                 f"PYTHONPATH={lib_path} {python_path} -m "
                 f"des.adapters.drivers.hooks.claude_code_hook_adapter pre-write"
             )
-            edit_guard_command = (
-                f"test -f .nwave/des/deliver-session.json || exit 0; "
+            python_cmd_edit = (
                 f"PYTHONPATH={lib_path} {python_path} -m "
                 f"des.adapters.drivers.hooks.claude_code_hook_adapter pre-edit"
+            )
+            write_guard_command = (
+                f"INPUT=$(cat); "
+                f"echo \"$INPUT\" | grep -q 'execution-log\\.json' && "
+                f'{{ echo "$INPUT" | {python_cmd_write}; exit $?; }}; '
+                f"test -f .nwave/des/deliver-session.json || exit 0; "
+                f'echo "$INPUT" | {python_cmd_write}'
+            )
+            edit_guard_command = (
+                f"INPUT=$(cat); "
+                f"echo \"$INPUT\" | grep -q 'execution-log\\.json' && "
+                f'{{ echo "$INPUT" | {python_cmd_edit}; exit $?; }}; '
+                f"test -f .nwave/des/deliver-session.json || exit 0; "
+                f'echo "$INPUT" | {python_cmd_edit}'
             )
             write_hook = {
                 "matcher": "Write",

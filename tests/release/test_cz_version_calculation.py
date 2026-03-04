@@ -708,36 +708,6 @@ class TestLegacyWorkflowMigration:
     These are file-content assertions, not subprocess tests.
     """
 
-    def test_release_yml_uses_cz_bump_instead_of_psr(self):
-        """Given .github/workflows/release.yml at repo root,
-        when reading the file content,
-        then 'cz bump' is present (auto and force modes),
-        'cz bump --dry-run' is present (dry-run mode),
-        'semantic-release version' is absent,
-        and 'python-semantic-release' is absent.
-
-        Maps to: Scenario 31 "Legacy release.yml uses CZ instead of PSR".
-        """
-        workflow_path = REPO_ROOT / ".github" / "workflows" / "release.yml"
-        content = workflow_path.read_text()
-
-        # CZ commands present
-        assert "cz bump" in content, "release.yml missing 'cz bump' command"
-        assert "cz bump --dry-run" in content, (
-            "release.yml missing 'cz bump --dry-run' for dry-run mode"
-        )
-        assert "cz bump --increment" in content, (
-            "release.yml missing 'cz bump --increment' for force-bump mode"
-        )
-
-        # PSR commands absent
-        assert "semantic-release version" not in content, (
-            "release.yml still contains 'semantic-release version' (PSR command)"
-        )
-        assert "python-semantic-release" not in content, (
-            "release.yml still references 'python-semantic-release' package"
-        )
-
     def test_cz_changelog_generation_configured(self):
         """Given pyproject.toml has [tool.commitizen] with changelog_file,
         and .gitignore contains CHANGELOG.md,

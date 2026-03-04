@@ -147,7 +147,10 @@ def metadata_version_matches_project(
     """
     result = build_result["build_result"]
 
-    import tomllib
+    try:
+        import tomllib
+    except ModuleNotFoundError:
+        import tomli as tomllib  # type: ignore[no-redef]
 
     with open(build_config["pyproject_path"], "rb") as f:
         pyproject = tomllib.load(f)
@@ -513,7 +516,10 @@ def version_identity(build_result: dict[str, Any], build_config: dict[str, Any])
     Version is in BuildResult.metadata (not in plugin.json on disk),
     because plugin.json only contains fields used by Claude Code runtime.
     """
-    import tomllib
+    try:
+        import tomllib
+    except ModuleNotFoundError:
+        import tomli as tomllib  # type: ignore[no-redef]
 
     result = build_result["build_result"]
     with open(build_config["pyproject_path"], "rb") as f:

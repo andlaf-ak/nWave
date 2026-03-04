@@ -58,7 +58,9 @@ INPUT: "{feature-description}"
      Store: agent_model|reviewer_model|tdd_phases|review_enabled|double_review|mutation_enabled|refactor_pass
   |
   1. Parse input|derive feature-id (kebab-case)|create docs/feature/{feature-id}/deliver/
-     a. Create execution-log.json if missing: schema_version "2.0"|feature_id|events: []
+     a. Create execution-log.json if missing via CLI:
+        python -m des.cli.init_log --project-dir docs/feature/{feature-id}/deliver --feature-id {feature-id}
+        Do NOT create execution-log.json directly with Write — use the CLI only.
      b. Create deliver session marker: .nwave/des/deliver-session.json
   |
   1.5. Detect development paradigm
@@ -77,7 +79,9 @@ INPUT: "{feature-description}"
      Note: Strategy locks at deliver start. CLAUDE.md edits during delivery take effect next run.
   |
   2. Phase 1 — Roadmap Creation + Review
-     a. Skip if roadmap.json exists with validation.status == "approved"
+     a. Skip if docs/feature/{feature-id}/deliver/roadmap.json exists with validation.status == "approved"
+        IMPORTANT: Only check the deliver/ subdirectory. If roadmap.json is found in design/ instead,
+        MOVE it to deliver/ and log warning: "Roadmap relocated from design/ to deliver/ — was created in wrong wave."
      b. @nw-solution-architect creates roadmap.json (read ~/.claude/commands/nw/roadmap.md)
         Step IDs: NN-NN format (01-01, 01-02, 02-01). 01-A or 1-1 = invalid.
      c. Automated quality gate (see below)

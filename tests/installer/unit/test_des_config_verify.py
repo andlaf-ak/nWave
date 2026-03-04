@@ -64,7 +64,15 @@ def des_env(tmp_path):
                     "hooks": [
                         {
                             "type": "command",
-                            "command": "test -f .nwave/des/deliver-session.json || exit 0; PYTHONPATH=$HOME/.claude/lib/python python3 -m des.adapters.drivers.hooks.claude_code_hook_adapter pre-write",
+                            "command": (
+                                "INPUT=$(cat); "
+                                "echo \"$INPUT\" | grep -q 'execution-log\\.json' && "
+                                '{ echo "$INPUT" | PYTHONPATH=$HOME/.claude/lib/python python3 -m '
+                                "des.adapters.drivers.hooks.claude_code_hook_adapter pre-write; exit $?; }; "
+                                "test -f .nwave/des/deliver-session.json || exit 0; "
+                                'echo "$INPUT" | PYTHONPATH=$HOME/.claude/lib/python python3 -m '
+                                "des.adapters.drivers.hooks.claude_code_hook_adapter pre-write"
+                            ),
                         }
                     ],
                 },
@@ -73,7 +81,15 @@ def des_env(tmp_path):
                     "hooks": [
                         {
                             "type": "command",
-                            "command": "test -f .nwave/des/deliver-session.json || exit 0; PYTHONPATH=$HOME/.claude/lib/python python3 -m des.adapters.drivers.hooks.claude_code_hook_adapter pre-edit",
+                            "command": (
+                                "INPUT=$(cat); "
+                                "echo \"$INPUT\" | grep -q 'execution-log\\.json' && "
+                                '{ echo "$INPUT" | PYTHONPATH=$HOME/.claude/lib/python python3 -m '
+                                "des.adapters.drivers.hooks.claude_code_hook_adapter pre-edit; exit $?; }; "
+                                "test -f .nwave/des/deliver-session.json || exit 0; "
+                                'echo "$INPUT" | PYTHONPATH=$HOME/.claude/lib/python python3 -m '
+                                "des.adapters.drivers.hooks.claude_code_hook_adapter pre-edit"
+                            ),
                         }
                     ],
                 },

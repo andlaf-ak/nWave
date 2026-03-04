@@ -7,7 +7,7 @@ input_summary including file_path, session_active, and des_task_active.
 Tests exercise through the handle_pre_write driving port and assert at the
 AuditLogWriter driven port boundary.
 
-Test Budget: 7 distinct behaviors x 2 = 14 max. Using 7 tests.
+Test Budget: 8 distinct behaviors x 2 = 16 max. Using 8 tests.
 
 Behaviors:
 1. HOOK_INVOKED enriched with session_active and des_task_active in input_summary
@@ -15,8 +15,9 @@ Behaviors:
 3. HOOK_PRE_WRITE_ALLOWED emitted for allowed paths
 4. HOOK_PRE_WRITE_BLOCKED emitted when guard blocks the write
 5. Exception in decision logging does not break handler (fail-open preserved)
-6. Execution log direct Write always blocked (unconditional)
-7. Execution log direct Edit always blocked (unconditional)
+6. Execution log direct Write always blocked — guides to des.cli.init_log
+7. Execution log direct Edit always blocked — guides to des.cli.log_phase
+8. Write vs Edit block messages are different (init_log vs log_phase)
 """
 
 import io
@@ -234,11 +235,11 @@ def test_logging_exception_preserves_fail_open_behavior(monkeypatch, tmp_path):
     )
 
 
-# --- Test 6: Execution log Write always blocked (unconditional) ---
+# --- Test 6: Execution log Write always blocked — guides to des.cli.init_log ---
 
 
 def test_execution_log_write_blocked_always(monkeypatch, tmp_path):
-    """Direct Write to execution-log.json is blocked even without active deliver session."""
+    """Direct Write to execution-log.json is blocked and guides to des.cli.init_log."""
     from des.adapters.drivers.hooks import claude_code_hook_adapter as adapter
 
     events = []
@@ -259,12 +260,12 @@ def test_execution_log_write_blocked_always(monkeypatch, tmp_path):
     # Must block
     assert exit_code == 2
 
-    # Verify block response contains CLI guidance
+    # Verify block response guides to init_log CLI
     assert len(printed) >= 1, "Expected at least one print call with block response"
     response_json = json.loads(printed[-1][0])
     assert response_json["decision"] == "block"
     assert "execution-log.json" in response_json["reason"]
-    assert "des.cli.log_phase" in response_json["reason"]
+    assert "des.cli.init_log" in response_json["reason"]
 
     # Verify audit event
     blocked_events = [e for e in events if e.event_type == "HOOK_PRE_WRITE_BLOCKED"]
@@ -275,11 +276,11 @@ def test_execution_log_write_blocked_always(monkeypatch, tmp_path):
     assert blocked_events[0].data["reason"] == "execution_log_direct_write"
 
 
-# --- Test 7: Execution log Edit always blocked (unconditional) ---
+# --- Test 7: Execution log Edit always blocked — guides to des.cli.log_phase ---
 
 
 def test_execution_log_edit_blocked_always(monkeypatch, tmp_path):
-    """Direct Edit to execution-log.json is blocked even without active deliver session."""
+    """Direct Edit to execution-log.json is blocked and guides to des.cli.log_phase."""
     from des.adapters.drivers.hooks import claude_code_hook_adapter as adapter
 
     events = []
@@ -300,7 +301,7 @@ def test_execution_log_edit_blocked_always(monkeypatch, tmp_path):
     # Must block
     assert exit_code == 2
 
-    # Verify block response contains CLI guidance
+    # Verify block response guides to log_phase CLI
     assert len(printed) >= 1, "Expected at least one print call with block response"
     response_json = json.loads(printed[-1][0])
     assert response_json["decision"] == "block"
@@ -314,3 +315,46 @@ def test_execution_log_edit_blocked_always(monkeypatch, tmp_path):
         f"All events: {[e.event_type for e in events]}"
     )
     assert blocked_events[0].data["reason"] == "execution_log_direct_write"
+
+
+# --- Test 8: Write vs Edit get different block messages ---
+
+
+def test_write_and_edit_get_different_block_messages(monkeypatch, tmp_path):
+    """Write guides to des.cli.init_log, Edit guides to des.cli.log_phase."""
+    from des.adapters.drivers.hooks import claude_code_hook_adapter as adapter
+
+    monkeypatch.setattr(adapter, "DES_DELIVER_SESSION_FILE", tmp_path / "nonexistent")
+    monkeypatch.setattr(adapter, "DES_TASK_ACTIVE_FILE", tmp_path / "nonexistent")
+
+    exec_log_path = str(tmp_path / "project" / "execution-log.json")
+
+    # Collect Write block message
+    monkeypatch.setattr("sys.stdin", io.StringIO(_build_pre_write_stdin(exec_log_path)))
+    write_printed = []
+    monkeypatch.setattr("builtins.print", lambda *a, **kw: write_printed.append(a))
+
+    writer = _make_capturing_writer([])
+    with patch.object(adapter, "_create_audit_writer", return_value=writer):
+        adapter.handle_pre_write()
+
+    write_reason = json.loads(write_printed[-1][0])["reason"]
+
+    # Collect Edit block message
+    monkeypatch.setattr("sys.stdin", io.StringIO(_build_pre_edit_stdin(exec_log_path)))
+    edit_printed = []
+    monkeypatch.setattr("builtins.print", lambda *a, **kw: edit_printed.append(a))
+
+    with patch.object(adapter, "_create_audit_writer", return_value=writer):
+        adapter.handle_pre_write()
+
+    edit_reason = json.loads(edit_printed[-1][0])["reason"]
+
+    # Messages must differ and guide to different CLIs
+    assert write_reason != edit_reason, (
+        "Write and Edit should get different block messages"
+    )
+    assert "init_log" in write_reason
+    assert "log_phase" in edit_reason
+    assert "init_log" not in edit_reason
+    assert "log_phase" not in write_reason
