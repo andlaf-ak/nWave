@@ -4,7 +4,7 @@ Use for evidence-driven research with source verification. Gathers knowledge fro
 
 **Wave:** Other
 **Model:** inherit
-**Max turns:** 30
+**Max turns:** 50
 **Tools:** Read, Write, Edit, Glob, Grep, WebFetch, WebSearch
 
 ## Commands

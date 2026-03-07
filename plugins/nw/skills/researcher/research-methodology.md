@@ -20,7 +20,7 @@ Use for all research documents in `docs/research/`.
 ## Research Methodology
 **Search Strategy**: {how sources were found}
 **Source Selection**: Types: {academic/official/industry/technical_docs} | Reputation: {high/medium-high min} | Verification: {cross-referencing approach}
-**Quality Standards**: Min 3 sources/claim | All major claims cross-referenced | Avg reputation: {0.0-1.0}
+**Quality Standards**: Target 3 sources/claim (min 1 authoritative) | All major claims cross-referenced | Avg reputation: {0.0-1.0}
 
 ## Findings
 
@@ -81,9 +81,18 @@ Verify all essential concepts present | Confirm practitioner focus | Check self-
 
 ## Quality Standards
 
-### Per-Claim Requirements
-- Min 3 independent sources for major claims
-- Each validated against trusted source config from prompt context
+### Per-Claim Requirements (Adaptive to Turn Budget)
+
+Source requirements adapt to available turn budget:
+- **Ideal**: 3+ independent sources per major claim
+- **Acceptable**: 2 credible sources when budget is constrained
+- **Minimum**: 1 authoritative source (official docs, RFC, specification) with explicit confidence note
+- **Never**: 0 sources -- unsourced claims must be flagged as "[unverified]"
+
+When budget runs low, prioritize BREADTH (cover all claims with minimum sources) over DEPTH (exhaust sources for one claim while ignoring others).
+
+Additional requirements:
+- Each source validated against trusted source config from prompt context
 - Cross-reference status documented per finding
 
 ### Confidence Ratings
@@ -92,5 +101,6 @@ Verify all essential concepts present | Confirm practitioner focus | Check self-
 - **Low**: single source or significant contradictions
 
 ### Quality Gates (before finalizing)
-1. Every major claim has 3+ citations | 2. All sources from trusted domains
+1. Every major claim has citations (3+ ideal, 2 acceptable, 1 authoritative minimum) | 2. All sources from trusted domains
 3. All findings evidence-backed | 4. Knowledge gaps documented | 5. Output in allowed directories
+6. Claims with fewer than 3 sources have confidence rating adjusted accordingly

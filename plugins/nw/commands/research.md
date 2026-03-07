@@ -37,11 +37,24 @@ Execute \*research on {topic} [--skill-for={agent-name}].
 - skill_for: {agent-name} # Optional: distilled skill for specified agent
 - skill_output_directory: ~/.claude/nWave/skills/{agent-name}/
 
+## Output Management
+
+The researcher MUST create the output file in the FIRST 5 turns with a document skeleton (title, sections, placeholders). All subsequent findings are written DIRECTLY to this file as they are gathered -- never held only in context.
+
+If the agent is interrupted or runs out of turns, the output file contains all work done so far. This is the researcher's equivalent of the crafter's "commit early, commit often."
+
+Progressive write checkpoints:
+- Turn ~5: Output file exists with skeleton
+- Turn ~10: First findings written
+- Turn ~25: All gathered findings written so far
+- Turn ~35: Stop gathering, begin synthesizing
+- Turn ~45+: Polish only
+
 ## Success Criteria
 
 **Research:**
 - [ ] All sources from trusted source domains from prompt context
-- [ ] Cross-reference performed (3+ sources per major claim)
+- [ ] Cross-reference performed (3+ sources per major claim ideal, 2 acceptable, 1 authoritative minimum)
 - [ ] Research file created in docs/research/
 - [ ] Citation coverage > 95%
 - [ ] Average source reputation >= 0.80

@@ -184,7 +184,7 @@ Remove @skip from target acceptance test. Verify exactly one scenario enabled.
 
 ### Phase 2: RED (Acceptance)
 Load: `hexagonal-testing`, `fp-hexagonal-architecture` — read them NOW before writing any acceptance test.
-Write acceptance test as property or example through driving port function. Must fail for valid business logic reason.
+If pre-existing distilled test exists (from DISTILL wave): verify @skip removed in PREPARE, run it — must fail for business logic reason (not import/syntax error). If no distilled test: write new acceptance test as property or example through driving port function, run it — must fail for valid business logic reason.
 
 ### Phase 3: RED (Unit)
 

@@ -3,8 +3,33 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 from des.cli.roadmap import main
+
+
+SCHEMA_PATH = (
+    Path(__file__).resolve().parent.parent.parent.parent.parent
+    / "nWave"
+    / "templates"
+    / "roadmap-schema.json"
+)
+
+
+class TestRoadmapSchema:
+    """Tests for roadmap-schema.json content."""
+
+    def test_schema_optional_step_fields_include_test_file(self):
+        """roadmap-schema.json optional_fields.step must include test_file."""
+        schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+        optional_step_fields = schema["optional_fields"]["step"]
+        assert "test_file" in optional_step_fields
+
+    def test_schema_optional_step_fields_include_scenario_name(self):
+        """roadmap-schema.json optional_fields.step must include scenario_name."""
+        schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+        optional_step_fields = schema["optional_fields"]["step"]
+        assert "scenario_name" in optional_step_fields
 
 
 class TestInit:
@@ -112,6 +137,41 @@ class TestInit:
         data = json.loads(capsys.readouterr().out)
         assert data["roadmap"]["phases"] == 3
         assert len(data["phases"]) == 3
+
+    def test_init_scaffold_includes_test_file_and_scenario_name(self, capsys):
+        """init scaffold includes test_file and scenario_name as empty strings."""
+        rc = main(["init", "--project-id", "handoff", "--goal", "Test handoff"])
+        assert rc == 0
+        data = json.loads(capsys.readouterr().out)
+        step = data["phases"][0]["steps"][0]
+        assert "test_file" in step, "Step must include test_file key"
+        assert "scenario_name" in step, "Step must include scenario_name key"
+        assert step["test_file"] == ""
+        assert step["scenario_name"] == ""
+
+    def test_init_scaffold_test_file_and_scenario_name_across_phases(self, capsys):
+        """All scaffolded steps across multiple phases include handoff fields."""
+        rc = main(
+            [
+                "init",
+                "--project-id",
+                "multi-handoff",
+                "--goal",
+                "G",
+                "--phases",
+                "2",
+                "--steps",
+                "01:2,02:1",
+            ]
+        )
+        assert rc == 0
+        data = json.loads(capsys.readouterr().out)
+        for phase in data["phases"]:
+            for step in phase["steps"]:
+                assert step["test_file"] == "", f"Step {step['id']} missing test_file"
+                assert step["scenario_name"] == "", (
+                    f"Step {step['id']} missing scenario_name"
+                )
 
 
 class TestValidate:
@@ -280,3 +340,11 @@ class TestValidate:
         rc = main(["validate", str(path)])
         assert rc == 0
         assert "TOO_MANY_CRITERIA" in capsys.readouterr().out
+
+    def test_validate_step_with_test_file_and_scenario_name(self, tmp_path):
+        """Steps with test_file and scenario_name optional fields pass validation."""
+        data = self._valid_roadmap()
+        data["phases"][0]["steps"][0]["test_file"] = "tests/acceptance/test_feature.py"
+        data["phases"][0]["steps"][0]["scenario_name"] = "test_order_placed"
+        path = self._write_roadmap(tmp_path, data)
+        assert main(["validate", str(path)]) == 0

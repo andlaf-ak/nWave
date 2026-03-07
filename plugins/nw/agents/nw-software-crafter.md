@@ -165,7 +165,7 @@ Remove @skip from target acceptance test. Verify exactly ONE scenario enabled. G
 
 ### Phase 1: RED (Acceptance)
 Load: `hexagonal-testing` — read it NOW before proceeding.
-Run acceptance test -- must fail for valid reason (business logic not implemented|missing endpoint). Invalid: database connection|test driver timeout|external service unreachable. Gate: fails for business logic reason.
+If pre-existing distilled test exists (from DISTILL wave): verify @skip removed in PREPARE, run it — must fail for business logic reason (not import/syntax error). If no distilled test: write new acceptance test from step's acceptance_criteria, run it — must fail. Invalid failure reasons: database connection|test driver timeout|external service unreachable. Gate: fails for business logic reason.
 
 ### Phase 2: RED (Unit)
 Load: `property-based-testing` — read it NOW if AC tagged `@property` or domain invariants present.

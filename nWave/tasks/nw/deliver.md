@@ -156,26 +156,41 @@ Per phase:
 
 DES markers required for step execution. Without markers → unmonitored. Full DES Prompt Template (9 sections) in `~/.claude/commands/nw/execute.md`.
 
+When dispatching steps via Agent tool, use the COMPLETE DES template from execute.md verbatim. Fill all `{placeholders}` from roadmap step context. The DES hook validates the prompt BEFORE the sub-agent starts — abbreviated prompts that delegate template reading to the sub-agent will be BLOCKED.
+
+Copy the template from the code block in `~/.claude/commands/nw/execute.md` (between ``` markers), fill placeholders, and pass as the Agent prompt. The template contains 9 mandatory sections: DES_METADATA, AGENT_IDENTITY, SKILL_LOADING, TASK_CONTEXT, TDD_PHASES, QUALITY_GATES, OUTCOME_RECORDING, RECORDING_INTEGRITY, BOUNDARY_RULES, TIMEOUT_INSTRUCTION.
+
 ```python
 Task(
     subagent_type="{agent}",
     model=rigor_agent_model,  # omit if "inherit"
-    max_turns=45,  # 25 hotfix|45 standard|65 complex
     prompt=f'''
 <!-- DES-VALIDATION : required -->
 <!-- DES-PROJECT-ID : {project_id} -->
 <!-- DES-STEP-ID : {step_id} -->
-(step_id: NN-NN format. DES hooks require this.)
 
-TASK BOUNDARY: {task_description}
-Return control to orchestrator after completion.
+# DES_METADATA
+Step: {step_id}
+Feature: {project_id}
+Command: /nw:execute
 
-Read full DES Prompt Template from ~/.claude/commands/nw/execute.md.
-Fill: step_id={step_id}|project_id={project_id}|agent={agent}|task_context={instructions}
+# AGENT_IDENTITY
+Agent: {agent}
 
-SKILL_LOADING: Read your skill files at ~/.claude/skills/nw/{agent-name}/.
-At PREPARE phase, always load: tdd-methodology.md, quality-framework.md.
-Then follow your Skill Loading Strategy table for phase-specific skills.
+# SKILL_LOADING
+Before starting TDD phases, read your skill files for methodology guidance.
+Skills path: ~/.claude/skills/nw/{agent-name}/
+Always load at PREPARE: tdd-methodology.md, quality-framework.md
+Load on-demand per phase as specified in your Skill Loading Strategy table.
+
+# TASK_CONTEXT
+{step context extracted from roadmap - name|description|acceptance_criteria|test_file|scenario_name|quality_gates|implementation_notes|dependencies|estimated_hours|deliverables}
+
+# TDD_PHASES
+... (copy remaining sections from execute.md template verbatim)
+
+# TIMEOUT_INSTRUCTION
+Target: 30 turns max. If approaching limit, COMMIT current progress.
 ''',
     description="{phase description}"
 )

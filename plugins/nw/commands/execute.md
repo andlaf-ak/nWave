@@ -64,12 +64,15 @@ Always load at PREPARE: tdd-methodology.md, quality-framework.md
 Load on-demand per phase as specified in your Skill Loading Strategy table.
 
 # TASK_CONTEXT
-{step context from roadmap - name|description|acceptance_criteria|test_file|scenario_line|acceptance_test_scenario|quality_gates|implementation_notes|dependencies|estimated_hours|deliverables}
+{step context from roadmap - name|description|acceptance_criteria|test_file|scenario_name|quality_gates|implementation_notes|dependencies|estimated_hours|deliverables}
 
 # TDD_PHASES
 Execute in order:
 0. PREPARE - Load context, verify prerequisites
-1. RED_ACCEPTANCE - Write failing acceptance test
+1. RED_ACCEPTANCE - Activate acceptance test
+   If TASK_CONTEXT includes test_file: locate it, remove @skip/@ignore/@pending/xit/.skip/[Ignore] marker
+   from the target scenario, run it — must fail for business logic reason (not import/syntax error).
+   If no test_file in TASK_CONTEXT: write a new failing acceptance test from acceptance_criteria.
 2. RED_UNIT - Write failing unit test
 3. GREEN - Minimal code to pass tests
    After GREEN: run FULL test suite. If all pass, proceed to COMMIT immediately.

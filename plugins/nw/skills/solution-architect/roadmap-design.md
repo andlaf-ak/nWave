@@ -85,6 +85,13 @@ For roadmaps feeding DELIVER wave:
 2. Count scenarios (def test_*) | 3. ~1 step per scenario (flexibility for infra steps)
 4. Mark infra steps: "type: infrastructure" | 5. Principle: 1 Scenario = 1 Step = 1 TDD Cycle
 
+For each step mapped to a distilled acceptance scenario, populate:
+- `test_file`: relative path to the test file (e.g., `tests/acceptance/test_auth.py`)
+- `scenario_name`: the scenario/test function name (e.g., `test_login_with_valid_credentials`)
+
+These fields enable the crafter to locate and unskip the exact pre-existing test during RED_ACCEPTANCE.
+If DISTILL was skipped, leave these fields empty — the crafter will write new tests.
+
 ## Measure Before Plan Gate
 
 Before any roadmap, verify: 1. Timing data shows WHERE time spent | 2. Impact ranking shows MOST contributing component | 3. Target validation provides evidence

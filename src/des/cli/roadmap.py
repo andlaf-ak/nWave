@@ -54,6 +54,8 @@ def _build_skeleton(
                     "id": step_id,
                     "name": "TODO: step name",
                     "criteria": "TODO: acceptance criteria",
+                    "test_file": "",
+                    "scenario_name": "",
                 }
             )
             total_steps += 1
