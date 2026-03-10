@@ -594,7 +594,8 @@ class TestOrchestratorHookIntegration:
         from des.adapters.drivers.validators.mocked_validator import (
             MockedTemplateValidator,
         )
-        from des.application.orchestrator import DESOrchestrator, HookResult
+        from des.application.orchestrator import DESOrchestrator
+        from des.ports.driven_ports.hook_port import HookResult
 
         hook = MockedSubagentStopHook(HookResult(validation_status="PASSED"))
         orchestrator = DESOrchestrator(
@@ -631,7 +632,8 @@ class TestOrchestratorHookIntegration:
         from des.adapters.drivers.validators.mocked_validator import (
             MockedTemplateValidator,
         )
-        from des.application.orchestrator import DESOrchestrator, HookResult
+        from des.application.orchestrator import DESOrchestrator
+        from des.ports.driven_ports.hook_port import HookResult
 
         hook = MockedSubagentStopHook(
             HookResult(

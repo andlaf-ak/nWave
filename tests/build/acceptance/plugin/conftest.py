@@ -319,7 +319,12 @@ def plugin_has_hooks(build_result: dict[str, Any]):
 
 @then("hook commands reference the plugin root for execution")
 def hooks_use_plugin_root(build_result: dict[str, Any]):
-    """Verify hook commands use CLAUDE_PLUGIN_ROOT, not HOME."""
+    """Verify hook commands use CLAUDE_PLUGIN_ROOT, not HOME.
+
+    Shell-only guards (e.g., Bash execution-log guard) are self-contained
+    and do not invoke Python modules, so they don't need CLAUDE_PLUGIN_ROOT.
+    These are identified by the ``# des-hook:`` marker prefix.
+    """
     plugin_dir = build_result["plugin_dir"]
     hooks = json.loads(
         (plugin_dir / "hooks" / "hooks.json").read_text(encoding="utf-8")
@@ -328,6 +333,8 @@ def hooks_use_plugin_root(build_result: dict[str, Any]):
         for entry in entries:
             for hook in entry.get("hooks", []):
                 cmd = hook.get("command", "")
+                if cmd.startswith("# des-hook:"):
+                    continue  # self-contained shell guard, no path needed
                 assert "${CLAUDE_PLUGIN_ROOT}" in cmd or "CLAUDE_PLUGIN_ROOT" in cmd, (
                     f"Hook command for {event} does not reference plugin root: {cmd}"
                 )

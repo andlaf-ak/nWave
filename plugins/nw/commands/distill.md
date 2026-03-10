@@ -41,6 +41,19 @@ Create E2E acceptance tests from requirements|architecture|infrastructure design
 1. Yes -- include CI/CD validation, deployment smoke tests
 2. No -- functional acceptance tests only
 
+## Acceptance Criteria: Port-to-Port Principle
+
+Every AC MUST name the driving port (entry point) through which the behavior is exercised. This enables port-to-port acceptance tests that make TBU (Tested But Unwired) defects structurally impossible.
+
+Each AC includes:
+1. **Observable outcome**: what the user/system sees
+2. **Driving port**: the entry point that triggers the behavior (service, handler, endpoint, CLI command)
+
+Without the driving port, a crafter can write correct code that is never wired into the system.
+
+**Features**: "When user {action} via {driving_port}, {observable_outcome}"
+**Bug fixes**: "When {trigger}, {modified_code_path} produces {correct_outcome} instead of {current_broken_behavior}"
+
 ## Prior Wave Consultation
 
 Before beginning DISTILL work, read targeted prior wave artifacts:

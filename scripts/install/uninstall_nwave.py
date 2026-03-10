@@ -12,6 +12,7 @@ import argparse
 import json
 import shutil
 import sys
+from pathlib import Path
 
 
 try:
@@ -163,6 +164,55 @@ class NWaveUninstaller:
             self.logger.info("")
 
         return confirm_action("Are you sure you want to proceed?")
+
+    def check_global_config(
+        self,
+        global_config_path: Path | None = None,
+        prompt_fn: object = None,
+    ) -> None:
+        """Check for global config and prompt user about handling it.
+
+        Called between confirm_removal() and create_backup() in the
+        uninstall flow. Handles keep/delete prompt in interactive mode,
+        auto-preserves in force mode, and logs status in dry-run mode.
+
+        Args:
+            global_config_path: Override path to global config file.
+                Defaults to ~/.nwave/global-config.json.
+            prompt_fn: Optional callable(prompt_str) -> bool for testing.
+                Defaults to confirm_action from install_utils.
+        """
+        path = global_config_path or (Path.home() / ".nwave" / "global-config.json")
+
+        if not path.exists():
+            return
+
+        if self.dry_run:
+            self.logger.info(f"  [DRY RUN] Would prompt about global config at {path}")
+            return
+
+        if self.force:
+            self.logger.info("  Preserved global config (--force: skipping prompt)")
+            return
+
+        # Interactive mode: prompt user to keep or delete
+        ask = prompt_fn if prompt_fn is not None else confirm_action
+        self.logger.info("")
+        self.logger.info(f"  Found global configuration at {path}")
+        should_delete = ask("  Delete global config? (No = keep for next install)")
+
+        if not should_delete:
+            self.logger.info(f"  Preserved global config at {path}")
+            return
+
+        path.unlink()
+        self.logger.info(f"  Deleted global config at {path}")
+
+        # Clean up empty directory
+        nwave_dir = path.parent
+        if nwave_dir.exists() and not any(nwave_dir.iterdir()):
+            nwave_dir.rmdir()
+            self.logger.info(f"  Removed empty directory {nwave_dir}")
 
     def create_backup(self) -> None:
         """Create backup before removal."""
@@ -511,6 +561,9 @@ def main():
         uninstaller.logger.info("")
         uninstaller.logger.info("  ⚠️ Uninstallation cancelled by user")
         return 0
+
+    # Check global config (prompt keep/delete before backup)
+    uninstaller.check_global_config()
 
     # Create backup
     uninstaller.create_backup()

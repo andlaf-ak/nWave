@@ -35,12 +35,12 @@ class TestPluginHookCorrectness:
         """Plugin hooks cover all 5 event types."""
         assert set(hook_config.keys()) == HOOK_EVENT_TYPES
 
-    def test_pretooluse_has_agent_write_edit_matchers(self, hook_config: dict):
-        """PreToolUse has exactly 3 entries: Agent, Write, Edit (not Task)."""
+    def test_pretooluse_has_agent_write_edit_bash_matchers(self, hook_config: dict):
+        """PreToolUse has exactly 4 entries: Agent, Write, Edit, Bash (not Task)."""
         pre_tool_use = hook_config["PreToolUse"]
-        assert len(pre_tool_use) == 3
+        assert len(pre_tool_use) == 4
         matchers = [e.get("matcher") for e in pre_tool_use]
-        assert matchers == ["Agent", "Write", "Edit"]
+        assert matchers == ["Agent", "Write", "Edit", "Bash"]
 
     @pytest.mark.parametrize("matcher", ["Write", "Edit"])
     def test_guard_hooks_contain_session_check(self, hook_config: dict, matcher: str):

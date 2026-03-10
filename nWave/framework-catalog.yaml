@@ -1,5 +1,5 @@
 name: nWave
-version: 2.2.1
+version: 2.4.0
 description: "Comprehensive DISCOVER\u2192DISCUSS\u2192DESIGN\u2192DEVOPS\u2192DISTILL\u2192\
   DELIVER methodology with visual architecture lifecycle management"
 author: nWave Team
@@ -18,40 +18,47 @@ agents:
     wave: DISCOVER
     priority: 1
     role: product_discovery
+    public: true
     description: Evidence-based product discovery and market validation
   product-owner:
     wave: DISCUSS
     priority: 1
     role: requirements_and_ux_design
+    public: true
     description: UX journey design, emotional arcs, requirements gathering, BDD acceptance
       criteria (Luna)
   solution-architect:
     wave: DESIGN
     priority: 1
     role: architecture_design
+    public: true
     description: System architecture and technical design
   acceptance-designer:
     wave: DISTILL
     priority: 1
     role: test_scenarios
+    public: true
     description: BDD scenarios and acceptance criteria
   software-crafter:
     wave: DELIVER
     priority: 1
     role: outside_in_tdd
     knowledge_preservation: COMPLETE
+    public: true
     description: Outside-in TDD implementation and refactoring
   functional-software-crafter:
     wave: DELIVER
     priority: 2
     role: functional_outside_in_tdd
     knowledge_preservation: COMPLETE
+    public: true
     description: Outside-In TDD with functional paradigm. Pure functions, pipeline
       composition, types as documentation, property-based testing.
   platform-architect:
     wave: DEVOPS
     priority: 1
     role: platform_and_delivery
+    public: true
     description: Platform infrastructure design, CI/CD, deployment, and production
       readiness
   researcher:
@@ -60,12 +67,14 @@ agents:
     role: evidence_driven_research
     methodology: SOURCE_VERIFICATION
     knowledge_preservation: COMPLETE
+    public: true
     description: Evidence-based research with source verification
   troubleshooter:
     wave: CROSS_WAVE
     priority: 2
     role: problem_investigation
     methodology: TOYOTA_5_WHYS
+    public: true
     description: Root cause analysis and problem investigation
   documentarist:
     wave: CROSS_WAVE
@@ -73,31 +82,37 @@ agents:
     role: documentation_quality
     methodology: DIVIO_DIATAXIS
     collaboration_mode: QUALITY_GUARDIAN
+    public: true
     description: DIVIO-compliant documentation quality assurance
   visual-architect:
     wave: CROSS_WAVE
     priority: 1
     role: visual_architecture
     collaboration_scope: ALL_WAVES
+    public: true
     description: Architecture diagrams and visual documentation
   data-engineer:
     wave: CROSS_WAVE
     priority: 2
     role: data_architecture
+    public: true
     description: Database design and data pipeline architecture
   agent-builder:
     wave: CROSS_WAVE
     priority: 3
     role: agent_development
+    public: true
     description: Create and validate new specialized agents
   illustrator:
     wave: CROSS_WAVE
     priority: 2
     role: visual_design
+    public: true
     description: Create 2D diagrams and visual artifacts
   product-owner-reviewer:
     wave: CROSS_WAVE
     priority: 2
+    public: true
     role: requirements_and_ux_review
     description: Journey coherence, DoR validation, requirements quality review (Eclipse)
 commands:
@@ -270,8 +285,9 @@ commands:
     outputs:
     - task_results
   finalize:
-    description: Archives a completed feature to docs/evolution/ and cleans up workflow
-      files. Use after all implementation steps pass and mutation testing completes.
+    description: Archives a completed feature to docs/evolution/, migrates lasting
+      artifacts to permanent directories, and cleans up the temporary workspace. Use
+      after all implementation steps pass and mutation testing completes.
     argument_hint: '[agent] [feature-id] - Example: @platform-architect "auth-upgrade"'
     outputs:
     - evolution_document
@@ -302,8 +318,9 @@ commands:
     - complete_feature
   rigor:
     description: Selects a quality-vs-token-consumption profile (lean, standard, thorough,
-      exhaustive, custom, inherit) and persists it to .nwave/des-config.json. Use
-      when tuning how much rigor wave commands apply.
+      exhaustive, custom, inherit) and persists it globally (~/.nwave/global-config.json)
+      or per-project (.nwave/des-config.json). Use when tuning how much rigor wave
+      commands apply.
     argument_hint: '[profile] - Optional: lean, standard, thorough, exhaustive, custom,
       inherit. Omit for interactive selection.'
     agents: []

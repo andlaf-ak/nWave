@@ -27,13 +27,36 @@ class HookEvent:
         is_guard: Whether this hook uses the shell fast-path guard
             (only for Write/Edit hooks that need to check for active
             deliver sessions before spawning Python).
+        shell_command: Verbatim shell command string. When set,
+            generate_hook_config uses this directly instead of
+            command_fn or guard_command_fn. No Python handler needed.
     """
 
     event: str
     matcher: str | None
     action: str
     is_guard: bool = False
+    shell_command: str | None = None
 
+
+# Pure-shell guard for Bash commands that target execution-log.json.
+# The "# des-hook:pre-bash;" prefix is a shell comment (no-op) that serves
+# as a DES marker string for is_des_hook_entry detection.
+_BASH_EXECUTION_LOG_GUARD = (
+    "# des-hook:pre-bash\n"
+    "INPUT=$(cat); "
+    'CMD=$(echo "$INPUT" | python3 -c '
+    '"import sys,json; print(json.load(sys.stdin)'
+    ".get('tool_input',{}).get('command',''))\"); "
+    "echo \"$CMD\" | grep -q 'execution-log' || exit 0; "
+    'echo "$CMD" | grep -qE '
+    "'des\\.cli\\.(log_phase|init_log|verify_deliver_integrity)' && exit 0; "
+    'echo \'{"decision":"block","reason":"Direct modification of '
+    "execution-log.json via Bash is blocked.\\n"
+    "To read it, use the Read tool.\\n"
+    "To modify it, use des.cli.log_phase.\"}'; "
+    "exit 2"
+)
 
 # Canonical hook event definitions -- the ONLY place these are defined.
 # Order matters: PreToolUse/Agent must come before Write/Edit guards.
@@ -41,6 +64,12 @@ HOOK_EVENTS: tuple[HookEvent, ...] = (
     HookEvent(event="PreToolUse", matcher="Agent", action="pre-task"),
     HookEvent(event="PreToolUse", matcher="Write", action="pre-write", is_guard=True),
     HookEvent(event="PreToolUse", matcher="Edit", action="pre-edit", is_guard=True),
+    HookEvent(
+        event="PreToolUse",
+        matcher="Bash",
+        action="pre-bash",
+        shell_command=_BASH_EXECUTION_LOG_GUARD,
+    ),
     HookEvent(event="PostToolUse", matcher="Agent", action="post-tool-use"),
     HookEvent(event="SubagentStop", matcher=None, action="subagent-stop"),
     HookEvent(event="SessionStart", matcher="startup", action="session-start"),
@@ -73,7 +102,9 @@ def generate_hook_config(
     config: dict[str, list[dict]] = {}
 
     for hook_event in HOOK_EVENTS:
-        if hook_event.is_guard and guard_command_fn is not None:
+        if hook_event.shell_command is not None:
+            command = hook_event.shell_command
+        elif hook_event.is_guard and guard_command_fn is not None:
             command = guard_command_fn(hook_event.action)
         else:
             command = command_fn(hook_event.action)
@@ -112,12 +143,22 @@ def build_guard_command(python_cmd: str) -> str:
     ).format(python_cmd=python_cmd)
 
 
+def _is_des_command(command: str) -> bool:
+    """Check if a command string belongs to DES.
+
+    Detects both Python-based hooks (claude_code_hook_adapter) and
+    shell-based hooks (# des-hook: marker prefix).
+    """
+    return "claude_code_hook_adapter" in command or "des-hook:" in command
+
+
 def is_des_hook_entry(hook_entry: dict) -> bool:
     """Check if a hook entry is a DES hook.
 
-    Supports both old flat format and new nested format:
+    Supports old flat format, new nested format, and shell-based hooks:
     - Old flat: {"command": "...claude_code_hook_adapter..."}
     - New nested: {"hooks": [{"type": "command", "command": "...claude_code_hook_adapter..."}]}
+    - Shell-based: {"hooks": [{"type": "command", "command": "# des-hook:pre-bash; ..."}]}
 
     Args:
         hook_entry: Hook entry dictionary from settings JSON.
@@ -126,10 +167,10 @@ def is_des_hook_entry(hook_entry: dict) -> bool:
         True if entry is a DES hook.
     """
     # Check old flat format
-    if "claude_code_hook_adapter" in hook_entry.get("command", ""):
+    if _is_des_command(hook_entry.get("command", "")):
         return True
     # Check new nested format
     for h in hook_entry.get("hooks", []):
-        if "claude_code_hook_adapter" in h.get("command", ""):
+        if _is_des_command(h.get("command", "")):
             return True
     return False

@@ -26,18 +26,9 @@ from unittest.mock import patch
 
 import pytest
 
-from des.ports.driven_ports.audit_log_writer import AuditEvent
+from des.adapters.drivers.hooks import des_task_signal, hook_protocol
 
-
-def _make_capturing_writer(events: list[AuditEvent]):
-    """Create a mock AuditLogWriter that appends events to the given list."""
-    from des.adapters.driven.logging.null_audit_log_writer import NullAuditLogWriter
-
-    class CapturingWriter(NullAuditLogWriter):
-        def log_event(self, event: AuditEvent) -> None:
-            events.append(event)
-
-    return CapturingWriter()
+from .conftest import make_capturing_writer
 
 
 def _build_pre_write_stdin(file_path: str = "/tmp/test.py") -> str:
@@ -58,20 +49,22 @@ def test_hook_invoked_includes_session_state_in_input_summary(monkeypatch, tmp_p
     from des.adapters.drivers.hooks import claude_code_hook_adapter as adapter
 
     events = []
-    writer = _make_capturing_writer(events)
+    writer = make_capturing_writer(events)
 
     # Set up deliver session as active, DES task as inactive
     session_file = tmp_path / "deliver-session.json"
     session_file.write_text("{}")
-    monkeypatch.setattr(adapter, "DES_DELIVER_SESSION_FILE", session_file)
-    monkeypatch.setattr(adapter, "DES_TASK_ACTIVE_FILE", tmp_path / "nonexistent")
+    monkeypatch.setattr(des_task_signal, "DES_DELIVER_SESSION_FILE", session_file)
+    monkeypatch.setattr(
+        des_task_signal, "DES_TASK_ACTIVE_FILE", tmp_path / "nonexistent"
+    )
 
     monkeypatch.setattr(
         "sys.stdin", io.StringIO(_build_pre_write_stdin("/tmp/safe.txt"))
     )
     monkeypatch.setattr("builtins.print", lambda *a, **kw: None)
 
-    with patch.object(adapter, "_create_audit_writer", return_value=writer):
+    with patch.object(hook_protocol, "_audit_writer_factory", return_value=writer):
         adapter.handle_pre_write()
 
     invoked_events = [e for e in events if e.event_type == "HOOK_INVOKED"]
@@ -93,16 +86,20 @@ def test_allowed_event_emitted_when_no_session(monkeypatch, tmp_path):
     from des.adapters.drivers.hooks import claude_code_hook_adapter as adapter
 
     events = []
-    writer = _make_capturing_writer(events)
+    writer = make_capturing_writer(events)
 
     # No session file, no DES task
-    monkeypatch.setattr(adapter, "DES_DELIVER_SESSION_FILE", tmp_path / "nonexistent")
-    monkeypatch.setattr(adapter, "DES_TASK_ACTIVE_FILE", tmp_path / "nonexistent")
+    monkeypatch.setattr(
+        des_task_signal, "DES_DELIVER_SESSION_FILE", tmp_path / "nonexistent"
+    )
+    monkeypatch.setattr(
+        des_task_signal, "DES_TASK_ACTIVE_FILE", tmp_path / "nonexistent"
+    )
 
     monkeypatch.setattr("sys.stdin", io.StringIO(_build_pre_write_stdin("src/main.py")))
     monkeypatch.setattr("builtins.print", lambda *a, **kw: None)
 
-    with patch.object(adapter, "_create_audit_writer", return_value=writer):
+    with patch.object(hook_protocol, "_audit_writer_factory", return_value=writer):
         exit_code = adapter.handle_pre_write()
 
     assert exit_code == 0
@@ -136,18 +133,20 @@ def test_allowed_event_emitted_for_non_blocked_paths(
     from des.adapters.drivers.hooks import claude_code_hook_adapter as adapter
 
     events = []
-    writer = _make_capturing_writer(events)
+    writer = make_capturing_writer(events)
 
     # Session active but no DES task
     session_file = tmp_path / "deliver-session.json"
     session_file.write_text("{}")
-    monkeypatch.setattr(adapter, "DES_DELIVER_SESSION_FILE", session_file)
-    monkeypatch.setattr(adapter, "DES_TASK_ACTIVE_FILE", tmp_path / "nonexistent")
+    monkeypatch.setattr(des_task_signal, "DES_DELIVER_SESSION_FILE", session_file)
+    monkeypatch.setattr(
+        des_task_signal, "DES_TASK_ACTIVE_FILE", tmp_path / "nonexistent"
+    )
 
     monkeypatch.setattr("sys.stdin", io.StringIO(_build_pre_write_stdin(file_path)))
     monkeypatch.setattr("builtins.print", lambda *a, **kw: None)
 
-    with patch.object(adapter, "_create_audit_writer", return_value=writer):
+    with patch.object(hook_protocol, "_audit_writer_factory", return_value=writer):
         exit_code = adapter.handle_pre_write()
 
     assert exit_code == 0
@@ -168,20 +167,22 @@ def test_blocked_event_emitted_when_guard_blocks(monkeypatch, tmp_path):
     from des.adapters.drivers.hooks import claude_code_hook_adapter as adapter
 
     events = []
-    writer = _make_capturing_writer(events)
+    writer = make_capturing_writer(events)
 
     # Session active, no DES task, writing to protected path
     session_file = tmp_path / "deliver-session.json"
     session_file.write_text("{}")
-    monkeypatch.setattr(adapter, "DES_DELIVER_SESSION_FILE", session_file)
-    monkeypatch.setattr(adapter, "DES_TASK_ACTIVE_FILE", tmp_path / "nonexistent")
+    monkeypatch.setattr(des_task_signal, "DES_DELIVER_SESSION_FILE", session_file)
+    monkeypatch.setattr(
+        des_task_signal, "DES_TASK_ACTIVE_FILE", tmp_path / "nonexistent"
+    )
 
     monkeypatch.setattr(
         "sys.stdin", io.StringIO(_build_pre_write_stdin("src/des/main.py"))
     )
     monkeypatch.setattr("builtins.print", lambda *a, **kw: None)
 
-    with patch.object(adapter, "_create_audit_writer", return_value=writer):
+    with patch.object(hook_protocol, "_audit_writer_factory", return_value=writer):
         exit_code = adapter.handle_pre_write()
 
     assert exit_code == 2
@@ -215,14 +216,20 @@ def test_logging_exception_preserves_fail_open_behavior(monkeypatch, tmp_path):
             raise RuntimeError("Audit writer exploded")
 
     # No session = allow path, but logging will throw
-    monkeypatch.setattr(adapter, "DES_DELIVER_SESSION_FILE", tmp_path / "nonexistent")
-    monkeypatch.setattr(adapter, "DES_TASK_ACTIVE_FILE", tmp_path / "nonexistent")
+    monkeypatch.setattr(
+        des_task_signal, "DES_DELIVER_SESSION_FILE", tmp_path / "nonexistent"
+    )
+    monkeypatch.setattr(
+        des_task_signal, "DES_TASK_ACTIVE_FILE", tmp_path / "nonexistent"
+    )
 
     monkeypatch.setattr("sys.stdin", io.StringIO(_build_pre_write_stdin("src/app.py")))
     printed = []
     monkeypatch.setattr("builtins.print", lambda *a, **kw: printed.append(a))
 
-    with patch.object(adapter, "_create_audit_writer", return_value=ExplodingWriter()):
+    with patch.object(
+        hook_protocol, "_audit_writer_factory", return_value=ExplodingWriter()
+    ):
         exit_code = adapter.handle_pre_write()
 
     # Must still allow (fail-open)
@@ -243,18 +250,22 @@ def test_execution_log_write_blocked_always(monkeypatch, tmp_path):
     from des.adapters.drivers.hooks import claude_code_hook_adapter as adapter
 
     events = []
-    writer = _make_capturing_writer(events)
+    writer = make_capturing_writer(events)
 
     # No session active -- guard is unconditional
-    monkeypatch.setattr(adapter, "DES_DELIVER_SESSION_FILE", tmp_path / "nonexistent")
-    monkeypatch.setattr(adapter, "DES_TASK_ACTIVE_FILE", tmp_path / "nonexistent")
+    monkeypatch.setattr(
+        des_task_signal, "DES_DELIVER_SESSION_FILE", tmp_path / "nonexistent"
+    )
+    monkeypatch.setattr(
+        des_task_signal, "DES_TASK_ACTIVE_FILE", tmp_path / "nonexistent"
+    )
 
     exec_log_path = str(tmp_path / "project" / "execution-log.json")
     monkeypatch.setattr("sys.stdin", io.StringIO(_build_pre_write_stdin(exec_log_path)))
     printed = []
     monkeypatch.setattr("builtins.print", lambda *a, **kw: printed.append(a))
 
-    with patch.object(adapter, "_create_audit_writer", return_value=writer):
+    with patch.object(hook_protocol, "_audit_writer_factory", return_value=writer):
         exit_code = adapter.handle_pre_write()
 
     # Must block
@@ -284,18 +295,22 @@ def test_execution_log_edit_blocked_always(monkeypatch, tmp_path):
     from des.adapters.drivers.hooks import claude_code_hook_adapter as adapter
 
     events = []
-    writer = _make_capturing_writer(events)
+    writer = make_capturing_writer(events)
 
     # No session active -- guard is unconditional
-    monkeypatch.setattr(adapter, "DES_DELIVER_SESSION_FILE", tmp_path / "nonexistent")
-    monkeypatch.setattr(adapter, "DES_TASK_ACTIVE_FILE", tmp_path / "nonexistent")
+    monkeypatch.setattr(
+        des_task_signal, "DES_DELIVER_SESSION_FILE", tmp_path / "nonexistent"
+    )
+    monkeypatch.setattr(
+        des_task_signal, "DES_TASK_ACTIVE_FILE", tmp_path / "nonexistent"
+    )
 
     exec_log_path = str(tmp_path / "feature" / "execution-log.json")
     monkeypatch.setattr("sys.stdin", io.StringIO(_build_pre_edit_stdin(exec_log_path)))
     printed = []
     monkeypatch.setattr("builtins.print", lambda *a, **kw: printed.append(a))
 
-    with patch.object(adapter, "_create_audit_writer", return_value=writer):
+    with patch.object(hook_protocol, "_audit_writer_factory", return_value=writer):
         exit_code = adapter.handle_pre_write()
 
     # Must block
@@ -324,8 +339,12 @@ def test_write_and_edit_get_different_block_messages(monkeypatch, tmp_path):
     """Write guides to des.cli.init_log, Edit guides to des.cli.log_phase."""
     from des.adapters.drivers.hooks import claude_code_hook_adapter as adapter
 
-    monkeypatch.setattr(adapter, "DES_DELIVER_SESSION_FILE", tmp_path / "nonexistent")
-    monkeypatch.setattr(adapter, "DES_TASK_ACTIVE_FILE", tmp_path / "nonexistent")
+    monkeypatch.setattr(
+        des_task_signal, "DES_DELIVER_SESSION_FILE", tmp_path / "nonexistent"
+    )
+    monkeypatch.setattr(
+        des_task_signal, "DES_TASK_ACTIVE_FILE", tmp_path / "nonexistent"
+    )
 
     exec_log_path = str(tmp_path / "project" / "execution-log.json")
 
@@ -334,8 +353,8 @@ def test_write_and_edit_get_different_block_messages(monkeypatch, tmp_path):
     write_printed = []
     monkeypatch.setattr("builtins.print", lambda *a, **kw: write_printed.append(a))
 
-    writer = _make_capturing_writer([])
-    with patch.object(adapter, "_create_audit_writer", return_value=writer):
+    writer = make_capturing_writer([])
+    with patch.object(hook_protocol, "_audit_writer_factory", return_value=writer):
         adapter.handle_pre_write()
 
     write_reason = json.loads(write_printed[-1][0])["reason"]
@@ -345,7 +364,7 @@ def test_write_and_edit_get_different_block_messages(monkeypatch, tmp_path):
     edit_printed = []
     monkeypatch.setattr("builtins.print", lambda *a, **kw: edit_printed.append(a))
 
-    with patch.object(adapter, "_create_audit_writer", return_value=writer):
+    with patch.object(hook_protocol, "_audit_writer_factory", return_value=writer):
         adapter.handle_pre_write()
 
     edit_reason = json.loads(edit_printed[-1][0])["reason"]

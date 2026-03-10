@@ -9,6 +9,8 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 
+import pytest
+
 from des.application.subagent_stop_service import SubagentStopService
 from des.domain.log_integrity_validator import LogIntegrityValidator
 from des.domain.phase_event import PhaseEvent
@@ -120,26 +122,86 @@ def _build_empty_stdin_service() -> tuple[SubagentStopService, SpyAuditWriter]:
     return _build_service(events=[])
 
 
-class TestAT1PhaseNameValidation:
-    """AT-1: Crafter writes unrecognized phase name 'REFACTOR'."""
+class TestAT1ThroughAT4IntegrityAnomalies:
+    """AT-1 through AT-4: Anomalous events produce integrity warnings (warn-only).
 
-    def test_unrecognized_phase_name_warning(self) -> None:
-        events = _make_complete_events("01-01")
-        # Add an event with wrong phase name
-        events.append(
-            PhaseEvent(
-                step_id="01-01",
-                phase_name="REFACTOR",
-                status="EXECUTED",
-                outcome="PASS",
-                timestamp="2026-02-08T14:06:00+00:00",
-            )
-        )
+    Each scenario appends one anomalous event to a complete step log and
+    verifies that the service allows execution while emitting the expected
+    integrity warning.
+    """
+
+    @pytest.mark.parametrize(
+        ("target_step_id", "anomalous_event", "warning_keyword", "extra_keyword"),
+        [
+            pytest.param(
+                "01-01",
+                PhaseEvent(
+                    step_id="01-01",
+                    phase_name="REFACTOR",
+                    status="EXECUTED",
+                    outcome="PASS",
+                    timestamp="2026-02-08T14:06:00+00:00",
+                ),
+                "REFACTOR",
+                None,
+                id="unrecognized_phase",
+            ),
+            pytest.param(
+                "01-03",
+                PhaseEvent(
+                    step_id="01-04",
+                    phase_name="PREPARE",
+                    status="EXECUTED",
+                    outcome="PASS",
+                    timestamp="2026-02-08T14:05:00+00:00",
+                ),
+                "Foreign step_id",
+                "01-04",
+                id="foreign_step_id",
+            ),
+            pytest.param(
+                "01-01",
+                PhaseEvent(
+                    step_id="01-01",
+                    phase_name="PREPARE",
+                    status="EXECUTED",
+                    outcome="PASS",
+                    timestamp="2099-01-01T00:00:00+00:00",
+                ),
+                "Future timestamp",
+                None,
+                id="future_timestamp",
+            ),
+            pytest.param(
+                "01-01",
+                PhaseEvent(
+                    step_id="01-01",
+                    phase_name="PREPARE",
+                    status="EXECUTED",
+                    outcome="PASS",
+                    timestamp="2026-02-08T13:00:00+00:00",
+                ),
+                "Pre-task timestamp",
+                None,
+                id="pre_task_timestamp",
+            ),
+        ],
+    )
+    def test_anomalous_event_produces_integrity_warning(
+        self,
+        target_step_id: str,
+        anomalous_event: PhaseEvent,
+        warning_keyword: str,
+        extra_keyword: str | None,
+    ) -> None:
+        events = _make_complete_events(target_step_id)
+        events.append(anomalous_event)
+
         service, audit_spy = _build_service(events)
         context = SubagentStopContext(
             execution_log_path="/fake/execution-log.json",
             project_id="test-project",
-            step_id="01-01",
+            step_id=target_step_id,
             task_start_time="2026-02-08T14:00:00+00:00",
         )
         decision = service.validate(context)
@@ -149,109 +211,12 @@ class TestAT1PhaseNameValidation:
         integrity_warnings = [
             e for e in audit_spy.events if e.event_type == "LOG_INTEGRITY_WARNING"
         ]
-        assert len(integrity_warnings) >= 1
-        assert "REFACTOR" in integrity_warnings[0].data["warning"]
-
-
-class TestAT2CrossStepContamination:
-    """AT-2: Crafter for 01-03 writes events for both 01-03 and 01-04."""
-
-    def test_foreign_step_id_detected(self) -> None:
-        events = _make_complete_events("01-03")
-        # Add contamination: events for 01-04 in the task window
-        events.append(
-            PhaseEvent(
-                step_id="01-04",
-                phase_name="PREPARE",
-                status="EXECUTED",
-                outcome="PASS",
-                timestamp="2026-02-08T14:05:00+00:00",
-            )
-        )
-        service, audit_spy = _build_service(events)
-        context = SubagentStopContext(
-            execution_log_path="/fake/execution-log.json",
-            project_id="test-project",
-            step_id="01-03",
-            task_start_time="2026-02-08T14:00:00+00:00",
-        )
-        decision = service.validate(context)
-
-        assert decision.action == "allow"
-        integrity_warnings = [
-            e for e in audit_spy.events if e.event_type == "LOG_INTEGRITY_WARNING"
+        matched_warnings = [
+            w for w in integrity_warnings if warning_keyword in w.data["warning"]
         ]
-        foreign_warnings = [
-            w for w in integrity_warnings if "Foreign step_id" in w.data["warning"]
-        ]
-        assert len(foreign_warnings) >= 1
-        assert "01-04" in foreign_warnings[0].data["warning"]
-
-
-class TestAT3FutureTimestamp:
-    """AT-3: Event with timestamp 24h in the future."""
-
-    def test_future_timestamp_warning(self) -> None:
-        events = _make_complete_events("01-01")
-        events.append(
-            PhaseEvent(
-                step_id="01-01",
-                phase_name="PREPARE",
-                status="EXECUTED",
-                outcome="PASS",
-                timestamp="2099-01-01T00:00:00+00:00",
-            )
-        )
-        service, audit_spy = _build_service(events)
-        context = SubagentStopContext(
-            execution_log_path="/fake/execution-log.json",
-            project_id="test-project",
-            step_id="01-01",
-            task_start_time="2026-02-08T14:00:00+00:00",
-        )
-        decision = service.validate(context)
-
-        assert decision.action == "allow"
-        integrity_warnings = [
-            e for e in audit_spy.events if e.event_type == "LOG_INTEGRITY_WARNING"
-        ]
-        future_warnings = [
-            w for w in integrity_warnings if "Future timestamp" in w.data["warning"]
-        ]
-        assert len(future_warnings) >= 1
-
-
-class TestAT4PreTaskTimestamp:
-    """AT-4: Event with timestamp before task_start_time."""
-
-    def test_pre_task_timestamp_warning(self) -> None:
-        events = _make_complete_events("01-01")
-        events.append(
-            PhaseEvent(
-                step_id="01-01",
-                phase_name="PREPARE",
-                status="EXECUTED",
-                outcome="PASS",
-                timestamp="2026-02-08T13:00:00+00:00",
-            )
-        )
-        service, audit_spy = _build_service(events)
-        context = SubagentStopContext(
-            execution_log_path="/fake/execution-log.json",
-            project_id="test-project",
-            step_id="01-01",
-            task_start_time="2026-02-08T14:00:00+00:00",
-        )
-        decision = service.validate(context)
-
-        assert decision.action == "allow"
-        integrity_warnings = [
-            e for e in audit_spy.events if e.event_type == "LOG_INTEGRITY_WARNING"
-        ]
-        pre_task_warnings = [
-            w for w in integrity_warnings if "Pre-task timestamp" in w.data["warning"]
-        ]
-        assert len(pre_task_warnings) >= 1
+        assert len(matched_warnings) >= 1
+        if extra_keyword is not None:
+            assert extra_keyword in matched_warnings[0].data["warning"]
 
 
 class TestAT5EmptyStdinPassthrough:

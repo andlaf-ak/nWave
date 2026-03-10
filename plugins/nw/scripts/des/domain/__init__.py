@@ -4,10 +4,6 @@ DES Domain Layer - Business logic and entities.
 Exports all domain-layer entities and services.
 """
 
-from des.domain.invocation_limits_validator import (
-    InvocationLimitsResult,
-    InvocationLimitsValidator,
-)
 from des.domain.tdd_schema import (
     TDDSchema,
     TDDSchemaLoader,
@@ -22,8 +18,6 @@ from des.domain.turn_counter import TurnCounter
 
 
 __all__ = [
-    "InvocationLimitsResult",
-    "InvocationLimitsValidator",
     "TDDSchema",
     "TDDSchemaLoader",
     "TDDSchemaProtocol",

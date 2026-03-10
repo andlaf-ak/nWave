@@ -89,6 +89,10 @@ class SkillsPlugin(InstallationPlugin):
 
             # Target: ~/.claude/skills/nw/
             skills_target = context.claude_dir / "skills" / "nw"
+
+            # Clean and recreate to remove orphan skill groups from previous installs
+            if skills_target.exists():
+                shutil.rmtree(skills_target)
             skills_target.mkdir(parents=True, exist_ok=True)
 
             installed_files = []
@@ -100,10 +104,6 @@ class SkillsPlugin(InstallationPlugin):
                     continue
 
                 target_dir = skills_target / item.name
-
-                # Remove existing and replace
-                if target_dir.exists():
-                    shutil.rmtree(target_dir)
                 shutil.copytree(item, target_dir)
 
                 # Count installed files

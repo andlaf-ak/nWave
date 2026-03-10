@@ -10,7 +10,7 @@ bug where one path had stale matchers or missing hooks.
 Test Budget: 4 distinct behaviors x 2 = 8 max unit tests.
 Behaviors:
   1. Both paths produce hooks for all 5 event types
-  2. Both paths produce 3 PreToolUse entries with identical matchers
+  2. Both paths produce 4 PreToolUse entries with identical matchers
   3. The (event, matcher) pairs are identical between plugin and installer
   4. Write/Edit hooks use guard commands in both paths
 """
@@ -22,6 +22,8 @@ import pytest
 from scripts.build_plugin import generate_hook_config as plugin_generate_hook_config
 from scripts.shared.hook_definitions import (
     HOOK_EVENT_TYPES,
+)
+from scripts.shared.hook_definitions import (
     generate_hook_config as shared_generate_hook_config,
 )
 
@@ -77,14 +79,14 @@ class TestHookParityPluginVsInstaller:
         assert set(plugin_config.keys()) == HOOK_EVENT_TYPES
         assert set(installer_config.keys()) == HOOK_EVENT_TYPES
 
-    def test_both_paths_produce_three_pretooluse_entries(
+    def test_both_paths_produce_four_pretooluse_entries(
         self, plugin_config: dict, installer_config: dict
     ):
-        """Both paths produce 3 PreToolUse entries: Agent, Write, Edit."""
+        """Both paths produce 4 PreToolUse entries: Agent, Write, Edit, Bash."""
         plugin_matchers = [e.get("matcher") for e in plugin_config["PreToolUse"]]
         installer_matchers = [e.get("matcher") for e in installer_config["PreToolUse"]]
-        assert plugin_matchers == ["Agent", "Write", "Edit"]
-        assert installer_matchers == ["Agent", "Write", "Edit"]
+        assert plugin_matchers == ["Agent", "Write", "Edit", "Bash"]
+        assert installer_matchers == ["Agent", "Write", "Edit", "Bash"]
 
     def test_event_matcher_pairs_identical_between_paths(
         self, plugin_config: dict, installer_config: dict

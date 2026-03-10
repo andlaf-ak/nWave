@@ -44,6 +44,55 @@ from scripts.shared import hook_definitions as shared_hooks  # noqa: E402
 
 
 # ---------------------------------------------------------------------------
+# Public/Private Agent Filtering
+# ---------------------------------------------------------------------------
+
+
+def _load_public_agents(nwave_dir: Path) -> set[str]:
+    """Load public agent names from framework-catalog.yaml.
+
+    Returns a set of agent names where ``public`` is not ``false``.
+    If the catalog cannot be loaded, returns an empty set (include all).
+    """
+    catalog_path = nwave_dir / "framework-catalog.yaml"
+    if not catalog_path.exists():
+        return set()
+
+    try:
+        import yaml
+
+        with catalog_path.open(encoding="utf-8") as fh:
+            catalog = yaml.safe_load(fh)
+
+        return {
+            name
+            for name, info in catalog.get("agents", {}).items()
+            if info.get("public") is not False
+        }
+    except Exception:
+        return set()
+
+
+def _is_public_agent(agent_file_name: str, public_agents: set[str]) -> bool:
+    """Check if an agent file belongs to a public agent."""
+    if not public_agents:
+        return True  # no catalog loaded = include all
+    agent_name = agent_file_name.removeprefix("nw-").removesuffix(".md")
+    base_name = agent_name.removesuffix("-reviewer")
+    return agent_name in public_agents or base_name in public_agents
+
+
+def _is_public_skill(skill_dir_name: str, public_agents: set[str]) -> bool:
+    """Check if a skill directory belongs to a public agent."""
+    if not public_agents:
+        return True  # no catalog loaded = include all
+    if skill_dir_name == "common":
+        return True
+    base_name = skill_dir_name.removesuffix("-reviewer")
+    return skill_dir_name in public_agents or base_name in public_agents
+
+
+# ---------------------------------------------------------------------------
 # DES Import Rewriting Patterns (shared with build_dist.py)
 # ---------------------------------------------------------------------------
 
@@ -274,21 +323,31 @@ def generate_marketplace_catalog(plugin_name: str, version: str) -> dict:
 # ---------------------------------------------------------------------------
 
 
-def copy_agents(config: BuildConfig, plugin_dir: Path) -> StepResult:
-    """Copy agent definitions from source to plugin directory."""
+def copy_agents(
+    config: BuildConfig, plugin_dir: Path, public_agents: set[str] | None = None
+) -> StepResult:
+    """Copy agent definitions from source to plugin directory (public only)."""
     source_dir = config.nwave_dir / "agents"
     dest_dir = plugin_dir / "agents"
     dest_dir.mkdir(parents=True, exist_ok=True)
 
+    agents = public_agents or set()
     count = 0
+    skipped = 0
     for md_file in sorted(source_dir.glob("nw-*.md")):
-        shutil.copy2(md_file, dest_dir / md_file.name)
-        count += 1
+        if _is_public_agent(md_file.name, agents):
+            shutil.copy2(md_file, dest_dir / md_file.name)
+            count += 1
+        else:
+            skipped += 1
 
     if count == 0:
         return StepResult.fail("agents", "No agent files found in source")
 
-    return StepResult.ok("agents", count)
+    step = StepResult.ok("agents", count)
+    if skipped:
+        print(f"[INFO] agents: {skipped} private agents excluded")
+    return step
 
 
 def rewrite_agent_skill_refs(plugin_dir: Path, skills_dir: Path) -> StepResult:
@@ -379,19 +438,26 @@ def copy_commands(config: BuildConfig, plugin_dir: Path) -> StepResult:
     return StepResult.ok("commands", count)
 
 
-def copy_skills(config: BuildConfig, plugin_dir: Path) -> StepResult:
-    """Copy skill files preserving directory structure."""
+def copy_skills(
+    config: BuildConfig, plugin_dir: Path, public_agents: set[str] | None = None
+) -> StepResult:
+    """Copy skill files preserving directory structure (public only)."""
     source_dir = config.nwave_dir / "skills"
     dest_dir = plugin_dir / "skills"
     dest_dir.mkdir(parents=True, exist_ok=True)
 
+    agents = public_agents or set()
     count = 0
+    skipped = 0
     for skill_group in sorted(source_dir.iterdir()):
         if skill_group.is_dir():
-            shutil.copytree(
-                skill_group, dest_dir / skill_group.name, dirs_exist_ok=True
-            )
-            count += len(list(skill_group.rglob("*.md")))
+            if _is_public_skill(skill_group.name, agents):
+                shutil.copytree(
+                    skill_group, dest_dir / skill_group.name, dirs_exist_ok=True
+                )
+                count += len(list(skill_group.rglob("*.md")))
+            else:
+                skipped += 1
 
     if count == 0:
         return StepResult.fail("skills", "No skill files found in source")
@@ -401,7 +467,10 @@ def copy_skills(config: BuildConfig, plugin_dir: Path) -> StepResult:
         if skill_dir.is_dir():
             _generate_skill_entry_point(skill_dir)
 
-    return StepResult.ok("skills", count)
+    step = StepResult.ok("skills", count)
+    if skipped:
+        print(f"[INFO] skills: {skipped} private skill groups excluded")
+    return step
 
 
 def _parse_skill_frontmatter(md_path: Path) -> dict[str, str]:
@@ -787,15 +856,27 @@ def build(config: BuildConfig, *, version_override: str | None = None) -> BuildR
             steps=steps_so_far,
         )
 
-    # Step 4: Execute copy pipeline (agents, commands, skills)
+    # Step 4: Load public agent list for filtering
+    public_agents = _load_public_agents(config.nwave_dir)
+
+    # Step 5: Execute copy pipeline (agents, commands, skills)
     steps: list[StepResult] = []
 
-    copy_functions = [copy_agents, copy_commands, copy_skills]
-    for copy_fn in copy_functions:
-        result = copy_fn(config, plugin_dir)
-        steps.append(result)
-        if not result.success:
-            return _fail(result.error, tuple(steps))
+    # Agents and skills are filtered; commands are always public
+    agents_result = copy_agents(config, plugin_dir, public_agents)
+    steps.append(agents_result)
+    if not agents_result.success:
+        return _fail(agents_result.error, tuple(steps))
+
+    commands_result = copy_commands(config, plugin_dir)
+    steps.append(commands_result)
+    if not commands_result.success:
+        return _fail(commands_result.error, tuple(steps))
+
+    skills_result = copy_skills(config, plugin_dir, public_agents)
+    steps.append(skills_result)
+    if not skills_result.success:
+        return _fail(skills_result.error, tuple(steps))
 
     # Step 5: Rewrite agent skill references to use bundles
     skill_refs_result = rewrite_agent_skill_refs(plugin_dir, plugin_dir / "skills")

@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pytest
 
-from des.application.orchestrator import ExecuteStepResult
+from des.application.execution_results import ExecuteStepResult
 
 
 class TestOrchestratorE2EWiring:

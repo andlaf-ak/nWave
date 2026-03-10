@@ -170,8 +170,8 @@ class TestAuditEventsUseDirectFields:
     """AC1: PASSED, FAILED, and SCOPE_VIOLATION events use feature_name and step_id
     as direct AuditEvent fields (not in data dict)."""
 
-    def test_passed_event_has_feature_name_as_direct_field(self) -> None:
-        """PASSED event has feature_name as direct AuditEvent field."""
+    def test_passed_event_has_feature_name_and_step_id_as_direct_fields(self) -> None:
+        """PASSED event has both feature_name and step_id as direct AuditEvent fields."""
         service, audit_spy = _build_service(
             project_id="my-feature",
             events=_make_complete_phase_events("02-01"),
@@ -189,25 +189,6 @@ class TestAuditEventsUseDirectFields:
         ]
         assert len(passed) == 1
         assert passed[0].feature_name == "my-feature"
-
-    def test_passed_event_has_step_id_as_direct_field(self) -> None:
-        """PASSED event has step_id as direct AuditEvent field."""
-        service, audit_spy = _build_service(
-            project_id="my-feature",
-            events=_make_complete_phase_events("02-01"),
-        )
-        context = SubagentStopContext(
-            execution_log_path="/fake/execution-log.json",
-            project_id="my-feature",
-            step_id="02-01",
-        )
-
-        service.validate(context)
-
-        passed = [
-            e for e in audit_spy.events if e.event_type == "HOOK_SUBAGENT_STOP_PASSED"
-        ]
-        assert len(passed) == 1
         assert passed[0].step_id == "02-01"
 
     def test_failed_event_has_feature_name_and_step_id_as_direct_fields(self) -> None:

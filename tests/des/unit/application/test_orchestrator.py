@@ -365,7 +365,7 @@ class TestOrchestratorHookIntegration:
         """
         from pathlib import Path
 
-        from des.application.orchestrator import HookResult
+        from des.ports.driven_ports.hook_port import HookResult
 
         # Seed in-memory filesystem with minimal step file
         step_file_path = Path("/test-step.json")

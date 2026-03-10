@@ -14,6 +14,8 @@ BUSINESS VALUE:
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from des.ports.driven_ports.filesystem_port import FileSystemPort
+
 
 @dataclass
 class InvocationLimitsResult:
@@ -38,26 +40,19 @@ class InvocationLimitsValidator:
     2. duration_minutes is configured and positive
 
     Example usage:
-        validator = InvocationLimitsValidator()
+        validator = InvocationLimitsValidator(filesystem=real_filesystem)
         result = validator.validate_limits(step_file_path)
         if not result.is_valid:
             print("Validation failed:", result.errors)
             print("Guidance:", result.guidance)
     """
 
-    def __init__(self, filesystem=None):
-        """Initialize validator with optional filesystem adapter.
+    def __init__(self, filesystem: FileSystemPort):
+        """Initialize validator with filesystem adapter.
 
         Args:
             filesystem: FileSystemPort adapter for file operations.
-                       If None, uses RealFileSystem for production use.
         """
-        if filesystem is None:
-            from des.adapters.driven.filesystem.real_filesystem import (
-                RealFileSystem,
-            )
-
-            filesystem = RealFileSystem()
         self._filesystem = filesystem
 
     def validate_limits(self, step_file_path: Path | str) -> InvocationLimitsResult:

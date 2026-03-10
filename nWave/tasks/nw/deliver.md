@@ -112,6 +112,9 @@ INPUT: "{feature-description}"
         MOVE it to deliver/ and log warning: "Roadmap relocated from design/ to deliver/ — was created in wrong wave."
      b. @nw-solution-architect creates roadmap.json (read ~/.claude/commands/nw/roadmap.md)
         Step IDs: NN-NN format (01-01, 01-02, 02-01). 01-A or 1-1 = invalid.
+        DISTILL LINKAGE: If docs/feature/{feature-id}/distill/ exists, the architect MUST populate
+        test_file and scenario_name fields in each roadmap step from the distilled acceptance tests.
+        Each step maps to one acceptance scenario (1 Step = 1 Scenario = 1 TDD Cycle).
      c. Automated quality gate (see below)
      d. @nw-software-crafter-reviewer reviews (read ~/.claude/commands/nw/review.md)
      e. Retry once on rejection → stop for manual intervention
@@ -121,12 +124,19 @@ INPUT: "{feature-description}"
      b. Check execution-log.json for prior completion (resume)
      c. {selected-crafter} executes 5-phase TDD cycle (read ~/.claude/commands/nw/execute.md)
         Use crafter from step 1.5|@nw-functional-software-crafter → PBT default|@property tags signal PBT
-        IMPORTANT: Use DES Prompt Template from execute.md|Include DES markers (DES-VALIDATION|DES-PROJECT-ID|DES-STEP-ID) + 9 mandatory sections
+        IMPORTANT: Use DES Prompt Template from execute.md|Include DES markers (DES-VALIDATION|DES-PROJECT-ID|DES-STEP-ID) + all mandatory sections
         OUTCOME_RECORDING: agents use DES CLI (python -m des.cli.log_phase)|CLI bypass → SubagentStop hook corrects timestamps
      d. Verify COMMIT/PASS in execution-log.json per step
      e. Missing phase → RE-DISPATCH agent. NEVER write entries yourself.
      f. Stop on first failure
      g. Timeout recovery: GREEN completed → resume (~5 turns)|GREEN partial → resume|Otherwise → restart higher max_turns
+     h. Wiring smoke check: for each step, verify every new function defined in
+        production files has at least one call site in production code (not just tests).
+        Flag "function X defined but only called from tests" → re-dispatch crafter.
+     i. Acceptance test gate: after each step's COMMIT/PASS, run the feature's acceptance
+        tests (tests matching the feature path, e.g., tests/acceptance/{feature-id}/).
+        If any acceptance test fails, fix the issue before proceeding to the next step.
+        Do NOT skip or defer failing tests. This applies to EVERY individual step, not just the final one.
   |
   4. Phase 3 — Complete Refactoring (L1-L4) [SKIP if rigor.refactor_pass = false]
      a. Collect modified files: git diff --name-only {base-commit}..HEAD -- '*.py' | sort -u
@@ -182,11 +192,11 @@ Per phase:
 
 ## Task Invocation Pattern
 
-DES markers required for step execution. Without markers → unmonitored. Full DES Prompt Template (9 sections) in `~/.claude/commands/nw/execute.md`.
+DES markers required for step execution. Without markers → unmonitored. Full DES Prompt Template in `~/.claude/commands/nw/execute.md`.
 
 When dispatching steps via Agent tool, use the COMPLETE DES template from execute.md verbatim. Fill all `{placeholders}` from roadmap step context. The DES hook validates the prompt BEFORE the sub-agent starts — abbreviated prompts that delegate template reading to the sub-agent will be BLOCKED.
 
-Copy the template from the code block in `~/.claude/commands/nw/execute.md` (between ``` markers), fill placeholders, and pass as the Agent prompt. The template contains 9 mandatory sections: DES_METADATA, AGENT_IDENTITY, SKILL_LOADING, TASK_CONTEXT, TDD_PHASES, QUALITY_GATES, OUTCOME_RECORDING, RECORDING_INTEGRITY, BOUNDARY_RULES, TIMEOUT_INSTRUCTION.
+Copy the template from the code block in `~/.claude/commands/nw/execute.md` (between ``` markers), fill placeholders, and pass as the Agent prompt. The template sections are defined in execute.md — do not hardcode the list here.
 
 ```python
 Task(
@@ -232,6 +242,7 @@ After roadmap creation, before reviewer:
 3. Identical patterns: flag 3+ steps with same AC structure (batch them)
 4. Validation-only: flag steps with no files_to_modify
 5. Step ID format: flag non-matching `^\d{2}-\d{2}$`
+6. DISTILL linkage: if docs/feature/{feature-id}/distill/ exists, flag steps missing test_file/scenario_name
 
 HIGH findings → return to architect for one revision.
 
