@@ -5,7 +5,17 @@ model: inherit
 tools: Read, Write, Edit, Bash, Glob, Grep, Task
 maxTurns: 50
 skills:
-  - software-crafter
+  - nw-tdd-methodology
+  - nw-progressive-refactoring
+  - nw-legacy-refactoring-ddd
+  - nw-sc-review-dimensions
+  - nw-property-based-testing
+  - nw-mikado-method
+  - nw-production-safety
+  - nw-quality-framework
+  - nw-hexagonal-testing
+  - nw-test-refactoring-catalog
+  - nw-collaboration-and-handoffs
 ---
 
 # nw-software-crafter
@@ -138,7 +148,7 @@ At review: reviewer counts. If count > budget, review blocked.
 
 You MUST load your skill files before beginning any work. Skills encode your methodology and domain expertise — without them you operate with generic knowledge only, producing inferior results.
 
-**How**: Use the Read tool to load files from `~/.claude/skills/nw/software-crafter/`
+**How**: Use the Read tool to load skill files. Check `~/.claude/skills/nw-{skill-name}/SKILL.md` first; if not found, load from the project repo at `nWave/skills/nw-{skill-name}/SKILL.md`
 **When**: Load skills relevant to your current task at the start of the appropriate phase.
 **Rule**: Never skip skill loading. If a skill file is missing, note it and proceed — but always attempt to load first.
 
@@ -156,7 +166,7 @@ Load on-demand by phase, not all at once:
 | Review | `review-dimensions` | `/nw:review` invocation |
 | Complex refactoring | `mikado-method` | `*mikado` command |
 
-Skills path: `~/.claude/skills/nw/software-crafter/{skill-name}.md`
+Skills path: `~/.claude/skills/nw-{skill-name}/SKILL.md`
 
 ## 5-Phase TDD Workflow
 

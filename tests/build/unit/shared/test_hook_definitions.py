@@ -6,7 +6,7 @@ for both distribution paths (plugin and installer).
 
 Test Budget: 10 distinct behaviors x 2 = 20 max unit tests.
 Behaviors:
-  1. Hook events define all 8 required registrations
+  1. Hook events define all 9 required registrations
   2. Hook event types cover all 5 distinct event types
   3. generate_hook_config produces correct structure for standard hooks
   4. generate_hook_config uses guard_command_fn for guard hooks
@@ -38,9 +38,9 @@ from scripts.shared.hook_definitions import (
 class TestHookEventDefinitions:
     """Verify the canonical hook event definitions are complete and correct."""
 
-    def test_defines_all_eight_hook_registrations(self):
-        """All 8 hook registrations are defined (4 PreToolUse + 4 others)."""
-        assert len(HOOK_EVENTS) == 8
+    def test_defines_all_nine_hook_registrations(self):
+        """All 9 hook registrations are defined (4 PreToolUse + 5 others)."""
+        assert len(HOOK_EVENTS) == 9
 
         # Verify exact event/matcher/action triples
         events_matchers = [(h.event, h.matcher, h.action) for h in HOOK_EVENTS]
@@ -50,6 +50,7 @@ class TestHookEventDefinitions:
         assert ("PreToolUse", "Bash", "pre-bash") in events_matchers
         assert ("PostToolUse", "Agent", "post-tool-use") in events_matchers
         assert ("SubagentStop", None, "subagent-stop") in events_matchers
+        assert ("SubagentStop", None, "deliver-progress") in events_matchers
         assert ("SessionStart", "startup", "session-start") in events_matchers
         assert ("SubagentStart", None, "subagent-start") in events_matchers
 

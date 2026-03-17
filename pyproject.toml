@@ -19,7 +19,7 @@ packages = ["nwave_ai"]
 
 [project]
 name = "nwave-ai"
-version = "2.6.0"
+version = "2.7.0"
 description = "Modern CLI installer for nwave with rich terminal UI"
 readme = "README.md"
 license = {text = "MIT"}
@@ -134,6 +134,7 @@ markers = [
     "acceptance: Acceptance tests (BDD scenarios, may be slow)",
     "e2e: End-to-end acceptance tests",
     "slow: Tests that take longer to run",
+    "canary: Canary skill injection detection tests (ADR-006)",
 ]
 norecursedirs = [
     ".venv",
@@ -282,7 +283,7 @@ line-ending = "auto"
 [tool.commitizen]
 # WARNING: the tool.commitizen.version is tracking the LAST STABLE version and is updated by the pipeline!
 # DON'T TOUCH IT!
-version = "2.6.0"
+version = "2.7.0"
 version_scheme = "pep440"
 version_files = [
     "nWave/VERSION",

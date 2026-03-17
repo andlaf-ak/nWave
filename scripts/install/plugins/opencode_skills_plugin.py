@@ -23,7 +23,12 @@ from scripts.install.plugins.base import (
     InstallContext,
     PluginResult,
 )
-from scripts.shared.agent_catalog import is_public_skill, load_public_agents
+from scripts.shared.agent_catalog import load_public_agents
+from scripts.shared.skill_distribution import (
+    SkillEntry,
+    enumerate_skills,
+    filter_public_skills,
+)
 
 
 _MANIFEST_FILENAME = ".nwave-manifest.json"
@@ -61,36 +66,22 @@ def _find_skills_source(context: InstallContext) -> Path | None:
     return None
 
 
-def _collect_skill_entries(skills_source: Path) -> list[tuple[str, str, Path]]:
-    """Collect all (agent_name, skill_name, file_path) triples from source.
-
-    Args:
-        skills_source: Path to the skills source directory
-
-    Returns:
-        List of (agent_name, skill_name, file_path) tuples
-    """
-    entries = []
-    for agent_dir in sorted(skills_source.iterdir()):
-        if not agent_dir.is_dir():
-            continue
-        for skill_file in sorted(agent_dir.glob("*.md")):
-            entries.append((agent_dir.name, skill_file.stem, skill_file))
-    return entries
-
-
 def _detect_duplicate_names(
-    entries: list[tuple[str, str, Path]],
+    entries: list[SkillEntry],
 ) -> set[str]:
-    """Find skill names that appear in more than one agent group.
+    """Find skill names that appear more than once.
+
+    In the flat layout (nw-* directories), names are globally unique so
+    this returns an empty set. For the old hierarchical layout, different
+    agents can have skills with the same stem name.
 
     Args:
-        entries: List of (agent_name, skill_name, file_path) tuples
+        entries: List of SkillEntry(name, source_path)
 
     Returns:
-        Set of skill names that have collisions across agent groups
+        Set of skill names that have collisions
     """
-    name_counts = Counter(skill_name for _, skill_name, _ in entries)
+    name_counts = Counter(entry.name for entry in entries)
     return {name for name, count in name_counts.items() if count > 1}
 
 
@@ -223,10 +214,18 @@ class OpenCodeSkillsPlugin(InstallationPlugin):
             target_dir = _opencode_skills_dir()
             target_dir.mkdir(parents=True, exist_ok=True)
 
-            entries = _collect_skill_entries(skills_source)
-
             public_agents = load_public_agents(context.project_root / "nWave")
-            entries = [e for e in entries if is_public_skill(e[0], public_agents)]
+
+            # Build ownership map for flat namespace filtering (ADR-003)
+            from scripts.shared.agent_catalog import build_ownership_map
+
+            agents_dir = context.project_root / "nWave" / "agents"
+            ownership_map = (
+                build_ownership_map(agents_dir) if agents_dir.exists() else {}
+            )
+
+            entries = enumerate_skills(skills_source)
+            entries = filter_public_skills(entries, public_agents, ownership_map)
 
             duplicate_names = _detect_duplicate_names(entries)
 
@@ -234,15 +233,16 @@ class OpenCodeSkillsPlugin(InstallationPlugin):
             installed_files = []
             skipped = []
 
-            for agent_name, skill_name, source_file in entries:
+            for entry in entries:
+                # For hierarchical layout, derive agent name from parent dir
+                agent_name = entry.source_path.parent.name
                 resolved_name = _resolve_target_name(
-                    agent_name, skill_name, duplicate_names
+                    agent_name, entry.name, duplicate_names
                 )
 
                 if not _validate_skill_name(resolved_name):
                     skipped.append(
-                        f"{agent_name}/{skill_name} -> {resolved_name} "
-                        f"(invalid OpenCode name)"
+                        f"{entry.name} -> {resolved_name} (invalid OpenCode name)"
                     )
                     continue
 
@@ -251,9 +251,14 @@ class OpenCodeSkillsPlugin(InstallationPlugin):
                     shutil.rmtree(skill_target_dir)
                 skill_target_dir.mkdir(parents=True)
 
+                # Read source: for flat layout, source_path is a directory
                 target_file = skill_target_dir / "SKILL.md"
+                if entry.source_path.is_dir():
+                    source_file = entry.source_path / "SKILL.md"
+                else:
+                    source_file = entry.source_path
                 content = source_file.read_text()
-                if resolved_name != skill_name:
+                if resolved_name != entry.name:
                     content = _rewrite_frontmatter_name(content, resolved_name)
                 target_file.write_text(content)
 

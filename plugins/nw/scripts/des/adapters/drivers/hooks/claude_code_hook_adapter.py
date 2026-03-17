@@ -33,6 +33,9 @@ if __name__ == "__main__":
         sys.path.insert(0, project_root)
 
 # Re-export handler functions for backward compatibility with tests
+from des.adapters.drivers.hooks.deliver_progress_handler import (  # noqa: F401
+    handle_deliver_progress,
+)
 from des.adapters.drivers.hooks.hook_router import main
 from des.adapters.drivers.hooks.post_tool_use_handler import (  # noqa: F401
     handle_post_tool_use,

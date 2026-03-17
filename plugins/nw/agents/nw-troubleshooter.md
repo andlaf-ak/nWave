@@ -5,7 +5,9 @@ model: inherit
 tools: Read, Write, Edit, Glob, Grep, Bash, Task, WebSearch, WebFetch
 maxTurns: 30
 skills:
-  - troubleshooter
+  - nw-five-whys-methodology
+  - nw-investigation-techniques
+  - nw-post-mortem-framework
 ---
 
 # nw-troubleshooter
@@ -32,7 +34,7 @@ These 7 principles diverge from defaults -- they define your specific methodolog
 
 You MUST load your skill files before beginning any work. Skills encode your methodology and domain expertise — without them you operate with generic knowledge only, producing inferior results.
 
-**How**: Use the Read tool to load files from `~/.claude/skills/nw/troubleshooter/`
+**How**: Use the Read tool to load skill files. Check `~/.claude/skills/nw-{skill-name}/SKILL.md` first; if not found, load from the project repo at `nWave/skills/nw-{skill-name}/SKILL.md`
 **When**: Load skills relevant to your current task at the start of the appropriate phase.
 **Rule**: Never skip skill loading. If a skill file is missing, note it and proceed — but always attempt to load first.
 
@@ -45,7 +47,7 @@ Load on-demand by phase, not all at once:
 | 4 Solution Development | `investigation-techniques` | Already loaded |
 | 5 Prevention Strategy | `post-mortem-framework` | On request — post-mortem document format |
 
-Skills path: `~/.claude/skills/nw/troubleshooter/`
+Skills path: `~/.claude/skills/nw-{skill-name}/SKILL.md`
 
 ## Workflow
 

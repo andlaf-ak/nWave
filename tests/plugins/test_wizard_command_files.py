@@ -16,7 +16,7 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent
 COMMANDS_DIR = PROJECT_ROOT / "nWave" / "tasks" / "nw"
 CATALOG_PATH = PROJECT_ROOT / "nWave" / "framework-catalog.yaml"
 SHARED_RULES_PATH = (
-    PROJECT_ROOT / "nWave" / "skills" / "common" / "wizard-shared-rules.md"
+    PROJECT_ROOT / "nWave" / "skills" / "nw-wizard-shared-rules" / "SKILL.md"
 )
 
 WIZARD_COMMANDS = ["new", "continue", "fast-forward"]

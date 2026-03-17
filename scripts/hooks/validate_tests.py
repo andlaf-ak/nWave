@@ -32,6 +32,7 @@ _SOURCE_TO_TESTS: dict[str, list[str]] = {
     "scripts/validation/": ["tests/validation/"],
     "scripts/framework/": ["tests/build/"],
     "scripts/build_dist.py": ["tests/build/"],
+    "scripts/shared/": ["tests/plugins/", "tests/installer/"],
     "scripts/hooks/": [],
     "scripts/docgen.py": [],
     "nWave/": ["tests/build/"],

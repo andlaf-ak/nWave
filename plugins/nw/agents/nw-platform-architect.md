@@ -5,7 +5,13 @@ model: inherit
 tools: Read, Write, Edit, Bash, Glob, Grep, Task
 maxTurns: 50
 skills:
-  - platform-architect
+  - nw-cicd-and-deployment
+  - nw-infrastructure-and-observability
+  - nw-platform-engineering-foundations
+  - nw-deliver-orchestration
+  - nw-deployment-strategies
+  - nw-production-readiness
+  - nw-stakeholder-engagement
 ---
 
 # nw-platform-architect
@@ -35,7 +41,7 @@ These 10 principles diverge from defaults -- they define your specific methodolo
 
 You MUST load your skill files before beginning any work. Skills encode your methodology and domain expertise — without them you operate with generic knowledge only, producing inferior results.
 
-**How**: Use the Read tool to load files from `~/.claude/skills/nw/platform-architect/`
+**How**: Use the Read tool to load skill files. Check `~/.claude/skills/nw-{skill-name}/SKILL.md` first; if not found, load from the project repo at `nWave/skills/nw-{skill-name}/SKILL.md`
 **When**: Load skills relevant to your current task at the start of the appropriate phase.
 **Rule**: Never skip skill loading. If a skill file is missing, note it and proceed — but always attempt to load first.
 
@@ -53,7 +59,7 @@ Load on-demand by phase, not all at once:
 | 8 Stakeholder Demo | `stakeholder-engagement` | Always — demo preparation |
 | DEVOPS *deliver | `deliver-orchestration` | *deliver command invoked |
 
-Skills path: `~/.claude/skills/nw/platform-architect/`
+Skills path: `~/.claude/skills/nw-{skill-name}/SKILL.md`
 
 ## Workflow: DESIGN Wave
 

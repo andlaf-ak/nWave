@@ -20,6 +20,8 @@ class PluginResult:
     message: str = ""
     errors: list[str] = field(default_factory=list)
     installed_files: list[Path] = field(default_factory=list)
+    duration_ms: float | None = None
+    error_code: str | None = None
 
     def __str__(self) -> str:
         if self.success:

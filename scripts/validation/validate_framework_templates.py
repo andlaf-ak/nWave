@@ -165,20 +165,26 @@ def validate_agent(filepath: Path, result: ValidationResult) -> None:
             "Skill loading must use 'You MUST load your skill files'",
         )
 
-    # A06: skills path documented
-    if "~/.claude/skills/nw/" not in body:
-        result.add("A06", "error", name, "Missing skills path (~/.claude/skills/nw/)")
+    # A06: skills path documented (old: nw/{agent}/, new: nw-{skill}/SKILL.md)
+    has_old_path = "~/.claude/skills/nw/" in body
+    has_new_path = "~/.claude/skills/nw-" in body
+    if not has_old_path and not has_new_path:
+        result.add("A06", "error", name, "Missing skills path (~/.claude/skills/nw-)")
 
-    # A07: orphan skills (skill in frontmatter but no Load: in body)
+    # A07: orphan skills (skill in frontmatter but no reference in body)
+    # In flat layout, agents use a template path like nw-{skill-name}/SKILL.md.
+    # If the body contains this template pattern, all frontmatter skills are covered.
     fm_skills = fm.get("skills", []) or []
-    for skill in fm_skills:
-        if skill not in body:
-            result.add(
-                "A07",
-                "error",
-                name,
-                f"Skill '{skill}' in frontmatter but not referenced in body",
-            )
+    has_skill_template = "nw-{skill-name}/SKILL.md" in body
+    if not has_skill_template:
+        for skill in fm_skills:
+            if skill not in body:
+                result.add(
+                    "A07",
+                    "error",
+                    name,
+                    f"Skill '{skill}' in frontmatter but not referenced in body",
+                )
 
     # A09: example count
     examples = re.findall(r"^### Example \d+", body, re.MULTILINE)
@@ -253,7 +259,10 @@ def validate_agent(filepath: Path, result: ValidationResult) -> None:
 
 def validate_skill(filepath: Path, result: ValidationResult) -> None:
     """Validate a single skill file against all S-rules."""
-    name = filepath.stem
+    # For nw-prefixed SKILL.md files, the identity is the parent directory name.
+    # For traditional agent-grouped files, the identity is the file stem.
+    is_nw_skill = filepath.name == "SKILL.md" and filepath.parent.name.startswith("nw-")
+    name = filepath.parent.name if is_nw_skill else filepath.stem
     fm, body = parse_frontmatter(filepath)
     total_lines = count_lines(filepath)
 
@@ -262,13 +271,34 @@ def validate_skill(filepath: Path, result: ValidationResult) -> None:
         result.add("S01", "error", name, "Missing or invalid YAML frontmatter")
         return
 
-    # S02: name matches filename
-    if fm.get("name") != name:
+    # S02: name matches filename (or directory name for nw-prefixed SKILL.md)
+    fm_name = fm.get("name", "")
+    if is_nw_skill:
+        # For nw-prefixed skills, frontmatter name can be:
+        # - the bare skill name (e.g. "five-whys-methodology") for nw-five-whys-methodology
+        # - the full directory name (e.g. "nw-five-whys-methodology")
+        # - the base name for colliding skills (e.g. "critique-dimensions" for nw-ab-critique-dimensions)
+        #   where the directory has an agent abbreviation prefix per ADR-001
+        expected_bare = name.removeprefix("nw-")
+        # For colliding skills: directory is nw-{abbrev}-{base}, frontmatter is {base}
+        # Check if fm_name is a suffix of the bare name (e.g. "critique-dimensions" in "ab-critique-dimensions")
+        is_collision_name = (
+            expected_bare.endswith(f"-{fm_name}") or expected_bare == fm_name
+        )
+        if fm_name not in (name, expected_bare) and not is_collision_name:
+            result.add(
+                "S02",
+                "error",
+                name,
+                f"Frontmatter name '{fm_name}' != directory '{name}' "
+                f"or bare name '{expected_bare}'",
+            )
+    elif fm_name != name:
         result.add(
             "S02",
             "error",
             name,
-            f"Frontmatter name '{fm.get('name')}' != filename '{name}'",
+            f"Frontmatter name '{fm_name}' != filename '{name}'",
         )
 
     # S03: kebab-case name
@@ -317,8 +347,8 @@ def validate_skill(filepath: Path, result: ValidationResult) -> None:
     if len(h1_matches) == 0:
         result.add("S08", "warning", name, "Missing H1 title")
 
-    # S09: only name, description, and optional agent in frontmatter
-    allowed_fields = {"name", "description", "agent"}
+    # S09: allowed frontmatter fields for skills
+    allowed_fields = {"name", "description", "agent", "user-invocable"}
     extra_fields = set(fm.keys()) - allowed_fields
     if extra_fields:
         result.add(
@@ -386,13 +416,22 @@ def validate_cross_references(
     agents_dir = project_root / "nWave" / "agents"
     skills_dir = project_root / "nWave" / "skills"
 
-    # Build index of ALL skill files across ALL directories
+    # Build index of ALL skill files across ALL directories.
+    # Supports two layouts:
+    # - Agent-grouped: skills/{agent-group}/{skill-name}.md -> key = file stem
+    # - nw-prefixed:   skills/nw-{skill-name}/SKILL.md     -> key = bare skill name
     all_skill_files: dict[str, list[str]] = {}  # skill_name -> [directory_names]
     if skills_dir.is_dir():
         for skill_file in skills_dir.glob("**/*.md"):
-            skill_name = skill_file.stem
             dir_name = skill_file.parent.name
-            all_skill_files.setdefault(skill_name, []).append(dir_name)
+            if skill_file.name == "SKILL.md" and dir_name.startswith("nw-"):
+                # nw-prefixed skill: index by both bare and prefixed name
+                bare_name = dir_name.removeprefix("nw-")
+                all_skill_files.setdefault(bare_name, []).append(dir_name)
+                all_skill_files.setdefault(dir_name, []).append(dir_name)
+            else:
+                skill_name = skill_file.stem
+                all_skill_files.setdefault(skill_name, []).append(dir_name)
 
     for agent_file in sorted(agents_dir.glob("nw-*.md")):
         fm, _ = parse_frontmatter(agent_file)
@@ -406,11 +445,17 @@ def validate_cross_references(
             continue
 
         # Check skill directory exists (own or paired specialist)
+        # Also check if all skills exist as nw-prefixed directories (migrated layout)
         skill_dir = skills_dir / agent_name
         base_agent = agent_name.replace("-reviewer", "")
         base_dir = skills_dir / base_agent
 
-        if not skill_dir.is_dir() and not base_dir.is_dir():
+        has_agent_dir = skill_dir.is_dir() or base_dir.is_dir()
+        all_skills_in_nw = all(
+            skill_name in all_skill_files for skill_name in fm_skills
+        )
+
+        if not has_agent_dir and not all_skills_in_nw:
             result.add(
                 "X01",
                 "error",

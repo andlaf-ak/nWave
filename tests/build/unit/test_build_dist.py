@@ -49,12 +49,18 @@ def mock_project(tmp_path):
     (templates_dir / "step-tdd-cycle-schema.json").write_text('{"type": "object"}')
     (templates_dir / "roadmap-compact.yaml").write_text("roadmap: compact")
 
-    # nWave/skills/ — skill group subdirectories
-    for skill_group in ["software-crafter", "solution-architect"]:
-        skill_dir = tmp_path / "nWave" / "skills" / skill_group
+    # nWave/skills/ — nw-prefixed skill directories with SKILL.md
+    for skill_name in [
+        "nw-tdd-methodology",
+        "nw-hexagonal-testing",
+        "nw-progressive-refactoring",
+    ]:
+        skill_dir = tmp_path / "nWave" / "skills" / skill_name
         skill_dir.mkdir(parents=True)
-        (skill_dir / "overview.md").write_text(f"# {skill_group}\nSkill overview.")
-        (skill_dir / "patterns.md").write_text(f"# {skill_group}\nPatterns.")
+        (skill_dir / "SKILL.md").write_text(
+            f"---\nname: {skill_name.removeprefix('nw-')}\n"
+            f"description: Test skill\n---\n\n# {skill_name}\n\nContent.\n"
+        )
 
     # nWave/scripts/des/ — DES utility scripts
     des_scripts_dir = tmp_path / "nWave" / "scripts" / "des"
@@ -134,11 +140,11 @@ def built_dist(mock_project):
 class TestDistStructureValidator:
     """Validate that dist/ contains all required directories and files."""
 
-    REQUIRED_DIRS = [
+    STATIC_REQUIRED_DIRS = [
         "agents/nw",
         "commands/nw",
         "templates",
-        "skills/nw",
+        "skills",
         "scripts/des",
         "lib/python/des",
     ]
@@ -147,7 +153,7 @@ class TestDistStructureValidator:
 
     def test_dist_has_all_required_directories(self, built_dist):
         """Each required directory exists after build."""
-        for dir_path in self.REQUIRED_DIRS:
+        for dir_path in self.STATIC_REQUIRED_DIRS:
             assert (built_dist / dir_path).is_dir(), f"Missing required dir: {dir_path}"
 
     def test_dist_has_agents(self, built_dist):
@@ -165,14 +171,24 @@ class TestDistStructureValidator:
         templates = list((built_dist / "templates").iterdir())
         assert len(templates) > 0, "No template files in dist/templates/"
 
-    def test_dist_has_skills(self, built_dist):
-        """dist/skills/nw/ has subdirectories with *.md files."""
-        skills_dir = built_dist / "skills" / "nw"
-        subdirs = [d for d in skills_dir.iterdir() if d.is_dir()]
-        assert len(subdirs) > 0, "No skill groups in dist/skills/nw/"
-        for subdir in subdirs:
-            md_files = list(subdir.glob("*.md"))
-            assert len(md_files) > 0, f"No .md files in skill group: {subdir.name}"
+    def test_dist_has_skills_in_flat_layout(self, built_dist):
+        """dist/skills/ has nw-* subdirectories with SKILL.md (flat, no nw/ wrapper)."""
+        skills_dir = built_dist / "skills"
+        nw_dirs = [
+            d for d in skills_dir.iterdir() if d.is_dir() and d.name.startswith("nw-")
+        ]
+        assert len(nw_dirs) > 0, "No nw-prefixed skill directories in dist/skills/"
+        for subdir in nw_dirs:
+            assert (subdir / "SKILL.md").exists(), (
+                f"Missing SKILL.md in skill directory: {subdir.name}"
+            )
+
+    def test_dist_no_skills_nw_wrapper(self, built_dist):
+        """dist/skills/nw/ wrapper directory must not exist."""
+        old_wrapper = built_dist / "skills" / "nw"
+        assert not old_wrapper.exists(), (
+            "Old skills/nw/ wrapper still exists in distribution"
+        )
 
     def test_dist_has_des_scripts(self, built_dist):
         """dist/scripts/des/ has expected DES scripts."""
@@ -336,15 +352,19 @@ class TestDistConsistencyWithSource:
         dist_files = {f.name for f in (built_dist / "templates").iterdir()}
         assert source_files == dist_files
 
-    def test_skill_groups_match_source(self, mock_project, built_dist):
-        """All nWave/skills/ subdirs present in dist/skills/nw/."""
-        source_groups = {
-            d.name for d in (mock_project / "nWave" / "skills").iterdir() if d.is_dir()
+    def test_skill_dirs_match_source(self, mock_project, built_dist):
+        """All nWave/skills/nw-* dirs present in dist/skills/ (flat layout)."""
+        source_skills = {
+            d.name
+            for d in (mock_project / "nWave" / "skills").iterdir()
+            if d.is_dir() and d.name.startswith("nw-")
         }
-        dist_groups = {
-            d.name for d in (built_dist / "skills" / "nw").iterdir() if d.is_dir()
+        dist_skills = {
+            d.name
+            for d in (built_dist / "skills").iterdir()
+            if d.is_dir() and d.name.startswith("nw-")
         }
-        assert source_groups == dist_groups
+        assert source_skills == dist_skills
 
     def test_no_legacy_agents_in_dist(self, mock_project, built_dist):
         """legacy/ directory excluded from dist (if present in source)."""

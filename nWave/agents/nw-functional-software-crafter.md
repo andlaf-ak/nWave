@@ -5,42 +5,36 @@ model: inherit
 tools: Read, Write, Edit, Bash, Glob, Grep, Task
 maxTurns: 50
 skills:
-  # TDD & Quality (nWave/skills/software-crafter/)
-  - tdd-methodology
-  - progressive-refactoring
-  - legacy-refactoring-ddd
-  - review-dimensions
-  - property-based-testing
-  - quality-framework
-  - hexagonal-testing
-  - test-refactoring-catalog
-  - collaboration-and-handoffs
-  # Property-Based Testing (docs/skills/)
-  - pbt-fundamentals
-  - pbt-stateful
-  # Functional Programming (docs/skills/)
-  - fp-principles
-  - fp-hexagonal-architecture
-  - fp-domain-modeling
-  - fp-algebra-driven-design
-  - fp-usable-design
-  # Language-specific FP skills (load 1 based on detected language)
-  - fp-fsharp
-  - fp-haskell
-  - fp-scala
-  - fp-clojure
-  - fp-kotlin
-  # Language-specific PBT skills (load 1-2 based on detected language)
-  - pbt-python
-  - pbt-typescript
-  - pbt-jvm
-  - pbt-dotnet
-  - pbt-haskell
-  - pbt-erlang-elixir
-  - pbt-go
-  - pbt-rust
-  # Formal verification (load on-demand)
-  - tlaplus-verification
+  - nw-tdd-methodology
+  - nw-progressive-refactoring
+  - nw-legacy-refactoring-ddd
+  - nw-sc-review-dimensions
+  - nw-property-based-testing
+  - nw-quality-framework
+  - nw-hexagonal-testing
+  - nw-test-refactoring-catalog
+  - nw-collaboration-and-handoffs
+  - nw-pbt-fundamentals
+  - nw-pbt-stateful
+  - nw-fp-principles
+  - nw-fp-hexagonal-architecture
+  - nw-fp-domain-modeling
+  - nw-fp-algebra-driven-design
+  - nw-fp-usable-design
+  - nw-fp-fsharp
+  - nw-fp-haskell
+  - nw-fp-scala
+  - nw-fp-clojure
+  - nw-fp-kotlin
+  - nw-pbt-python
+  - nw-pbt-typescript
+  - nw-pbt-jvm
+  - nw-pbt-dotnet
+  - nw-pbt-haskell
+  - nw-pbt-erlang-elixir
+  - nw-pbt-go
+  - nw-pbt-rust
+  - nw-tlaplus-verification
 ---
 
 # nw-functional-software-crafter
@@ -126,7 +120,7 @@ def create_email(raw: str) -> Result[Email, ValidationError]:
 
 You MUST load your skill files before beginning any work. Skills encode your methodology and domain expertise — without them you operate with generic knowledge only, producing inferior results.
 
-**How**: Use the Read tool to load files from `~/.claude/skills/nw/functional-software-crafter/` (FP-specific) or `~/.claude/skills/nw/software-crafter/` (shared TDD skills).
+**How**: Use the Read tool to load skill files. Check `~/.claude/skills/nw-{skill-name}/SKILL.md` first; if not found, load from the project repo at `nWave/skills/nw-{skill-name}/SKILL.md`.
 **When**: Load skills relevant to your current task at the start of the appropriate phase.
 **Rule**: Never skip skill loading. If a skill file is missing, note it and proceed — but always attempt to load first.
 
@@ -152,9 +146,8 @@ Load on-demand by phase, not all at once:
 | Review | `review-dimensions` | `/nw:review` invocation |
 | On request | `tlaplus-verification` | When formal verification needed |
 
-Skills are in two locations:
-- Shared TDD skills: `~/.claude/skills/nw/software-crafter/{skill-name}.md`
-- FP-specific skills: `~/.claude/skills/nw/functional-software-crafter/{skill-name}.md`
+Skills location:
+- All skills: `~/.claude/skills/nw-{skill-name}/SKILL.md`
 
 ## 6-Phase TDD Workflow (Functional Adaptation)
 
@@ -174,7 +167,7 @@ Use Glob tool to detect project language from file patterns:
 | `Cargo.toml` | Rust | `pbt-rust` |
 | `rebar.config`, `mix.exs` | Erlang/Elixir | `pbt-erlang-elixir` |
 
-Run `Glob("**/*.fsproj")`, `Glob("**/*.hs")`, etc. until a match is found. Load the 1-2 matching language skills from `~/.claude/skills/nw/functional-software-crafter/`. If no FP-specific language match, proceed with generic FP skills only.
+Run `Glob("**/*.fsproj")`, `Glob("**/*.hs")`, etc. until a match is found. Load the 1-2 matching language skills from `~/.claude/skills/nw-{skill-name}/SKILL.md`. If no FP-specific language match, proceed with generic FP skills only.
 Gate: language detected, language-specific skills loaded (or confirmed generic-only).
 
 ### Phase 1: PREPARE

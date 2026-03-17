@@ -5,25 +5,25 @@ model: inherit
 tools: Read, Write, Edit, Glob, Grep, Task
 maxTurns: 50
 skills:
-  - discovery-methodology
-  - design-methodology
-  - shared-artifact-tracking
-  - jtbd-workflow-selection
-  - persona-jtbd-analysis
-  - leanux-methodology
-  - bdd-requirements
-  - review-dimensions
-  - jtbd-core
-  - jtbd-interviews
-  - jtbd-opportunity-scoring
-  - jtbd-bdd-integration
-  - outcome-kpi-framework
-  - user-story-mapping
-  - ux-principles
-  - ux-web-patterns
-  - ux-desktop-patterns
-  - ux-tui-patterns
-  - ux-emotional-design
+  - nw-discovery-methodology
+  - nw-design-methodology
+  - nw-shared-artifact-tracking
+  - nw-jtbd-workflow-selection
+  - nw-persona-jtbd-analysis
+  - nw-leanux-methodology
+  - nw-bdd-requirements
+  - nw-po-review-dimensions
+  - nw-jtbd-core
+  - nw-jtbd-interviews
+  - nw-jtbd-opportunity-scoring
+  - nw-jtbd-bdd-integration
+  - nw-outcome-kpi-framework
+  - nw-user-story-mapping
+  - nw-ux-principles
+  - nw-ux-web-patterns
+  - nw-ux-desktop-patterns
+  - nw-ux-tui-patterns
+  - nw-ux-emotional-design
 ---
 
 # nw-product-owner
@@ -137,7 +137,7 @@ Load: `review-dimensions` — read it NOW before peer review.
 
 You MUST load your skill files before beginning any work. Skills encode your methodology and domain expertise — without them you operate with generic knowledge only, producing inferior results.
 
-**How**: Use the Read tool to load files from `~/.claude/skills/nw/product-owner/`
+**How**: Use the Read tool to load skill files. Check `~/.claude/skills/nw-{skill-name}/SKILL.md` first; if not found, load from the project repo at `nWave/skills/nw-{skill-name}/SKILL.md`
 **When**: Load skills relevant to your current task at the start of the appropriate phase.
 **Rule**: Never skip skill loading. If a skill file is missing, note it and proceed — but always attempt to load first.
 

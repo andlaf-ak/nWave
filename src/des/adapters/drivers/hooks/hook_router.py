@@ -9,6 +9,7 @@ Entry point: python3 -m des.adapters.drivers.hooks.claude_code_hook_adapter <com
 import json
 import sys
 
+from des.adapters.drivers.hooks.deliver_progress_handler import handle_deliver_progress
 from des.adapters.drivers.hooks.post_tool_use_handler import handle_post_tool_use
 from des.adapters.drivers.hooks.pre_tool_use_handler import handle_pre_tool_use
 from des.adapters.drivers.hooks.pre_write_handler import handle_pre_write
@@ -37,6 +38,8 @@ def main() -> None:
         exit_code = handle_pre_tool_use()
     elif command == "subagent-stop":
         exit_code = handle_subagent_stop()
+    elif command == "deliver-progress":
+        exit_code = handle_deliver_progress()
     elif command == "post-tool-use":
         exit_code = handle_post_tool_use()
     elif command in ("pre-write", "pre-edit"):

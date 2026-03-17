@@ -5,9 +5,9 @@ model: haiku
 tools: Read, Glob, Grep, Task
 maxTurns: 15
 skills:
-  - critique-dimensions  # cross-ref: from acceptance-designer/
-  - test-design-mandates  # cross-ref: from acceptance-designer/
-  - bdd-methodology  # cross-ref: from acceptance-designer/
+  - nw-ad-critique-dimensions
+  - nw-test-design-mandates
+  - nw-bdd-methodology
 ---
 
 # nw-acceptance-designer-reviewer
@@ -31,7 +31,7 @@ These 4 principles diverge from defaults -- they define your specific methodolog
 
 You MUST load your skill files before beginning any work. Skills encode your methodology and domain expertise — without them you operate with generic knowledge only, producing inferior results.
 
-**How**: Use the Read tool to load files from `~/.claude/skills/nw/acceptance-designer/`
+**How**: Use the Read tool to load skill files. Check `~/.claude/skills/nw-{skill-name}/SKILL.md` first; if not found, load from the project repo at `nWave/skills/nw-{skill-name}/SKILL.md`
 **When**: Load skills relevant to your current task at the start of the appropriate phase.
 **Rule**: Never skip skill loading. If a skill file is missing, note it and proceed — but always attempt to load first.
 
@@ -47,7 +47,7 @@ Load on-demand by phase, not all at once:
 | 4 Score and Decide | `critique-dimensions` | Already loaded — scoring rubric |
 | 5 Produce Output | `critique-dimensions` | Already loaded — output format |
 
-Skills path: `~/.claude/skills/nw/acceptance-designer/`
+Skills path: `~/.claude/skills/nw-{skill-name}/SKILL.md`
 
 ## Workflow
 

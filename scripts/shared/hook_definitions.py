@@ -72,6 +72,7 @@ HOOK_EVENTS: tuple[HookEvent, ...] = (
     ),
     HookEvent(event="PostToolUse", matcher="Agent", action="post-tool-use"),
     HookEvent(event="SubagentStop", matcher=None, action="subagent-stop"),
+    HookEvent(event="SubagentStop", matcher=None, action="deliver-progress"),
     HookEvent(event="SessionStart", matcher="startup", action="session-start"),
     HookEvent(event="SubagentStart", matcher=None, action="subagent-start"),
 )

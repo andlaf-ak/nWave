@@ -43,7 +43,6 @@ if _project_root not in sys.path:
 from scripts.shared import hook_definitions as shared_hooks  # noqa: E402
 from scripts.shared.agent_catalog import (  # noqa: E402
     is_public_agent,
-    is_public_skill,
     load_public_agents,
 )
 
@@ -397,99 +396,40 @@ def copy_commands(config: BuildConfig, plugin_dir: Path) -> StepResult:
 def copy_skills(
     config: BuildConfig, plugin_dir: Path, public_agents: set[str] | None = None
 ) -> StepResult:
-    """Copy skill files preserving directory structure (public only)."""
+    """Copy nw-prefixed skill directories (public only, flat layout).
+
+    Post-restructuring: source is nWave/skills/nw-*/SKILL.md (flat).
+    Uses shared skill_distribution module for the enumerate -> filter -> copy pipeline.
+    """
+    from scripts.shared.agent_catalog import build_ownership_map
+    from scripts.shared.skill_distribution import (
+        copy_skills_to_target,
+        enumerate_skills,
+        filter_public_skills,
+    )
+
     source_dir = config.nwave_dir / "skills"
     dest_dir = plugin_dir / "skills"
     dest_dir.mkdir(parents=True, exist_ok=True)
 
     agents = public_agents or set()
-    count = 0
-    skipped = 0
-    for skill_group in sorted(source_dir.iterdir()):
-        if skill_group.is_dir():
-            if is_public_skill(skill_group.name, agents):
-                shutil.copytree(
-                    skill_group, dest_dir / skill_group.name, dirs_exist_ok=True
-                )
-                count += len(list(skill_group.rglob("*.md")))
-            else:
-                skipped += 1
+
+    # Build ownership map for flat namespace filtering (ADR-003)
+    agents_dir = config.nwave_dir / "agents"
+    ownership_map = build_ownership_map(agents_dir) if agents_dir.exists() else {}
+
+    entries = enumerate_skills(source_dir)
+    filtered = filter_public_skills(entries, agents, ownership_map)
+    skipped = len(entries) - len(filtered)
+    count = copy_skills_to_target(filtered, dest_dir)
 
     if count == 0:
         return StepResult.fail("skills", "No skill files found in source")
-
-    # Generate SKILL.md entry points for Claude Code discovery
-    for skill_dir in sorted(dest_dir.iterdir()):
-        if skill_dir.is_dir():
-            _generate_skill_entry_point(skill_dir)
 
     step = StepResult.ok("skills", count)
     if skipped:
         print(f"[INFO] skills: {skipped} private skill groups excluded")
     return step
-
-
-def _parse_skill_frontmatter(md_path: Path) -> dict[str, str]:
-    """Extract name and description from a skill file's YAML frontmatter."""
-    content = md_path.read_text(encoding="utf-8")
-    if not content.startswith("---"):
-        return {"name": md_path.stem, "description": ""}
-
-    parts = content.split("---", 2)
-    if len(parts) < 3:
-        return {"name": md_path.stem, "description": ""}
-
-    result: dict[str, str] = {"name": md_path.stem, "description": ""}
-    for line in parts[1].strip().splitlines():
-        if line.startswith("name:"):
-            result["name"] = line.split(":", 1)[1].strip().strip("\"'")
-        elif line.startswith("description:"):
-            result["description"] = line.split(":", 1)[1].strip().strip("\"'")
-    return result
-
-
-def _generate_skill_entry_point(skill_dir: Path) -> None:
-    """Generate a SKILL.md entry point in a skill directory.
-
-    Creates a lightweight index that Claude Code discovers automatically.
-    Lists all individual skill files with descriptions so the agent knows
-    what's available and can load files on demand.
-    """
-    skill_files = sorted(f for f in skill_dir.glob("*.md") if f.name != "SKILL.md")
-    if not skill_files:
-        return
-
-    dir_name = skill_dir.name
-    skills_info = [_parse_skill_frontmatter(f) for f in skill_files]
-
-    lines = [
-        "---",
-        f"name: {dir_name}",
-        f"description: Skill bundle for nw-{dir_name} agent — "
-        f"{len(skill_files)} skill files",
-        "---",
-        "",
-        f"# {dir_name.replace('-', ' ').title()} Skills",
-        "",
-        "Load skill files on-demand by phase. "
-        "Read the files from this directory as needed.",
-        "",
-        "| Skill | File | Description |",
-        "|-------|------|-------------|",
-    ]
-
-    for info, path in zip(skills_info, skill_files, strict=True):
-        desc = (
-            info["description"][:80] + "..."
-            if len(info["description"]) > 80
-            else info["description"]
-        )
-        lines.append(f"| {info['name']} | {path.name} | {desc} |")
-
-    lines.append("")
-
-    skill_md = skill_dir / "SKILL.md"
-    skill_md.write_text("\n".join(lines), encoding="utf-8")
 
 
 # ---------------------------------------------------------------------------
@@ -527,11 +467,26 @@ def validate_python_syntax(content: str, filename: str) -> str | None:
 # Pure Functions: Hook Configuration Generation
 # ---------------------------------------------------------------------------
 
-# Plugin-path command template: uses CLAUDE_PLUGIN_ROOT for portability
-_PLUGIN_COMMAND_TEMPLATE = (
-    "PYTHONPATH=${{CLAUDE_PLUGIN_ROOT}}/scripts python3"
-    " -m des.adapters.drivers.hooks.claude_code_hook_adapter {action}"
+# Plugin-path command template with self-discovery fallback.
+# Claude Code bug #24529: CLAUDE_PLUGIN_ROOT is not set in hook execution.
+# Workaround: Python one-liner discovers plugin path via pathlib glob.
+# Priority: CLAUDE_PLUGIN_ROOT > plugin cache glob > CLI install path.
+_PLUGIN_DISCOVERY_SCRIPT = (
+    "import os,sys;"
+    "from pathlib import Path;"
+    "r=os.environ.get('CLAUDE_PLUGIN_ROOT','');"
+    "p=r+'/scripts' if r else '';"
+    "p=p or next((str(s) for s in sorted("
+    "Path.home().joinpath('.claude/plugins/cache').glob('*/nw/*/scripts'))"
+    " if (s/'des'/'__init__.py').exists()),None);"
+    "p=p or str(Path.home()/'.claude/lib/python');"
+    "sys.path.insert(0,p);"
+    "sys.argv=['des-hook','{action}'];"
+    "from des.adapters.drivers.hooks.claude_code_hook_adapter import main;"
+    "main()"
 )
+
+_PLUGIN_COMMAND_TEMPLATE = 'python3 -c "' + _PLUGIN_DISCOVERY_SCRIPT + '"'
 
 
 def _plugin_command(action: str) -> str:
@@ -676,14 +631,12 @@ def generate_hooks_json(
     """
     if hook_template_override is not None:
         config = hook_template_override.get("hooks", {})
-        validation_error = validate_hook_config(config)
-        if validation_error is not None:
-            return StepResult.fail("hooks", validation_error)
     else:
         config = generate_hook_config()
-        validation_error = validate_hook_config(config)
-        if validation_error is not None:
-            return StepResult.fail("hooks", validation_error)
+
+    validation_error = validate_hook_config(config)
+    if validation_error is not None:
+        return StepResult.fail("hooks", validation_error)
 
     hooks_dir = plugin_dir / "hooks"
     hooks_dir.mkdir(parents=True, exist_ok=True)
@@ -834,31 +787,31 @@ def build(config: BuildConfig, *, version_override: str | None = None) -> BuildR
     if not skills_result.success:
         return _fail(skills_result.error, tuple(steps))
 
-    # Step 5: Rewrite agent skill references to use bundles
+    # Step 6: Rewrite agent skill references to use bundles
     skill_refs_result = rewrite_agent_skill_refs(plugin_dir, plugin_dir / "skills")
     steps.append(skill_refs_result)
 
-    # Step 6: DES module bundling
+    # Step 7: DES module bundling
     des_result = copy_des_module(config, plugin_dir)
     steps.append(des_result)
     if not des_result.success:
         return _fail(des_result.error, tuple(steps))
 
-    # Step 6: DES runtime templates
+    # Step 8: DES runtime templates
     templates_result = copy_templates(config, plugin_dir)
     steps.append(templates_result)
 
-    # Step 7: Hook configuration
+    # Step 9: Hook configuration
     hooks_result = generate_hooks_json(plugin_dir, config.hook_template_override)
     steps.append(hooks_result)
     if not hooks_result.success:
         return _fail(hooks_result.error, tuple(steps))
 
-    # Step 8: Hook shell wrapper
+    # Step 10: Hook shell wrapper
     wrapper_result = generate_hook_wrapper(plugin_dir)
     steps.append(wrapper_result)
 
-    # Step 9: Generate and write metadata
+    # Step 11: Generate and write metadata
     metadata = generate_plugin_metadata(config.plugin_name)
     metadata_result = write_metadata(plugin_dir, metadata)
     steps.append(metadata_result)

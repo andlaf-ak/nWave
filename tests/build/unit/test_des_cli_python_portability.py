@@ -132,9 +132,7 @@ class TestPortablePatternFunctionality:
             capture_output=True,
             text=True,
         )
-        assert result.returncode == 0, (
-            "Neither python3 nor python found on this system"
-        )
+        assert result.returncode == 0, "Neither python3 nor python found on this system"
         resolved = result.stdout.strip()
         assert "python" in resolved, f"Unexpected resolution: {resolved}"
 
@@ -159,7 +157,9 @@ class TestPortablePatternFunctionality:
             capture_output=True,
             text=True,
         )
-        assert result.returncode == 0, f"Python at {python_path} failed: {result.stderr}"
+        assert result.returncode == 0, (
+            f"Python at {python_path} failed: {result.stderr}"
+        )
         assert "Python" in result.stdout or "Python" in result.stderr
 
 

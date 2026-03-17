@@ -5,8 +5,8 @@ model: haiku
 tools: Read, Glob, Grep, Task
 maxTurns: 30
 skills:
-  - critique-dimensions
-  - review-workflow
+  - nw-abr-critique-dimensions
+  - nw-review-workflow
 ---
 
 # nw-agent-builder-reviewer
@@ -31,7 +31,7 @@ These 5 principles diverge from defaults — they define your specific methodolo
 
 You MUST load your skill files before beginning any work. Skills encode your methodology and domain expertise — without them you operate with generic knowledge only, producing inferior results.
 
-**How**: Use the Read tool to load files from `~/.claude/skills/nw/agent-builder-reviewer/`
+**How**: Use the Read tool to load skill files. Check `~/.claude/skills/nw-{skill-name}/SKILL.md` first; if not found, load from the project repo at `nWave/skills/nw-{skill-name}/SKILL.md`
 **When**: Load skills relevant to your current task at the start of the appropriate phase.
 **Rule**: Never skip skill loading. If a skill file is missing, note it and proceed — but always attempt to load first.
 
@@ -42,7 +42,7 @@ Load on-demand by phase, not all at once:
 | 1 Load Agent and Context | `critique-dimensions` | Always — 9 review dimensions and scoring |
 | 2 Evaluate All Dimensions | `review-workflow` | Always — v2 validation checklist |
 
-Skills path: `~/.claude/skills/nw/agent-builder-reviewer/`
+Skills path: `~/.claude/skills/nw-{skill-name}/SKILL.md`
 
 ## Workflow
 

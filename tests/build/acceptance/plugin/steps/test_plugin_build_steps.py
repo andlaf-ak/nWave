@@ -407,15 +407,20 @@ def skills_mirror_source_layout(
     nwave_source_tree: Path,
 ):
     """Verify skill directory structure matches public source."""
-    from scripts.shared.agent_catalog import is_public_skill, load_public_agents
+    from scripts.shared.agent_catalog import (
+        build_ownership_map,
+        is_public_skill,
+        load_public_agents,
+    )
 
     plugin_dir = build_result["plugin_dir"]
     source_dir = build_config["nwave_dir"] / "skills"
     public_agents = load_public_agents(nwave_source_tree)
+    ownership_map = build_ownership_map(nwave_source_tree / "agents")
     source_dirs = {
         d.name
         for d in source_dir.iterdir()
-        if d.is_dir() and is_public_skill(d.name, public_agents)
+        if d.is_dir() and is_public_skill(d.name, public_agents, ownership_map)
     }
     plugin_dirs = {d.name for d in (plugin_dir / "skills").iterdir() if d.is_dir()}
     assert source_dirs == plugin_dirs

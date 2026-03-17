@@ -56,6 +56,26 @@ def get_audit_writer() -> AuditLogWriter:
     return _audit_writer_factory()
 
 
+def _get_nwave_log_writer(config: object) -> object:
+    """Create appropriate NWaveLogWriter based on DES configuration.
+
+    Returns JsonlNWaveLogWriter when logging is enabled,
+    NullNWaveLogWriter otherwise.
+    """
+    from des.adapters.driven.logging.jsonl_nwave_log_writer import (
+        JsonlNWaveLogWriter,
+    )
+    from des.adapters.driven.logging.null_nwave_log_writer import NullNWaveLogWriter
+    from des.ports.driven_ports.nwave_log_writer import LogLevel
+
+    if not config.log_enabled:
+        return NullNWaveLogWriter()
+
+    level_str = config.log_level.upper()
+    level = LogLevel[level_str] if level_str in LogLevel.__members__ else LogLevel.WARN
+    return JsonlNWaveLogWriter(level=level)
+
+
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------

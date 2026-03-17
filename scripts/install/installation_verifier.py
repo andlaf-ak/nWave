@@ -95,7 +95,7 @@ class InstallationVerifier:
         self.claude_config_dir = claude_config_dir or PathUtils.get_claude_config_dir()
         self.agents_dir = self.claude_config_dir / "agents" / "nw"
         self.commands_dir = self.claude_config_dir / "commands" / "nw"
-        self.skills_dir = self.claude_config_dir / "skills" / "nw"
+        self.skills_dir = self.claude_config_dir / "skills"
         self.des_dir = self.claude_config_dir / "lib" / "python" / "des"
         self.manifest_path = self.claude_config_dir / "nwave-manifest.txt"
 
@@ -142,15 +142,31 @@ class InstallationVerifier:
     def verify_skills(self) -> tuple[int, int]:
         """Verify skills installation.
 
+        Supports both old layout (skills/nw/{agent}/*.md) and
+        new flat layout (skills/nw-{name}/SKILL.md).
+
         Returns:
             Tuple of (skill_file_count, skill_group_count).
             Returns (0, 0) if skills directory does not exist.
         """
         if not self.skills_dir.exists():
             return 0, 0
-        skill_files = list(self.skills_dir.rglob("*.md"))
-        skill_groups = [d for d in self.skills_dir.iterdir() if d.is_dir()]
-        return len(skill_files), len(skill_groups)
+        # New flat layout: nw-*/SKILL.md directories
+        nw_dirs = [
+            d
+            for d in self.skills_dir.iterdir()
+            if d.is_dir() and d.name.startswith("nw-")
+        ]
+        if nw_dirs:
+            skill_files = [d / "SKILL.md" for d in nw_dirs if (d / "SKILL.md").exists()]
+            return len(skill_files), len(nw_dirs)
+        # Old layout fallback: nw/{agent}/*.md
+        old_dir = self.skills_dir / "nw"
+        if old_dir.exists():
+            skill_files = list(old_dir.rglob("*.md"))
+            skill_groups = [d for d in old_dir.iterdir() if d.is_dir()]
+            return len(skill_files), len(skill_groups)
+        return 0, 0
 
     def verify_des(self) -> bool:
         """Verify DES module installation.

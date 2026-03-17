@@ -1,5 +1,5 @@
 name: nWave
-version: 2.5.1
+version: 2.6.0
 description: "Comprehensive DISCOVER\u2192DISCUSS\u2192DESIGN\u2192DEVOPS\u2192DISTILL\u2192\
   DELIVER methodology with visual architecture lifecycle management"
 author: nWave Team
@@ -225,6 +225,18 @@ commands:
     outputs:
     - hotspot_ranking
     - churn_annotated_report
+  bugfix:
+    description: "Bug fix workflow: root cause analysis \u2192 user review \u2192\
+      \ regression test + fix via TDD"
+    argument_hint: '[bug-description] - Describe the defect observed'
+    agents:
+    - troubleshooter
+    - software-crafter
+    - functional-software-crafter
+    outputs:
+    - rca_document
+    - regression_test
+    - fix_commit
   mikado:
     description: '[EXPERIMENTAL] Complex refactoring roadmaps with visual tracking'
     argument_hint: '[refactoring-goal] - Optional: --complexity=[simple|moderate|complex]

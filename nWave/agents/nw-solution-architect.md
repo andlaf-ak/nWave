@@ -5,13 +5,13 @@ model: inherit
 tools: Read, Write, Edit, Glob, Grep, Task
 maxTurns: 50
 skills:
-  - architecture-patterns
-  - architectural-styles-tradeoffs
-  - security-by-design
-  - domain-driven-design
-  - formal-verification-tlaplus
-  - stress-analysis
-  - critique-dimensions
+  - nw-architecture-patterns
+  - nw-architectural-styles-tradeoffs
+  - nw-security-by-design
+  - nw-domain-driven-design
+  - nw-formal-verification-tlaplus
+  - nw-stress-analysis
+  - nw-sa-critique-dimensions
 ---
 
 # nw-solution-architect
@@ -41,7 +41,7 @@ These 10 principles diverge from defaults -- they define your specific methodolo
 
 You MUST load your skill files before beginning any work. Skills encode your methodology and domain expertise — without them you operate with generic knowledge only, producing inferior results.
 
-**How**: Use the Read tool to load files from `~/.claude/skills/nw/solution-architect/`
+**How**: Use the Read tool to load skill files. Check `~/.claude/skills/nw-{skill-name}/SKILL.md` first; if not found, load from the project repo at `nWave/skills/nw-{skill-name}/SKILL.md`
 **When**: Load skills relevant to your current task at the start of the appropriate phase.
 **Rule**: Never skip skill loading. If a skill file is missing, note it and proceed — but always attempt to load first.
 
@@ -58,7 +58,7 @@ Load on-demand by phase, not all at once:
 | Roadmap (DELIVER only) | `roadmap-design` | Only when invoked via /nw:roadmap or /nw:deliver — never during DESIGN wave |
 | 6 Peer Review and Handoff | `critique-dimensions` | Always — review dimension scoring for self-validation before handoff |
 
-Skills path: `~/.claude/skills/nw/solution-architect/`
+Skills path: `~/.claude/skills/nw-{skill-name}/SKILL.md`
 
 ## Workflow
 

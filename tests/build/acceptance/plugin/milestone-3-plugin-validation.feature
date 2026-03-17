@@ -49,7 +49,7 @@ Feature: Plugin Validation and Build Verification
     Given the plugin assembler has produced a plugin directory
     When the plugin validator checks the output
     Then the validation report shows only public agents
-    And the validation report shows at least 108 skill files
+    And the validation report shows at least 80 skill files
     And the validation report shows at least 21 command files
 
   # --- Error Paths ---

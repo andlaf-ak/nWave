@@ -230,6 +230,24 @@ class DESConfig:
         """Get maximum skill log size in bytes before rotation. Default: 1 MiB."""
         return self._housekeeping().get("skill_log_max_bytes", 1_048_576)
 
+    # --- Observability (NWave unified logging) ---
+
+    @property
+    def log_level(self) -> str:
+        """Log level: NW_LOG_LEVEL env > config log_level > default WARN."""
+        env = os.environ.get("NW_LOG_LEVEL")
+        if env:
+            return env.upper()
+        return self._config_data.get("log_level", "WARN").upper()
+
+    @property
+    def log_enabled(self) -> bool:
+        """Log enabled: NW_LOG env > config log_enabled > default False."""
+        env = os.environ.get("NW_LOG")
+        if env is not None:
+            return env.lower() in ("true", "1", "yes")
+        return bool(self._config_data.get("log_enabled", False))
+
     def save_update_check_state(
         self,
         last_checked: str,

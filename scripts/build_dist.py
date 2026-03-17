@@ -5,7 +5,7 @@ Assembles a distributable layout from scattered source directories:
   nWave/agents/       → dist/agents/nw/
   nWave/tasks/nw/     → dist/commands/nw/    (tasks → commands mapping)
   nWave/templates/    → dist/templates/
-  nWave/skills/       → dist/skills/nw/
+  nWave/skills/nw-*/  → dist/skills/nw-*/    (flat layout, no nw/ wrapper)
   nWave/scripts/des/  → dist/scripts/des/
   src/des/            → dist/lib/python/des/  (imports rewritten: src.des → des)
   scripts/*.py        → dist/scripts/
@@ -30,17 +30,24 @@ if _project_root not in sys.path:
     sys.path.insert(0, _project_root)
 
 from scripts.shared.agent_catalog import (  # noqa: E402
+    build_ownership_map,
     is_public_agent,
-    is_public_skill,
     load_public_agents,
+)
+from scripts.shared.skill_distribution import (  # noqa: E402
+    copy_skills_to_target,
+    enumerate_skills,
+    filter_public_skills,
 )
 
 
+# Static directories that must exist after build.
+# Skills use dynamic validation (nw-* directories under skills/).
 REQUIRED_DIRS = [
     "agents/nw",
     "commands/nw",
     "templates",
-    "skills/nw",
+    "skills",
     "scripts/des",
     "lib/python/des",
 ]
@@ -164,22 +171,23 @@ class DistBuilder:
         return count
 
     def build_skills(self) -> int:
-        """nWave/skills/*/ → dist/skills/nw/*/ (public agent skills only)."""
+        """nWave/skills/nw-*/ → dist/skills/nw-*/ (flat, public only)."""
         src = self.nwave_dir / "skills"
-        dst = self.dist_dir / "skills" / "nw"
+        dst = self.dist_dir / "skills"
         dst.mkdir(parents=True, exist_ok=True)
 
-        count = 0
-        skipped = 0
-        for skill_dir in src.iterdir():
-            if skill_dir.is_dir():
-                if is_public_skill(skill_dir.name, self.public_agents):
-                    shutil.copytree(skill_dir, dst / skill_dir.name, dirs_exist_ok=True)
-                    count += 1
-                else:
-                    skipped += 1
+        # Build ownership map for flat namespace filtering (ADR-003)
+        agents_dir = self.nwave_dir / "agents"
+        ownership_map = build_ownership_map(agents_dir) if agents_dir.exists() else {}
 
-        msg = f"Skills: {count} groups"
+        entries = enumerate_skills(src)
+        public_entries = filter_public_skills(
+            entries, self.public_agents, ownership_map
+        )
+        count = copy_skills_to_target(public_entries, dst)
+
+        skipped = len(entries) - len(public_entries)
+        msg = f"Skills: {count} directories"
         if skipped:
             msg += f" ({skipped} private, excluded)"
         self._log(msg)
@@ -274,6 +282,19 @@ class DistBuilder:
         for dir_path in REQUIRED_DIRS:
             if not (self.dist_dir / dir_path).is_dir():
                 missing.append(dir_path)
+
+        # Dynamic validation: at least one nw-* skill directory must exist
+        skills_dir = self.dist_dir / "skills"
+        if skills_dir.is_dir():
+            nw_skill_dirs = [
+                d
+                for d in skills_dir.iterdir()
+                if d.is_dir() and d.name.startswith("nw-")
+            ]
+            if not nw_skill_dirs:
+                missing.append("skills/nw-* (no skill directories found)")
+        else:
+            missing.append("skills")
 
         if not (self.dist_dir / "MANIFEST.json").exists():
             missing.append("MANIFEST.json")

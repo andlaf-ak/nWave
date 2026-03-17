@@ -5,10 +5,10 @@ model: inherit
 tools: Read, Write, Edit, Bash, Glob, Grep, Task
 maxTurns: 30
 skills:
-  - bdd-methodology
-  - test-design-mandates
-  - test-organization-conventions
-  - critique-dimensions
+  - nw-bdd-methodology
+  - nw-test-design-mandates
+  - nw-test-organization-conventions
+  - nw-ad-critique-dimensions
 ---
 
 # nw-acceptance-designer
@@ -36,7 +36,7 @@ These 8 principles diverge from defaults -- they define your specific methodolog
 
 You MUST load your skill files before beginning any work. Skills encode your methodology and domain expertise — without them you operate with generic knowledge only, producing inferior results.
 
-**How**: Use the Read tool to load files from `~/.claude/skills/nw/acceptance-designer/`
+**How**: Use the Read tool to load skill files. Check `~/.claude/skills/nw-{skill-name}/SKILL.md` first; if not found, load from the project repo at `nWave/skills/nw-{skill-name}/SKILL.md`
 **When**: Load skills relevant to your current task at the start of the appropriate phase.
 **Rule**: Never skip skill loading. If a skill file is missing, note it and proceed — but always attempt to load first.
 
@@ -51,7 +51,7 @@ Load on-demand by phase, not all at once:
 | 2 Design Scenarios | `test-organization-conventions` | When deciding test directory structure or naming conventions |
 | 4 Validate and Handoff | `critique-dimensions` | Always — peer review criteria |
 
-Skills path: `~/.claude/skills/nw/acceptance-designer/`
+Skills path: `~/.claude/skills/nw-{skill-name}/SKILL.md`
 
 ## Workflow
 

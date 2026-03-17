@@ -5,7 +5,9 @@ model: haiku
 tools: Read, Glob, Grep, Task
 maxTurns: 30
 skills:
-  - software-crafter-reviewer
+  - nw-sc-review-dimensions
+  - nw-tdd-review-enforcement
+  - nw-tdd-methodology
 ---
 
 # nw-software-crafter-reviewer
@@ -34,8 +36,8 @@ These 8 principles diverge from defaults -- they define your review methodology:
 You MUST load your skill files before beginning any work. Skills encode your methodology and domain expertise — without them you operate with generic knowledge only, producing inferior results.
 
 **How**: Use the Read tool to load skill files from two directories:
-- `~/.claude/skills/nw/software-crafter/` — shared skills (`review-dimensions`, `tdd-methodology`)
-- `~/.claude/skills/nw/software-crafter-reviewer/` — reviewer-specific skills (`tdd-review-enforcement`)
+- `~/.claude/skills/nw-{skill-name}/SKILL.md` — shared skills (`review-dimensions`, `tdd-methodology`)
+- `~/.claude/skills/nw-{skill-name}/SKILL.md` — reviewer-specific skills (`tdd-review-enforcement`)
 
 **When**: Load skills relevant to your current task at the start of the appropriate phase.
 **Rule**: Never skip skill loading. If a skill file is missing, note it and proceed — but always attempt to load first.

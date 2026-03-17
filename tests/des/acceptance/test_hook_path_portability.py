@@ -283,6 +283,6 @@ class TestHookInstallIdempotency:
         assert matchers.count("Write") == 1, f"Duplicate Write hooks: {matchers}"
         assert matchers.count("Edit") == 1, f"Duplicate Edit hooks: {matchers}"
 
-        # Exactly 1 SubagentStop and 1 PostToolUse
-        assert len(config["hooks"]["SubagentStop"]) == 1
+        # Exactly 2 SubagentStop (subagent-stop + deliver-progress) and 1 PostToolUse
+        assert len(config["hooks"]["SubagentStop"]) == 2
         assert len(config["hooks"]["PostToolUse"]) == 1

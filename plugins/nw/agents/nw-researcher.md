@@ -5,7 +5,10 @@ model: inherit
 tools: Read, Write, Edit, Glob, Grep, WebFetch, WebSearch
 maxTurns: 50
 skills:
-  - researcher
+  - nw-research-methodology
+  - nw-source-verification
+  - nw-operational-safety
+  - nw-authoritative-sources
 ---
 
 # nw-researcher
@@ -31,7 +34,7 @@ These 6 principles diverge from defaults -- they define your specific methodolog
 
 You MUST load your skill files before beginning any work. Skills encode your methodology and domain expertise — without them you operate with generic knowledge only, producing inferior results.
 
-**How**: Use the Read tool to load files from `~/.claude/skills/nw/researcher/`
+**How**: Use the Read tool to load skill files. Check `~/.claude/skills/nw-{skill-name}/SKILL.md` first; if not found, load from the project repo at `nWave/skills/nw-{skill-name}/SKILL.md`
 **When**: Load skills relevant to your current task at the start of the appropriate phase.
 **Rule**: Never skip skill loading. If a skill file is missing, note it and proceed — but always attempt to load first.
 
@@ -43,7 +46,7 @@ Load on-demand by phase, not all at once:
 | 2 Research-and-Write Cycles | `authoritative-sources`, `operational-safety` | Always — domain strategies and tool safety |
 | 3 Synthesize and Cross-Reference | `source-verification` | Always — tier definitions and bias detection |
 
-Skills path: `~/.claude/skills/nw/researcher/`
+Skills path: `~/.claude/skills/nw-{skill-name}/SKILL.md`
 
 ## Workflow
 
@@ -94,7 +97,7 @@ Quality tiers (adapt to budget):
 
 ## Critical Rules
 
-- Write only to `docs/research/` or `~/.claude/skills/nw/{agent}/`. Other paths require explicit permission.
+- Write only to `docs/research/` or `~/.claude/skills/nw-{skill-name}/SKILL.md`. Other paths require explicit permission.
 - Every major claim requires independent source citations (3+ ideal, 2 acceptable, 1 authoritative minimum). Fewer sources = lower confidence rating. Adapt to turn budget per Diminishing Returns Detection.
 - Document knowledge gaps with what was searched and why insufficient. Gaps are deliverable.
 - Distinguish facts (sourced) from interpretations (analysis). Label interpretations clearly.

@@ -5,12 +5,12 @@ model: inherit
 tools: Read, Write, Edit, Glob, Grep, Task
 maxTurns: 50
 skills:
-  - design-patterns
-  - agent-testing
-  - agent-creation-workflow
-  - critique-dimensions
-  - command-design-patterns
-  - command-optimization-workflow
+  - nw-design-patterns
+  - nw-agent-testing
+  - nw-agent-creation-workflow
+  - nw-ab-critique-dimensions
+  - nw-command-design-patterns
+  - nw-command-optimization-workflow
 ---
 
 # nw-agent-builder
@@ -38,7 +38,7 @@ These 8 principles diverge from Claude's natural tendencies — they define your
 
 You MUST load your skill files before beginning any work. Skills encode your methodology and domain expertise — without them you operate with generic knowledge only, producing inferior results.
 
-**How**: Use the Read tool to load files from `~/.claude/skills/nw/agent-builder/`
+**How**: Use the Read tool to load skill files. Check `~/.claude/skills/nw-{skill-name}/SKILL.md` first; if not found, load from the project repo at `nWave/skills/nw-{skill-name}/SKILL.md`
 **When**: Load skills at the start of the phase where they are first needed.
 **Rule**: Never skip skill loading. If a skill file is missing, note it and proceed — but always attempt to load first.
 
@@ -80,7 +80,7 @@ model: inherit
 tools: [{only tools this agent needs}]
 maxTurns: 30
 skills:
-  - {domain-knowledge-skill}
+  - nw-{domain-knowledge-skill}
 ---
 
 # {agent-name}
@@ -103,7 +103,7 @@ These {N} principles diverge from defaults — they define your specific methodo
 
 You MUST load your skill files before beginning any work. Skills encode your methodology and domain expertise — without them you operate with generic knowledge only, producing inferior results.
 
-**How**: Use the Read tool to load files from `~/.claude/skills/nw/{agent-name}/`
+**How**: Use the Read tool to load files from `~/.claude/skills/nw-{skill-name}/SKILL.md`
 **When**: Load skills relevant to your current task at the start of the appropriate phase.
 **Rule**: Never skip skill loading. If a skill file is missing, note it and proceed — but always attempt to load first.
 
@@ -159,7 +159,7 @@ Before finalizing any agent definition, verify all 14 items:
 9. Instructions phrased affirmatively ("Do X" not "Don't do Y")
 10. Consistent terminology throughout
 11. Description field clearly states when to delegate to this agent
-12. **Mandatory skill loading section** with imperative language ("You MUST load", not "you should load") and explicit path `~/.claude/skills/nw/{agent-name}/`
+12. **Mandatory skill loading section** with imperative language ("You MUST load", not "you should load") and explicit path `~/.claude/skills/nw-{skill-name}/SKILL.md`
 13. **Explicit `Load:` directives** in every workflow phase matching skills in frontmatter — phrased as commands ("Load NOW", not "if applicable")
 14. **No orphan skills**: every skill in frontmatter has a corresponding `Load:` directive in a workflow phase
 
@@ -177,7 +177,7 @@ Before finalizing any agent definition, verify all 14 items:
 | Compound instructions | Confuses agent reasoning | Split into separate focused steps |
 | Inconsistent terminology | Amplifies confusion in longer contexts | One term per concept throughout |
 | Orphan skills in frontmatter | Skills declared but no `Load:` directives — never loaded in sub-agent mode | Add mandatory skill loading section + `Load:` per phase |
-| Missing skills path | Sub-agents can't find skills without explicit path | Document `~/.claude/skills/nw/{agent-name}/` in agent |
+| Missing skills path | Sub-agents can't find skills without explicit path | Document `~/.claude/skills/nw-{skill-name}/SKILL.md` in agent |
 | Soft skill loading language | "Should load", "if applicable", "consider loading" — agents skip under turn pressure | Use imperative: "You MUST load", "Load NOW before proceeding" |
 | Over-compressed examples | `### Example N:` headers removed during compression — eval tools can't find them | Keep example section headers verbatim |
 | Compressed AskUserQuestion options | Runtime menu items compressed to pipes — lose decision tree structure | Preserve numbered options with descriptions verbatim |
@@ -195,7 +195,7 @@ model: inherit
 tools: Read, Glob, Grep, Bash
 maxTurns: 30
 skills:
-  - migration-patterns
+  - nw-migration-patterns
 ---
 ```
 

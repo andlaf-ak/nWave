@@ -314,11 +314,16 @@ def _infer_wave(description: str) -> str:
 
 def enrich(data: dict[str, list]) -> dict[str, list]:
     """Resolve cross-references and add derived fields."""
-    # Build lookup: both "skill-name" and "agent-dir/skill-name" resolve
+    # Build lookup: skill name, directory name, and agent-dir/skill-name all resolve.
+    # In flat layout (nw-*/SKILL.md), agent_dir IS the directory name (e.g., "nw-ad-critique-dimensions").
+    # Agent frontmatter references skills by directory name, not by frontmatter name.
     skill_lookup: set[str] = set()
     for s in data["skills"]:
-        skill_lookup.add(s["name"])
-        skill_lookup.add(f"{s['agent_dir']}/{s['name']}")
+        skill_lookup.add(s["name"])  # frontmatter name
+        skill_lookup.add(s["agent_dir"])  # directory name (flat layout key)
+        skill_lookup.add(
+            f"{s['agent_dir']}/{s['name']}"
+        )  # legacy: agent-dir/skill-name
     agent_names = {a["name"] for a in data["agents"]}
     agent_dirs = {a["name"].removeprefix("nw-") for a in data["agents"]}
 
@@ -331,11 +336,14 @@ def enrich(data: dict[str, list]) -> dict[str, list]:
                 )
 
     # Validate skill→agent refs (parent dir must match an agent)
-    # Shared skill directories (e.g., "common") are not agent-specific
+    # In flat layout (nw-*/SKILL.md), agent_dir is the skill directory name — skip validation.
+    # In old layout (agent-name/skill.md), agent_dir must match an agent.
     shared_skill_dirs = {"common"}
     for skill in data["skills"]:
         if skill["agent_dir"] in shared_skill_dirs:
             continue
+        if skill["agent_dir"].startswith("nw-"):
+            continue  # flat layout: skill dir is standalone, not agent-named
         if skill["agent_dir"] not in agent_dirs:
             raise DocgenError(
                 f"Skill '{skill['name']}' in dir '{skill['agent_dir']}' has no matching agent"
@@ -467,7 +475,10 @@ def render_agent_detail(agent: Agent, skills: list[Skill]) -> str:
         lines.append("## Skills")
         lines.append("")
         for s in sorted(agent_skills, key=lambda x: x["name"]):
-            skill_path = f"../../../nWave/skills/{s['agent_dir']}/{s['name']}.md"
+            if s["agent_dir"].startswith("nw-"):
+                skill_path = f"../../../nWave/skills/{s['agent_dir']}/SKILL.md"
+            else:
+                skill_path = f"../../../nWave/skills/{s['agent_dir']}/{s['name']}.md"
             lines.append(f"- [{s['name']}]({skill_path}) — {s['description']}")
         lines.append("")
     return "\n".join(lines)
@@ -493,11 +504,20 @@ def render_skills_index(skills: list[Skill]) -> str:
         if agent_dir == "common":
             lines.append("## Shared Skills")
         else:
-            agent_link = f"[nw-{agent_dir}](../agents/nw-{agent_dir}.md)"
-            lines.append(f"## {agent_link}")
+            # In flat layout, agent_dir is the skill directory (nw-prefixed).
+            # Don't double-prefix with nw-.
+            display_name = (
+                agent_dir if agent_dir.startswith("nw-") else f"nw-{agent_dir}"
+            )
+            lines.append(f"## {display_name}")
         lines.append("")
         for s in sorted(by_agent[agent_dir], key=lambda x: x["name"]):
-            skill_path = f"../../../nWave/skills/{s['agent_dir']}/{s['name']}.md"
+            if s["agent_dir"].startswith("nw-"):
+                # Flat layout: nw-{skill}/SKILL.md
+                skill_path = f"../../../nWave/skills/{s['agent_dir']}/SKILL.md"
+            else:
+                # Old layout: {agent}/{skill}.md
+                skill_path = f"../../../nWave/skills/{s['agent_dir']}/{s['name']}.md"
             lines.append(f"- [{s['name']}]({skill_path}) — {s['description']}")
         lines.append("")
     return "\n".join(lines)

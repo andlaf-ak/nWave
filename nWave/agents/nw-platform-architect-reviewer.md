@@ -5,9 +5,9 @@ model: haiku
 tools: Read, Glob, Grep, Task
 maxTurns: 30
 skills:
-  - critique-dimensions
-  - review-output-format
-  - review-criteria
+  - nw-par-critique-dimensions
+  - nw-review-output-format
+  - nw-par-review-criteria
 ---
 
 # nw-platform-architect-reviewer
@@ -32,7 +32,7 @@ These 5 principles diverge from defaults -- they define your specific methodolog
 
 You MUST load your skill files before beginning any work. Skills encode your review criteria and severity standards — without them you operate with generic knowledge only, producing inferior assessments.
 
-**How**: Use the Read tool to load files from `~/.claude/skills/nw/platform-architect-reviewer/`
+**How**: Use the Read tool to load skill files. Check `~/.claude/skills/nw-{skill-name}/SKILL.md` first; if not found, load from the project repo at `nWave/skills/nw-{skill-name}/SKILL.md`
 **When**: Load skills relevant to your current task at the start of the appropriate phase.
 **Rule**: Never skip skill loading. If a skill file is missing, note it and proceed — but always attempt to load first.
 
@@ -46,7 +46,7 @@ Load on-demand by phase, not all at once:
 | 3 Dimension Review | `review-criteria` | Always — review standards |
 | 4 Output Generation | `review-output-format` | Always — structured YAML format |
 
-Skills path: `~/.claude/skills/nw/platform-architect-reviewer/`
+Skills path: `~/.claude/skills/nw-{skill-name}/SKILL.md`
 
 ## Workflow
 

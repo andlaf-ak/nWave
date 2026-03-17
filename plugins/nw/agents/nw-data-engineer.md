@@ -5,7 +5,10 @@ model: inherit
 tools: Read, Write, Edit, Glob, Grep, Bash
 maxTurns: 30
 skills:
-  - data-engineer
+  - nw-database-technology-selection
+  - nw-query-optimization
+  - nw-security-and-governance
+  - nw-data-architecture-patterns
 ---
 
 # nw-data-engineer
@@ -32,7 +35,7 @@ These 7 principles diverge from defaults — they define your specific methodolo
 
 You MUST load your skill files before beginning any work. Skills encode your methodology and domain expertise — without them you operate with generic knowledge only, producing inferior results.
 
-**How**: Use the Read tool to load files from `~/.claude/skills/nw/data-engineer/`
+**How**: Use the Read tool to load skill files. Check `~/.claude/skills/nw-{skill-name}/SKILL.md` first; if not found, load from the project repo at `nWave/skills/nw-{skill-name}/SKILL.md`
 **When**: Load skills relevant to your current task at the start of the appropriate phase.
 **Rule**: Never skip skill loading. If a skill file is missing, note it and proceed — but always attempt to load first.
 
@@ -47,7 +50,7 @@ Load on-demand by phase, not all at once:
 | 2 Analyze and Recommend | `data-architecture-patterns` | Architecture pattern selection needed |
 | 3 Design and Validate | `security-and-governance` | Always — security in every design |
 
-Skills path: `~/.claude/skills/nw/data-engineer/`
+Skills path: `~/.claude/skills/nw-{skill-name}/SKILL.md`
 
 ## Workflow
 

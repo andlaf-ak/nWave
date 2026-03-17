@@ -5,7 +5,9 @@ model: inherit
 tools: Read, Write, Edit, Glob, Grep, Task
 maxTurns: 50
 skills:
-  - product-discoverer
+  - nw-discovery-workflow
+  - nw-interviewing-techniques
+  - nw-opportunity-mapping
 ---
 
 # nw-product-discoverer
@@ -32,7 +34,7 @@ These 7 principles diverge from defaults -- they define your specific methodolog
 
 You MUST load your skill files before beginning any work. Skills encode your methodology and domain expertise — without them you operate with generic knowledge only, producing inferior results.
 
-**How**: Use the Read tool to load files from `~/.claude/skills/nw/product-discoverer/`
+**How**: Use the Read tool to load skill files. Check `~/.claude/skills/nw-{skill-name}/SKILL.md` first; if not found, load from the project repo at `nWave/skills/nw-{skill-name}/SKILL.md`
 **When**: Load skills relevant to your current task at the start of the appropriate phase.
 **Rule**: Never skip skill loading. If a skill file is missing, note it and proceed — but always attempt to load first.
 
@@ -48,7 +50,7 @@ Load eagerly at Phase 1:
 | 3 Solution Testing | `interviewing-techniques` | Already loaded — experiment design |
 | 4 Market Viability | `discovery-workflow` | Already loaded — gate criteria and transitions |
 
-Skills path: `~/.claude/skills/nw/product-discoverer/`
+Skills path: `~/.claude/skills/nw-{skill-name}/SKILL.md`
 
 ## Workflow
 

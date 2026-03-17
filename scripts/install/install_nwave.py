@@ -534,12 +534,24 @@ class NWaveInstaller:
             self.logger.info("  🍾 Deployment validated")
             return True
         else:
-            error_count = len(result.missing_essential_files) + (
-                0 if schema_valid else 1
-            )
+            # Identify every failing condition for clear diagnostics
+            failures: list[str] = []
+            if not result.success:
+                failures.append("essential files missing")
+            if not schema_valid:
+                failures.append("schema validation failed")
+            if not all_synced:
+                failures.append("agent/command sync mismatch")
+            if plugin_failures:
+                failures.append(
+                    f"plugin verification failed: {', '.join(plugin_failures)}"
+                )
             if not result.manifest_exists:
-                error_count += 1
-            self.logger.error(f"  ❌ Validation failed ({error_count} errors)")
+                failures.append("manifest not created")
+            detail = "; ".join(failures) if failures else "unknown condition"
+            self.logger.error(
+                f"  ❌ Validation failed ({len(failures)} issues: {detail})"
+            )
             return False
 
     def create_manifest(self) -> None:

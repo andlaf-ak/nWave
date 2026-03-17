@@ -5,7 +5,7 @@ model: haiku
 tools: Read, Glob, Grep, Task
 maxTurns: 20
 skills:
-  - researcher-reviewer
+  - nw-rr-critique-dimensions
 ---
 
 # nw-researcher-reviewer
@@ -30,7 +30,7 @@ These 5 principles diverge from defaults -- they define your specific methodolog
 
 You MUST load your skill files before beginning any work. Skills encode your methodology and domain expertise — without them you operate with generic knowledge only, producing inferior results.
 
-**How**: Use the Read tool to load files from `~/.claude/skills/nw/researcher-reviewer/`
+**How**: Use the Read tool to load skill files. Check `~/.claude/skills/nw-{skill-name}/SKILL.md` first; if not found, load from the project repo at `nWave/skills/nw-{skill-name}/SKILL.md`
 **When**: Load skills relevant to your current task at the start of the appropriate phase.
 **Rule**: Never skip skill loading. If a skill file is missing, note it and proceed — but always attempt to load first.
 
@@ -40,7 +40,7 @@ Load on-demand by phase, not all at once:
 |-------|------|---------|
 | 1 Ingest Research Document | `researcher-reviewer/critique-dimensions` | Always — review dimensions and scoring criteria |
 
-Skills path: `~/.claude/skills/nw/researcher-reviewer/`
+Skills path: `~/.claude/skills/nw-{skill-name}/SKILL.md`
 
 ## Workflow
 
