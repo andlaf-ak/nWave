@@ -3,7 +3,7 @@
 **Time**: ~15 minutes (7 steps)
 **Platform**: macOS or Linux (Windows: use WSL)
 **Prerequisites**: Python 3.10+, Claude Code with nWave installed, [Tutorial 8](./tutorial-deliver-feature.md) completed
-**What this is**: A hands-on walkthrough of `/nw:devops` -- nWave's production readiness command. You will take the delivered bookmark CLI from Tutorial 8 and generate CI/CD pipeline design, infrastructure recommendations, deployment strategy, and a production readiness checklist.
+**What this is**: A hands-on walkthrough of `/nw-devops` -- nWave's production readiness command. You will take the delivered bookmark CLI from Tutorial 8 and generate CI/CD pipeline design, infrastructure recommendations, deployment strategy, and a production readiness checklist.
 
 ---
 
@@ -15,7 +15,7 @@ A complete production readiness package -- CI/CD workflow, deployment strategy, 
 
 **After**: You have a GitHub Actions workflow with quality gates at every stage. You have a deployment strategy matched to your project's risk profile. You have infrastructure recommendations for packaging and distribution. You have a production readiness checklist that tells you exactly what remains before go-live. Everything is documented and peer-reviewed.
 
-**Why this matters**: Working code is not the same as shippable code. `/nw:devops` bridges the gap between "all tests pass" and "safe to release" by applying the same evidence-based methodology the rest of the wave used. The platform architect does not guess -- it reads your architecture, your test suite, and your deployment target, then designs infrastructure that fits.
+**Why this matters**: Working code is not the same as shippable code. `/nw-devops` bridges the gap between "all tests pass" and "safe to release" by applying the same evidence-based methodology the rest of the wave used. The platform architect does not guess -- it reads your architecture, your test suite, and your deployment target, then designs infrastructure that fits.
 
 ---
 
@@ -63,7 +63,7 @@ You should see:
 bookmark-cli.md
 ```
 
-> **If tests fail or files are missing**: Complete [Tutorial 8](./tutorial-deliver-feature.md) first. `/nw:devops` reads architecture documents, test results, and the delivered codebase to make infrastructure decisions. Without them, the platform architect cannot assess what needs to be deployed.
+> **If tests fail or files are missing**: Complete [Tutorial 8](./tutorial-deliver-feature.md) first. `/nw-devops` reads architecture documents, test results, and the delivered codebase to make infrastructure decisions. Without them, the platform architect cannot assess what needs to be deployed.
 
 *Next: you will launch the devops command and answer Apex's configuration questions.*
 
@@ -74,7 +74,7 @@ bookmark-cli.md
 In Claude Code, type:
 
 ```
-/nw:devops bookmark-cli
+/nw-devops bookmark-cli
 ```
 
 > **AI output varies between runs.** Your session with Apex will differ from the examples below. The agent designs infrastructure based on your specific architecture and deployment target. What matters is the structure (decisions, artifacts, peer review), not the exact output.
@@ -265,7 +265,7 @@ The checklist covers items like:
 
 > **Your checklist will differ.** Apex generates items based on what exists in your project versus what production requires. Items already completed (from tutorials 4-8) are checked. Items that still need manual action are unchecked.
 
-The checked items are evidence the wave process already handled. The unchecked items are what remains between "working code" and "shippable product." This is the value of `/nw:devops` -- it tells you exactly what is left.
+The checked items are evidence the wave process already handled. The unchecked items are what remains between "working code" and "shippable product." This is the value of `/nw-devops` -- it tells you exactly what is left.
 
 *Next: the peer reviewer will validate the entire design.*
 
@@ -368,7 +368,7 @@ bookmark-cli/
 
 ```
 DISCOVER         DISCUSS          DESIGN           DISTILL          DELIVER          DEVOPS
-(/nw:discover)   (/nw:discuss)    (/nw:design)     (/nw:distill)    (/nw:deliver)    (/nw:devops)
+(/nw-discover)   (/nw-discuss)    (/nw-design)     (/nw-distill)    (/nw-deliver)    (/nw-devops)
 ──────────────   ──────────────   ──────────────   ──────────────   ──────────────   ──────────────
 "Is the problem  "What should     "How should we   "What does done  "Build it with   "Get to
  real?"           we build?"       build it?"       look like?"      quality gates"   production"
@@ -399,14 +399,14 @@ You went from "I have an idea for a bookmark CLI" to a production-ready, fully t
 
 | Symptom | Fix |
 |---------|-----|
-| `/nw:devops` does not start | Make sure nWave is installed. Run `/nw:help` to verify. |
+| `/nw-devops` does not start | Make sure nWave is installed. Run `/nw-help` to verify. |
 | Apex cannot find architecture docs | Ensure `docs/architecture/architecture-design.md` exists. Complete [Tutorial 6](./tutorial-design.md) if missing. |
 | Apex designs overly complex infrastructure (Kubernetes for a CLI) | Interrupt and clarify: "This is a CLI tool distributed via PyPI, not a web service." Apex will simplify. |
 | Pipeline workflow has syntax errors | Copy the workflow to `.github/workflows/`, push to a branch, and check the GitHub Actions tab for validation errors. Fix inline. |
-| Reviewer rejects repeatedly (3+ rounds) | The pipeline stops after 2 rounds. Review the findings manually, make the changes Apex could not, and run `/nw:devops` again. |
+| Reviewer rejects repeatedly (3+ rounds) | The pipeline stops after 2 rounds. Review the findings manually, make the changes Apex could not, and run `/nw-devops` again. |
 | No `.github/workflows/` directory created | Apex may have placed the workflow in `docs/feature/bookmark-cli/deliver/` as a design document rather than a live file. Copy it to `.github/workflows/`. |
 | Production readiness checklist shows items you already completed | Apex may not have detected all prior artifacts. Manually check the items you know are done. |
-| Want to start fresh | Delete `docs/feature/bookmark-cli/deliver/` and `.github/workflows/bookmark-cli.yml`, then run `/nw:devops` again. |
+| Want to start fresh | Delete `docs/feature/bookmark-cli/deliver/` and `.github/workflows/bookmark-cli.yml`, then run `/nw-devops` again. |
 
 ---
 

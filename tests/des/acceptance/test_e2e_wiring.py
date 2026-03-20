@@ -4,7 +4,7 @@ E2E WIRING TESTS: Validate nWave commands integrate turn counting, timeout warni
 PERSONA: Marcus (Senior Developer)
 STORY: As a senior developer, I want to verify that turn counting, timeout warnings,
        and extension API are all wired into actual nWave command execution paths
-       (/nw:execute and /nw:develop), so that these features work during real
+       (/nw-execute and /nw-develop), so that these features work during real
        command invocations (EXTERNAL VALIDITY).
 
 PROBLEM: Features exist in isolation but may not be properly integrated into the
@@ -13,7 +13,7 @@ PROBLEM: Features exist in isolation but may not be properly integrated into the
          commands must have full DES feature integration.
 
 SOLUTION: Create comprehensive E2E tests that:
-          - Invoke /nw:execute and /nw:develop with real command paths
+          - Invoke /nw-execute and /nw-develop with real command paths
           - Validate turn_count increments in step file
           - Validate timeout warnings emit when thresholds crossed
           - Validate extension request API is callable and updates limits
@@ -24,11 +24,11 @@ BUSINESS VALUE:
 - Validates integration across all components
 - Prevents integration failures in production
 - Ensures audit trail completeness
-- Confirms feature parity between /nw:execute and /nw:develop
+- Confirms feature parity between /nw-execute and /nw-develop
 
 SOURCE:
-- docs/feature/des-us006/steps/08-01.json (Step 08-01 - /nw:execute wiring)
-- docs/feature/des-us006/steps/08-02.json (Step 08-02 - /nw:develop wiring)
+- docs/feature/des-us006/steps/08-01.json (Step 08-01 - /nw-execute wiring)
+- docs/feature/des-us006/steps/08-02.json (Step 08-02 - /nw-develop wiring)
 """
 
 import pytest
@@ -37,8 +37,8 @@ import pytest
 # Both primary nWave commands must have full DES feature integration.
 # Parametrize all tests over (command, task_id) to prove feature parity.
 COMMAND_PARAMS = [
-    pytest.param("/nw:execute", "08-01", id="execute"),
-    pytest.param("/nw:develop", "08-02", id="develop"),
+    pytest.param("/nw-execute", "08-01", id="execute"),
+    pytest.param("/nw-develop", "08-02", id="develop"),
 ]
 
 
@@ -103,7 +103,7 @@ def _execute_wiring_scenario(
 class TestE2ECommandWiring:
     """
     E2E WIRING TEST validating turn counting, timeout warnings, and extension API
-    integration in /nw:execute and /nw:develop command execution paths.
+    integration in /nw-execute and /nw-develop command execution paths.
 
     Tests prove EXTERNAL VALIDITY by invoking real commands and validating
     all features execute during actual orchestrator operation.

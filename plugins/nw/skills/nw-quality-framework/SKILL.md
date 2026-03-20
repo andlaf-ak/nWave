@@ -1,6 +1,7 @@
 ---
 name: nw-quality-framework
 description: Quality gates - 11 commit readiness gates, build/test protocol, validation checkpoints, and quality metrics
+user-invocable: false
 disable-model-invocation: true
 ---
 
@@ -22,7 +23,7 @@ All pass before committing:
 10. No mocks inside hexagon
 11. Business language in tests verified
 
-Note: Reviewer approval (formerly Gate 12) and Testing Theater detection (formerly Gate 13) enforced at deliver-level Phase 4 (Adversarial Review via /nw:review), not per step.
+Note: Reviewer approval (formerly Gate 12) and Testing Theater detection (formerly Gate 13) enforced at deliver-level Phase 4 (Adversarial Review via /nw-review), not per step.
 
 ## Quality Gates by Category
 - **Architecture**: all layers touched | integration points validated | stack proven E2E | pipeline functional

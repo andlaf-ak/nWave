@@ -519,12 +519,34 @@ class DESPlugin(InstallationPlugin):
                 if not all_up_to_date:
                     break
 
-            if all_up_to_date:
+            # Ensure slash command budget is sufficient for nWave commands
+            # Without this, commands disappear in long sessions (>50% context)
+            env_changed = False
+            if "env" not in config:
+                config["env"] = {}
+            if "SLASH_COMMAND_TOOL_CHAR_BUDGET" not in config.get("env", {}):
+                config["env"]["SLASH_COMMAND_TOOL_CHAR_BUDGET"] = "100000"
+                env_changed = True
+
+            if all_up_to_date and not env_changed:
                 context.logger.info("  ✅ DES hooks up-to-date")
                 return PluginResult(
                     success=True,
                     plugin_name="des",
                     message="DES hooks already installed",
+                )
+
+            if all_up_to_date and env_changed:
+                # Only env needs updating, hooks are fine
+                if not context.dry_run:
+                    self._save_settings(settings_file, config, context)
+                context.logger.info(
+                    "  ✅ DES hooks up-to-date + env SLASH_COMMAND_TOOL_CHAR_BUDGET set"
+                )
+                return PluginResult(
+                    success=True,
+                    plugin_name="des",
+                    message="DES hooks up-to-date, env configured",
                 )
 
             # Remove any existing DES hooks (both old flat and new nested format)

@@ -9,9 +9,9 @@ DELIVER wave - Outside-In TDD with functional paradigm. Pure functions, pipeline
 
 ## Commands
 
-- [`/nw:bugfix`](../commands/index.md)
-- [`/nw:deliver`](../commands/index.md)
-- [`/nw:design`](../commands/index.md)
+- [`/nw-bugfix`](../commands/index.md)
+- [`/nw-deliver`](../commands/index.md)
+- [`/nw-design`](../commands/index.md)
 
 ## Skills
 

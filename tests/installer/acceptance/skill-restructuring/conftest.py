@@ -172,12 +172,24 @@ def install_context(
     """
     from scripts.install.plugins.base import InstallContext
 
+    # Create minimal framework-catalog.yaml in the temp project root
+    # so load_public_agents(strict=True) does not raise CatalogNotFoundError.
+    temp_project_root = skills_source_dir.parent.parent
+    nwave_dir = temp_project_root / "nWave"
+    nwave_dir.mkdir(parents=True, exist_ok=True)
+    catalog_path = nwave_dir / "framework-catalog.yaml"
+    if not catalog_path.exists():
+        catalog_path.write_text(
+            "agents: {}\n",
+            encoding="utf-8",
+        )
+
     return InstallContext(
         claude_dir=clean_claude_dir,
         scripts_dir=project_root / "scripts" / "install",
         templates_dir=project_root / "nWave" / "templates",
         logger=test_logger,
-        project_root=skills_source_dir.parent.parent,
+        project_root=temp_project_root,
         framework_source=skills_source_dir.parent,
         dry_run=False,
     )

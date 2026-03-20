@@ -4,7 +4,7 @@ Step definitions for rigor scope selection acceptance tests.
 Covers milestone-2-rigor-scope.feature.
 
 Driving port: Config file write results (verifying file contents after
-scope-aware save operations). Since /nw:rigor is a markdown command,
+scope-aware save operations). Since /nw-rigor is a markdown command,
 we test the observable outcome: what ends up in the config files.
 """
 
@@ -148,7 +148,7 @@ def _save_rigor_with_scope(
     scope: str,
 ) -> None:
     """
-    Simulate the /nw:rigor command's write behavior.
+    Simulate the /nw-rigor command's write behavior.
 
     This is the read-modify-write pattern that the markdown command
     instructs Claude to execute. We test the observable outcome.

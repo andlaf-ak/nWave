@@ -3,19 +3,19 @@
 **Time**: ~12 minutes (7 steps)
 **Platform**: macOS or Linux (Windows: use WSL)
 **Prerequisites**: Python 3.10+, Claude Code with nWave installed, [Tutorial 6](./tutorial-design.md) completed
-**What this is**: An interactive walkthrough of `/nw:distill` -- nWave's acceptance test generation command. You will turn user stories and architecture documents into executable BDD (Behavior-Driven Development) acceptance tests.
+**What this is**: An interactive walkthrough of `/nw-distill` -- nWave's acceptance test generation command. You will turn user stories and architecture documents into executable BDD (Behavior-Driven Development) acceptance tests.
 
 ---
 
 ## What You'll Build
 
-A complete acceptance test suite -- Given/When/Then scenarios in `.feature` files with pytest-bdd step definitions, ready for `/nw:deliver` to implement against.
+A complete acceptance test suite -- Given/When/Then scenarios in `.feature` files with pytest-bdd step definitions, ready for `/nw-deliver` to implement against.
 
 **Before**: You have requirements from Tutorial 5 (user stories, acceptance criteria) and architecture from Tutorial 6 (hexagonal design, component boundaries, ADRs). But you have no executable tests, no walking skeleton, and no way to know when the feature is "done."
 
 **After**: You have `.feature` files with BDD scenarios covering happy paths, error paths, and edge cases. You have pytest-bdd step definitions wired to driving ports. You have a walking skeleton that defines the simplest end-to-end user journey. Everything is tagged for one-at-a-time implementation in the DELIVER wave.
 
-**Why this matters**: Without executable acceptance tests, "done" is a matter of opinion. `/nw:distill` turns your requirements into a concrete, runnable definition of done -- so when `/nw:deliver` makes all tests green, you know the feature works.
+**Why this matters**: Without executable acceptance tests, "done" is a matter of opinion. `/nw-distill` turns your requirements into a concrete, runnable definition of done -- so when `/nw-deliver` makes all tests green, you know the feature works.
 
 ---
 
@@ -47,7 +47,7 @@ You should see:
 docs/architecture/architecture-design.md
 ```
 
-> **If either file is missing**: Complete the prerequisite tutorial first. `/nw:distill` reads both requirements and architecture to generate tests. [Tutorial 5](./tutorial-discuss.md) produces requirements; [Tutorial 6](./tutorial-design.md) produces architecture.
+> **If either file is missing**: Complete the prerequisite tutorial first. `/nw-distill` reads both requirements and architecture to generate tests. [Tutorial 5](./tutorial-discuss.md) produces requirements; [Tutorial 6](./tutorial-design.md) produces architecture.
 
 *Next: you will launch the distill command and answer Quinn's setup questions.*
 
@@ -58,7 +58,7 @@ docs/architecture/architecture-design.md
 In Claude Code, type:
 
 ```
-/nw:distill bookmark-cli
+/nw-distill bookmark-cli
 ```
 
 > **AI output varies between runs.** Your session with Quinn will differ from the examples below. That is expected -- Quinn generates tests based on your specific user stories and architecture. What matters is the structure (decisions, feature files, step definitions), not the exact wording.
@@ -245,13 +245,13 @@ tests/acceptance/.../milestone-1-search.feature::Search by tag returns matching 
 tests/acceptance/.../milestone-1-search.feature::Search with no results returns clear message SKIPPED
 ```
 
-Most scenarios are marked `@skip` or `@pending` -- this is intentional. Quinn tags all scenarios except the walking skeleton for one-at-a-time implementation. When you reach `/nw:deliver` in Tutorial 8, the software crafter enables one test at a time: make it pass, commit, enable the next.
+Most scenarios are marked `@skip` or `@pending` -- this is intentional. Quinn tags all scenarios except the walking skeleton for one-at-a-time implementation. When you reach `/nw-deliver` in Tutorial 8, the software crafter enables one test at a time: make it pass, commit, enable the next.
 
-> **If you see import errors**: The step definitions may reference modules that do not exist yet. This is expected for a greenfield project -- the imports describe the architecture Quinn expects `/nw:deliver` to create. The key is that the `.feature` files parse correctly and scenarios are tagged.
+> **If you see import errors**: The step definitions may reference modules that do not exist yet. This is expected for a greenfield project -- the imports describe the architecture Quinn expects `/nw-deliver` to create. The key is that the `.feature` files parse correctly and scenarios are tagged.
 
 > **If pytest cannot find the tests**: Make sure you have pytest-bdd installed. Run `pip install pytest-bdd` and try again.
 
-**What just happened?** You confirmed the test infrastructure works. The tests are skipped (not erroring), which means the feature files are valid Gherkin syntax (the Given/When/Then language from your user stories), the step definitions are syntactically correct, and the one-at-a-time tagging strategy is in place. This is exactly the state `/nw:deliver` expects to receive.
+**What just happened?** You confirmed the test infrastructure works. The tests are skipped (not erroring), which means the feature files are valid Gherkin syntax (the Given/When/Then language from your user stories), the step definitions are syntactically correct, and the one-at-a-time tagging strategy is in place. This is exactly the state `/nw-deliver` expects to receive.
 
 *Next: commit everything and see the full picture.*
 
@@ -292,7 +292,7 @@ You started with requirements and architecture, and ended with an executable tes
 
 ```
 DISCOVER             DISCUSS              DESIGN               DISTILL
-(/nw:discover)       (/nw:discuss)        (/nw:design)         (/nw:distill)
+(/nw-discover)       (/nw-discuss)        (/nw-design)         (/nw-distill)
 ────────────────     ────────────────     ────────────────     ────────────────
 "Is the problem      "What should we      "How should we       "What does done
  real?"               build?"              build it?"           look like?"
@@ -310,7 +310,7 @@ Each wave feeds the next. The acceptance tests reference your user stories (the 
 
 ## Next Steps
 
-- **[Tutorial 8: Delivering the Feature](./TUTORIAL-INDEX.md)** -- Take your acceptance tests into `/nw:deliver` to implement the bookmark CLI with architecture-guided TDD
+- **[Tutorial 8: Delivering the Feature](./TUTORIAL-INDEX.md)** -- Take your acceptance tests into `/nw-deliver` to implement the bookmark CLI with architecture-guided TDD
 - **Read a feature file aloud** -- If it sounds like a conversation about what the user does, it is well-written. If it sounds like a technical specification, it may be too implementation-focused.
 - **Open the walking skeleton** -- Trace the scenario from Given to Then and check that it matches the emotional peak from your UX journey (Tutorial 5)
 
@@ -320,13 +320,13 @@ Each wave feeds the next. The acceptance tests reference your user stories (the 
 
 | Symptom | Fix |
 |---------|-----|
-| Quinn does not start after `/nw:distill` | Make sure nWave is installed. Run `/nw:help` to verify. |
+| Quinn does not start after `/nw-distill` | Make sure nWave is installed. Run `/nw-help` to verify. |
 | Quinn skips the four decisions and generates immediately | Say `*create-acceptance-tests bookmark-cli` to explicitly start the interactive flow. |
 | Peer review fails repeatedly | Say "let's simplify -- focus on the walking skeleton and 2 milestone features only." Fewer scenarios are easier to validate. |
-| No `tests/acceptance/` directory after the session | Quinn writes test files after the four decisions and scenario design. If you ended the session early, run `/nw:distill bookmark-cli` again. |
-| Import errors when running pytest | Expected for greenfield projects. The imports describe the architecture `/nw:deliver` will create. Feature files should still parse correctly. |
+| No `tests/acceptance/` directory after the session | Quinn writes test files after the four decisions and scenario design. If you ended the session early, run `/nw-distill bookmark-cli` again. |
+| Import errors when running pytest | Expected for greenfield projects. The imports describe the architecture `/nw-deliver` will create. Feature files should still parse correctly. |
 | `pytest-bdd` not found | Run `pip install pytest-bdd` to install the test framework. |
-| Want to start fresh | Delete `tests/acceptance/` and `docs/feature/bookmark-cli/distill/` and run `/nw:distill` again. |
+| Want to start fresh | Delete `tests/acceptance/` and `docs/feature/bookmark-cli/distill/` and run `/nw-distill` again. |
 
 ---
 

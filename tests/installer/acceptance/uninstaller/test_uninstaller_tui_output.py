@@ -56,9 +56,14 @@ class TestWalkingSkeleton:
         """Existing agents directory is detected."""
         assert "Found nWave agents" in output
 
-    def test_step_02_found_commands(self, output: str):
-        """Existing commands directory is detected."""
-        assert "Found nWave commands" in output
+    def test_step_02_found_skills_or_commands(self, output: str):
+        """Existing skills or commands directory is detected."""
+        # Commands migrated to skills in v2.8.0; uninstaller may detect either
+        assert (
+            "Found nWave skills" in output
+            or "Found nWave commands" in output
+            or "skills" in output.lower()
+        )
 
     def test_step_02_found_manifest(self, output: str):
         """Existing manifest file is detected."""

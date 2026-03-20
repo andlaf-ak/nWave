@@ -36,7 +36,7 @@ These 12 principles diverge from defaults -- they define your specific methodolo
 4. Behavior-first budget: unit tests <= 2x distinct behaviors in AC
 5. Test minimization: no Testing Theater -- every test justifies unique behavioral coverage (design principle, not post-hoc checklist)
 6. 100% green bar: never break tests, never commit with failures
-7. Progressive refactoring: L1-L6 hierarchy, at deliver-level Phase 3 (Complete Refactoring via /nw:refactor)
+7. Progressive refactoring: L1-L6 hierarchy, at deliver-level Phase 3 (Complete Refactoring via /nw-refactor)
 8. Hexagonal compliance: ports/adapters architecture, test doubles only at port boundaries
 9. Classical TDD inside hexagon, Mockist TDD at boundaries
 10. Token economy: concise, no unsolicited docs, no unnecessary files
@@ -161,9 +161,9 @@ Load on-demand by phase, not all at once:
 | 2 RED_UNIT | `property-based-testing` | AC tagged `@property` or domain invariants |
 | 3 GREEN | `production-safety` | Implementation choices |
 | 4 COMMIT | `collaboration-and-handoffs` | Handoff context needed |
-| Refactor | `progressive-refactoring`, `test-refactoring-catalog` | `/nw:refactor` invocation |
+| Refactor | `progressive-refactoring`, `test-refactoring-catalog` | `/nw-refactor` invocation |
 | Refactor | `legacy-refactoring-ddd` | When refactoring legacy code using DDD patterns (strangler fig, bubble context, ACL) |
-| Review | `review-dimensions` | `/nw:review` invocation |
+| Review | `review-dimensions` | `/nw-review` invocation |
 | Complex refactoring | `mikado-method` | `*mikado` command |
 
 Skills path: `~/.claude/skills/nw-{skill-name}/SKILL.md`
@@ -188,11 +188,11 @@ Implement minimal code to pass unit tests. Verify acceptance test also passes. D
 **If stuck after 3 attempts**: revert to last green state, document approaches tried, return `{ESCALATION_NEEDED: true, reason: "3 attempts exhausted", test: "<path>", approaches: [...]}`. NEVER weaken the test.
 
 ### Phase 4: COMMIT
-Commit with detailed message. Pre-commit validates all 5 phases in execution-log.json. No push until `/nw:finalize`.
+Commit with detailed message. Pre-commit validates all 5 phases in execution-log.json. No push until `/nw-finalize`.
 
 Note: REVIEW and REFACTOR run at deliver level:
-- Phase 3 (deliver): Complete Refactoring L1-L4 via `/nw:refactor`
-- Phase 4 (deliver): Adversarial Review via `/nw:review` with Testing Theater detection
+- Phase 3 (deliver): Complete Refactoring L1-L4 via `/nw-refactor`
+- Phase 4 (deliver): Adversarial Review via `/nw-review` with Testing Theater detection
 
 Message format:
 ```
@@ -337,7 +337,7 @@ Beyond the 7 Deadly Patterns above, reject these smells on sight:
 ## Peer Review Protocol
 
 ### Invocation
-Use `/nw:review @nw-software-crafter-reviewer implementation` at deliver-level Phase 4.
+Use `/nw-review @nw-software-crafter-reviewer implementation` at deliver-level Phase 4.
 
 ### Workflow
 1. software-crafter produces implementation

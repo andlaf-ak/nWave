@@ -5,7 +5,7 @@ argument-hint: "[deployment-target] - Optional: --environment=[staging|productio
 
 # NW-DEVOPS: Platform Readiness and Infrastructure Design
 
-**Wave**: DEVOPS (wave 4 of 6) | **Agent**: Apex (nw-platform-architect) | **Command**: `/nw:devops`
+**Wave**: DEVOPS (wave 4 of 6) | **Agent**: Apex (nw-platform-architect) | **Command**: `/nw-devops`
 
 ## Overview
 
@@ -183,13 +183,13 @@ If `outcome-kpis.md` exists in the feature's discuss directory, Apex MUST read i
 
 ### Example 1: Cloud-native greenfield
 ```
-/nw:devops payment-gateway
+/nw-devops payment-gateway
 ```
 User selects: cloud-native, Kubernetes, GitHub Actions, no existing infra, OpenTelemetry, blue-green, trunk-based development. Apex designs full infrastructure from scratch with robust CI gates on every commit to main.
 
 ### Example 2: Brownfield with existing CI/CD
 ```
-/nw:devops auth-upgrade
+/nw-devops auth-upgrade
 ```
 User selects: hybrid, Docker Compose, GitLab CI (existing), existing CI/CD only, Datadog, rolling, GitFlow. Apex extends existing pipelines with branch-specific stages for develop, release, and hotfix branches.
 

@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # NW-CONTINUE: Resume a Feature
 
-**Wave**: CROSS_WAVE (entry point) | **Agent**: Main Instance (self — wizard) | **Command**: `/nw:continue`
+**Wave**: CROSS_WAVE (entry point) | **Agent**: Main Instance (self — wizard) | **Command**: `/nw-continue`
 
 ## Overview
 
@@ -25,7 +25,7 @@ Otherwise scan `docs/feature/` for project directories:
 ls -d docs/feature/*/
 ```
 
-**No directories found:** Display "No active projects found under `docs/feature/`." Suggest `/nw:new`. Stop.
+**No directories found:** Display "No active projects found under `docs/feature/`." Suggest `/nw-new`. Stop.
 
 ### Step 2: Project Selection (Multiple Projects)
 
@@ -82,8 +82,8 @@ Recommend next wave: resume in-progress wave|successor of last complete wave. Sh
 
 | Error | Response |
 |-------|----------|
-| No `docs/feature/` directory | Suggest `/nw:new` |
-| Empty project directory | Suggest `/nw:new` or re-run from DISCUSS |
+| No `docs/feature/` directory | Suggest `/nw-new` |
+| Empty project directory | Suggest `/nw-new` or re-run from DISCUSS |
 | Corrupted artifact (0 bytes) | Flag file, recommend re-running that wave |
 | Skipped waves | Warn, offer gap-fill or continue options |
 | Cannot parse execution-log.json | Show raw file status, suggest manual review |
@@ -102,24 +102,24 @@ Recommend next wave: resume in-progress wave|successor of last complete wave. Sh
 
 ### Example 1: Single project, resume at DESIGN
 ```
-/nw:continue
+/nw-continue
 ```
-Wizard finds one project: `notification-service`. DISCUSS artifacts exist (complete), no DESIGN artifacts. Shows progress, recommends DESIGN. User confirms, wizard launches `/nw:design notification-service`.
+Wizard finds one project: `notification-service`. DISCUSS artifacts exist (complete), no DESIGN artifacts. Shows progress, recommends DESIGN. User confirms, wizard launches `/nw-design notification-service`.
 
 ### Example 2: DELIVER resume
 ```
-/nw:continue rate-limiting
+/nw-continue rate-limiting
 ```
-Wizard checks `rate-limiting` project. All waves through DISTILL complete, DELIVER in progress (steps 01-01 through 02-01 done). Shows "Next: step 02-02", launches `/nw:deliver "rate-limiting"`.
+Wizard checks `rate-limiting` project. All waves through DISTILL complete, DELIVER in progress (steps 01-01 through 02-01 done). Shows "Next: step 02-02", launches `/nw-deliver "rate-limiting"`.
 
 ### Example 3: Multiple projects
 ```
-/nw:continue
+/nw-continue
 ```
 Wizard finds `rate-limiting` (modified today) and `user-notifications` (modified 3 days ago). Lists them, user picks `rate-limiting`. Wizard shows progress and recommends next wave.
 
 ### Example 4: No projects
 ```
-/nw:continue
+/nw-continue
 ```
-Wizard finds no `docs/feature/` directories. Shows "No active projects found" and suggests `/nw:new`.
+Wizard finds no `docs/feature/` directories. Shows "No active projects found" and suggests `/nw-new`.

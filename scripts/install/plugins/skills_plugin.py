@@ -23,7 +23,11 @@ from scripts.install.plugins.base import (
     InstallContext,
     PluginResult,
 )
-from scripts.shared.agent_catalog import build_ownership_map, load_public_agents
+from scripts.shared.agent_catalog import (
+    build_ownership_map,
+    detect_command_skills,
+    load_public_agents,
+)
 from scripts.shared.skill_distribution import (
     SourceLayout,
     cleanup_legacy_namespace,
@@ -158,16 +162,30 @@ class SkillsPlugin(InstallationPlugin):
         target. Existing nw-* dirs in target are replaced; non-nw-* dirs
         (user custom skills) are left untouched. Private skills are filtered
         out via the shared skill_distribution pipeline.
+
+        Command-skills (user-invocable slash commands) are always included
+        regardless of agent ownership.
         """
         skills_target = context.claude_dir / "skills"
         skills_target.mkdir(parents=True, exist_ok=True)
 
+        # Clean up legacy commands/nw/ directory (commands migrated to skills)
+        old_commands = context.claude_dir / "commands" / "nw"
+        if old_commands.exists():
+            shutil.rmtree(old_commands)
+            context.logger.info(
+                "  \U0001f5d1\ufe0f Removed legacy commands/nw/ (migrated to skills)"
+            )
+
         # Shared pipeline: enumerate -> filter -> copy
         public_agents = load_public_agents(context.project_root / "nWave")
         ownership_map = build_ownership_map(context.project_root / "nWave" / "agents")
+        command_skills = detect_command_skills(skills_source)
 
         entries = enumerate_skills(skills_source)
-        entries = filter_public_skills(entries, public_agents, ownership_map)
+        entries = filter_public_skills(
+            entries, public_agents, ownership_map, command_skills
+        )
         copy_skills_to_target(entries, skills_target, clean_existing=True)
 
         # Collect installed files for reporting

@@ -9,7 +9,7 @@ Use for reviewing documentarist assessments. Validates classification accuracy, 
 
 ## Commands
 
-- [`/nw:document`](../commands/index.md)
+- [`/nw-document`](../commands/index.md)
 
 ## Skills
 

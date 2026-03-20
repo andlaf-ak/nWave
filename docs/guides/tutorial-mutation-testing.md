@@ -3,7 +3,7 @@
 **Time**: ~12 minutes (6 steps)
 **Platform**: macOS or Linux (Windows: use WSL)
 **Prerequisites**: Python 3.10+, Claude Code with nWave installed, [Tutorial 1](./tutorial-first-delivery.md) completed
-**What this is**: A hands-on walkthrough of `/nw:mutation-test` -- nWave's mutation testing command. You will build a calculator with tests that have 100% code coverage but miss real bugs, then use mutation testing to expose the gaps.
+**What this is**: A hands-on walkthrough of `/nw-mutation-test` -- nWave's mutation testing command. You will build a calculator with tests that have 100% code coverage but miss real bugs, then use mutation testing to expose the gaps.
 
 ---
 
@@ -15,7 +15,7 @@ A test suite that actually catches bugs -- not just one that looks green.
 
 **After**: Mutation testing reveals exactly which assertions are too weak. You strengthen them. Now when production code changes, tests catch it immediately.
 
-**Why this matters**: Code coverage measures which lines run during tests. Mutation testing measures whether your tests actually verify behavior. A test that asserts `result is not None` has coverage but catches nothing. `/nw:mutation-test` finds these gaps by making small changes to your code and checking if tests notice.
+**Why this matters**: Code coverage measures which lines run during tests. Mutation testing measures whether your tests actually verify behavior. A test that asserts `result is not None` has coverage but catches nothing. `/nw-mutation-test` finds these gaps by making small changes to your code and checking if tests notice.
 
 ---
 
@@ -173,7 +173,7 @@ git add -A && git commit -m "feat: calculator with passing tests (starting point
 In Claude Code, type:
 
 ```
-/nw:mutation-test
+/nw-mutation-test
 ```
 
 > **AI output varies between runs.** Your session will differ from the examples below. That is expected -- the agent analyzes your specific code. What matters is that surviving mutants are reported, not the exact wording.
@@ -201,7 +201,7 @@ Two concepts in this step:
 1. **Mutation** -- A small, deliberate change to production code. Examples: changing `+` to `-`, `>` to `>=`, replacing `return x` with `return 0`. Each mutation simulates a bug.
 2. **Kill rate** -- The percentage of mutations caught by your tests. Higher is better. 100% means every simulated bug was detected.
 
-> **If `/nw:mutation-test` does not start**: Make sure nWave is installed. Run `/nw:help` to verify. Also confirm you are in the `mutation-demo` directory with committed code.
+> **If `/nw-mutation-test` does not start**: Make sure nWave is installed. Run `/nw-help` to verify. Also confirm you are in the `mutation-demo` directory with committed code.
 
 *Next: you will read the mutation report and understand what it reveals.*
 
@@ -355,7 +355,7 @@ git add -A && git commit -m "fix: strengthen test assertions to catch mutations"
 Run mutation testing again:
 
 ```
-/nw:mutation-test
+/nw-mutation-test
 ```
 
 This time, the report should show a significantly higher kill rate:
@@ -390,7 +390,7 @@ If any mutants survive, the report tells you exactly which line and which change
 2. **Strong assertions check exact values.** `assert result == 5.0` catches mutations. `assert result is not None` catches nothing.
 3. **Mutation testing finds the gaps.** Each surviving mutant is a specific location where a bug could hide undetected.
 
-### When to Use `/nw:mutation-test`
+### When to Use `/nw-mutation-test`
 
 - After writing a test suite -- to verify it actually catches bugs
 - Before a major release -- to find testing blind spots
@@ -409,12 +409,12 @@ If any mutants survive, the report tells you exactly which line and which change
 
 | Symptom | Fix |
 |---------|-----|
-| `/nw:mutation-test` does not start | Make sure nWave is installed. Run `/nw:help` to verify. |
+| `/nw-mutation-test` does not start | Make sure nWave is installed. Run `/nw-help` to verify. |
 | Report shows 0 mutations | The agent could not identify mutation targets. Check that `src/calc.py` contains actual logic (arithmetic, conditionals), not just pass-through code. |
 | Kill rate is already 100% on first run | The agent may have generated fewer mutations. This is fine -- it means your tests are strong for the mutations that were tested. |
 | Tests fail after updating assertions | Check your expected values match the function logic. `add(2, 3)` returns `5.0`, not `5` (Python float arithmetic). |
 | Agent takes more than 5 minutes | Mutation testing runs your test suite multiple times. If tests are slow, it takes longer. For this tutorial the suite is small and should finish in under 3 minutes. |
-| Mutation testing seems to hang (>5 minutes) | The agent may still be working. If Claude Code stops responding, press Ctrl+C and run `/nw:mutation-test` again. |
+| Mutation testing seems to hang (>5 minutes) | The agent may still be working. If Claude Code stops responding, press Ctrl+C and run `/nw-mutation-test` again. |
 | `ModuleNotFoundError` when running tests | Make sure you created `conftest.py` in the project root with the sys.path insert. Run `cat conftest.py` to verify. |
 
 ---

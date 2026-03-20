@@ -54,7 +54,7 @@ Execute \*mikado for {refactoring-goal}.
 
 ### Example 1: Extract shared domain model
 ```
-/nw:mikado "Extract shared domain model from monolithic service layer"
+/nw-mikado "Extract shared domain model from monolithic service layer"
 ```
 Crafty builds Mikado dependency {visualization} through iterative exploration, discovers 12 leaf nodes across 4 modules, executes bottom-up from leaves to goal with discovery commits at each step.
 

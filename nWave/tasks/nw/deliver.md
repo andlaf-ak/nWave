@@ -5,7 +5,7 @@ argument-hint: '[feature-description] - Example: "Implement user authentication 
 
 # NW-DELIVER: Complete DELIVER Wave Orchestrator
 
-**Wave**: DELIVER (wave 6 of 6)|**Agent**: Main Instance (orchestrator)|**Command**: `/nw:deliver "{feature-description}"`
+**Wave**: DELIVER (wave 6 of 6)|**Agent**: Main Instance (orchestrator)|**Command**: `/nw-deliver "{feature-description}"`
 
 ## Overview
 
@@ -113,19 +113,19 @@ INPUT: "{feature-description}"
      a. Skip if docs/feature/{feature-id}/deliver/roadmap.json exists with validation.status == "approved"
         IMPORTANT: Only check the deliver/ subdirectory. If roadmap.json is found in design/ instead,
         MOVE it to deliver/ and log warning: "Roadmap relocated from design/ to deliver/ — was created in wrong wave."
-     b. @nw-solution-architect creates roadmap.json (read ~/.claude/commands/nw/roadmap.md)
+     b. @nw-solution-architect creates roadmap.json (read ~/.claude/skills/nw-roadmap/SKILL.md)
         Step IDs: NN-NN format (01-01, 01-02, 02-01). 01-A or 1-1 = invalid.
         DISTILL LINKAGE: If docs/feature/{feature-id}/distill/ exists, the architect MUST populate
         test_file and scenario_name fields in each roadmap step from the distilled acceptance tests.
         Each step maps to one acceptance scenario (1 Step = 1 Scenario = 1 TDD Cycle).
      c. Automated quality gate (see below)
-     d. @nw-software-crafter-reviewer reviews (read ~/.claude/commands/nw/review.md)
+     d. @nw-software-crafter-reviewer reviews (read ~/.claude/skills/nw-review/SKILL.md)
      e. Retry once on rejection → stop for manual intervention
   |
   3. Phase 2 — Execute All Steps
      a. Extract steps from roadmap.json in dependency order
      b. Check execution-log.json for prior completion (resume)
-     c. {selected-crafter} executes 5-phase TDD cycle (read ~/.claude/commands/nw/execute.md)
+     c. {selected-crafter} executes 5-phase TDD cycle (read ~/.claude/skills/nw-execute/SKILL.md)
         Use crafter from step 1.5|@nw-functional-software-crafter → PBT default|@property tags signal PBT
         IMPORTANT: Use DES Prompt Template from execute.md|Include DES markers (DES-VALIDATION|DES-PROJECT-ID|DES-STEP-ID) + all mandatory sections
         OUTCOME_RECORDING: agents use DES CLI (PYTHONPATH=$HOME/.claude/lib/python $(command -v python3 || command -v python) -m des.cli.log_phase)|CLI bypass → SubagentStop hook corrects timestamps
@@ -144,13 +144,13 @@ INPUT: "{feature-description}"
   4. Phase 3 — Complete Refactoring (L1-L4) [SKIP if rigor.refactor_pass = false]
      a. Collect modified files: git diff --name-only {base-commit}..HEAD -- '*.py' | sort -u
         Split: PRODUCTION_FILES (src/) | TEST_FILES (tests/)
-     b. /nw:refactor {files} --levels L1-L4 via {selected-crafter} with DES orchestrator markers:
+     b. /nw-refactor {files} --levels L1-L4 via {selected-crafter} with DES orchestrator markers:
         <!-- DES-VALIDATION : required -->|<!-- DES-PROJECT-ID : {feature-id} -->|<!-- DES-MODE : orchestrator -->
      c. All tests green after each module
   |
   5. Phase 4 — Adversarial Review [SKIP if rigor.review_enabled = false]
      a. If rigor.reviewer_model = "skip" → SKIP phase entirely
-     b. /nw:review @nw-software-crafter-reviewer implementation "{execution-log-path}"
+     b. /nw-review @nw-software-crafter-reviewer implementation "{execution-log-path}"
         Use model=rigor.reviewer_model for reviewer Task invocation
         Include DES orchestrator markers (same as Phase 3)
      c. If rigor.double_review = true → run review a second time with different scope focus
@@ -160,7 +160,7 @@ INPUT: "{feature-description}"
   6. Phase 5 — Mutation Testing [SKIP if rigor.mutation_enabled = false]
      If rigor.mutation_enabled = false → SKIP regardless of CLAUDE.md strategy
      Otherwise, apply CLAUDE.md strategy:
-     per-feature → gate ≥80% kill rate (read ~/.claude/commands/nw/mutation-test.md)
+     per-feature → gate ≥80% kill rate (read ~/.claude/skills/nw-mutation-test/SKILL.md)
      nightly-delta → SKIP|log "handled by CI nightly pipeline"
      pre-release → SKIP|log "handled at release boundary"
      disabled → SKIP|log "disabled per project configuration"
@@ -172,7 +172,7 @@ INPUT: "{feature-description}"
      d. Violations → re-execute via Task with DES markers|Only proceed after pass
   |
   8. Phase 7 — Finalize
-     a. @nw-platform-architect archives to docs/evolution/ (read ~/.claude/commands/nw/finalize.md)
+     a. @nw-platform-architect archives to docs/evolution/ (read ~/.claude/skills/nw-finalize/SKILL.md)
      b. Commit + push|rm -f .nwave/des/deliver-session.json .nwave/des/des-task-active
   |
   9. Phase 8 — Retrospective (conditional)
@@ -195,11 +195,11 @@ Per phase:
 
 ## Task Invocation Pattern
 
-DES markers required for step execution. Without markers → unmonitored. Full DES Prompt Template in `~/.claude/commands/nw/execute.md`.
+DES markers required for step execution. Without markers → unmonitored. Full DES Prompt Template in `~/.claude/skills/nw-execute/SKILL.md`.
 
 When dispatching steps via Agent tool, use the COMPLETE DES template from execute.md verbatim. Fill all `{placeholders}` from roadmap step context. The DES hook validates the prompt BEFORE the sub-agent starts — abbreviated prompts that delegate template reading to the sub-agent will be BLOCKED.
 
-Copy the template from the code block in `~/.claude/commands/nw/execute.md` (between ``` markers), fill placeholders, and pass as the Agent prompt. The template sections are defined in execute.md — do not hardcode the list here.
+Copy the template from the code block in `~/.claude/skills/nw-execute/SKILL.md` (between ``` markers), fill placeholders, and pass as the Agent prompt. The template sections are defined in execute.md — do not hardcode the list here.
 
 ```python
 Task(
@@ -213,7 +213,7 @@ Task(
 # DES_METADATA
 Step: {step_id}
 Feature: {project_id}
-Command: /nw:execute
+Command: /nw-execute
 
 # AGENT_IDENTITY
 Agent: {agent}
@@ -225,7 +225,7 @@ Always load at PREPARE: tdd-methodology.md, quality-framework.md
 Load on-demand per phase as specified in your Skill Loading Strategy table.
 
 # TASK_CONTEXT
-{step context extracted from roadmap - name|description|acceptance_criteria|test_file|scenario_name|quality_gates|implementation_notes|dependencies|estimated_hours|deliverables}
+{step context extracted from roadmap - name|description|acceptance_criteria|test_file|scenario_name|quality_gates|implementation_notes|dependencies|estimated_hours|deliverables|files_to_modify}
 
 # DESIGN_CONTEXT
 {Summarize key architectural decisions from design wave artifacts read at step 0.5.
@@ -296,7 +296,7 @@ Roadmap review (1 review, max 2 attempts)|Per-step 5-phase TDD (PREPARE→RED_AC
 ## Examples
 
 ### 1: Fresh Feature
-`/nw:deliver "Implement user authentication with JWT"` → roadmap → review → TDD all steps → mutation → finalize → report
+`/nw-deliver "Implement user authentication with JWT"` → roadmap → review → TDD all steps → mutation → finalize → report
 
 ### 2: Resume After Failure
 Same command → loads .develop-progress.json → skips completed → resumes from failure
@@ -304,9 +304,9 @@ Same command → loads .develop-progress.json → skips completed → resumes fr
 ### 3: Single Step Alternative
 For manual granular control, use individual commands:
 ```
-/nw:roadmap @nw-solution-architect "goal"
-/nw:execute {selected-crafter} "feature-id" "01-01"
-/nw:finalize @nw-platform-architect "feature-id"
+/nw-roadmap @nw-solution-architect "goal"
+/nw-execute {selected-crafter} "feature-id" "01-01"
+/nw-finalize @nw-platform-architect "feature-id"
 ```
 
 ## Completion

@@ -101,16 +101,18 @@ def filter_public_skills(
     entries: list[SkillEntry],
     public_agents: set[str],
     ownership_map: dict[str, set[str]],
+    command_skills: set[str] | None = None,
 ) -> list[SkillEntry]:
     """Filter entries to only public skills using ownership_map.
 
     Delegates to is_public_skill() from agent_catalog.py.
+    Command-skills (user-invocable slash commands) are always included.
     When public_agents is empty, returns all entries (backward compatibility).
     """
     return [
         entry
         for entry in entries
-        if is_public_skill(entry.name, public_agents, ownership_map)
+        if is_public_skill(entry.name, public_agents, ownership_map, command_skills)
     ]
 
 

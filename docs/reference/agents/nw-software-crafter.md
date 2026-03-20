@@ -9,17 +9,17 @@ DELIVER wave - Outside-In TDD and progressive refactoring. Research-optimized co
 
 ## Commands
 
-- [`/nw:bugfix`](../commands/index.md)
-- [`/nw:deliver`](../commands/index.md)
-- [`/nw:design`](../commands/index.md)
-- [`/nw:distill`](../commands/index.md)
-- [`/nw:execute`](../commands/index.md)
-- [`/nw:finalize`](../commands/index.md)
-- [`/nw:mikado`](../commands/index.md)
-- [`/nw:mutation-test`](../commands/index.md)
-- [`/nw:refactor`](../commands/index.md)
-- [`/nw:review`](../commands/index.md)
-- [`/nw:roadmap`](../commands/index.md)
+- [`/nw-bugfix`](../commands/index.md)
+- [`/nw-deliver`](../commands/index.md)
+- [`/nw-design`](../commands/index.md)
+- [`/nw-distill`](../commands/index.md)
+- [`/nw-execute`](../commands/index.md)
+- [`/nw-finalize`](../commands/index.md)
+- [`/nw-mikado`](../commands/index.md)
+- [`/nw-mutation-test`](../commands/index.md)
+- [`/nw-refactor`](../commands/index.md)
+- [`/nw-review`](../commands/index.md)
+- [`/nw-roadmap`](../commands/index.md)
 
 ## Skills
 

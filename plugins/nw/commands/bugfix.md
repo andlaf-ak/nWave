@@ -18,7 +18,7 @@ End-to-end bug fix pipeline: diagnose root cause, review findings with user, the
 INPUT: "{bug-description}"
   │
   ├─ Phase 1: Root Cause Analysis (@nw-troubleshooter)
-  │   └─ /nw:root-why "{bug-description}"
+  │   └─ /nw-root-why "{bug-description}"
   │   └─ Output: RCA document with root cause chain + fix proposal
   │
   ├─ Phase 2: User Review (INTERACTIVE — STOP here)
@@ -26,8 +26,8 @@ INPUT: "{bug-description}"
   │   └─ User confirms root cause + approves fix direction
   │   └─ If user rejects → refine RCA or stop
   │
-  └─ Phase 3: Regression Test + Fix (via /nw:deliver)
-      └─ /nw:deliver "fix-{bug-id}" with bug-fix scope
+  └─ Phase 3: Regression Test + Fix (via /nw-deliver)
+      └─ /nw-deliver "fix-{bug-id}" with bug-fix scope
       └─ Paradigm detection determines crafter (OOP or FP)
       └─ Roadmap: regression test (RED) → fix (GREEN) → verify (COMMIT)
 ```
@@ -83,24 +83,24 @@ If user rejects:
 
 If user approves → proceed to Phase 3.
 
-### Phase 3: Regression Test + Fix (via /nw:deliver)
+### Phase 3: Regression Test + Fix (via /nw-deliver)
 
-This phase delegates entirely to `/nw:deliver`, which handles:
+This phase delegates entirely to `/nw-deliver`, which handles:
 - Paradigm detection (reads project CLAUDE.md for `## Development Paradigm`)
 - Crafter selection (@nw-software-crafter for OOP, @nw-functional-software-crafter for FP)
 - DES enforcement with proper markers
 - Rigor profile from `.nwave/des-config.json`
 
-**Preparation before invoking /nw:deliver:**
+**Preparation before invoking /nw-deliver:**
 
 1. Derive feature-id: `fix-{kebab-case-bug-summary}` (max 5 words)
 2. Create `docs/feature/{feature-id}/deliver/` directory
 3. Prepare RCA context from Phase 1 output (root cause, files affected, proposed fix)
 
-**Invoke /nw:deliver with bug-fix scope:**
+**Invoke /nw-deliver with bug-fix scope:**
 
 ```
-/nw:deliver "fix-{bug-summary}"
+/nw-deliver "fix-{bug-summary}"
 ```
 
 The deliver orchestrator creates a minimal roadmap with 2 steps:
@@ -131,32 +131,32 @@ The crafter handles the 5-phase TDD cycle (PREPARE → RED → GREEN → COMMIT)
 
 ### Example 1: Runtime crash
 ```
-/nw:bugfix "DES hook crashes with FileNotFoundError when template schema is missing"
+/nw-bugfix "DES hook crashes with FileNotFoundError when template schema is missing"
 ```
 Phase 1: Rex traces to missing `step-tdd-cycle-schema.json` in plugin cache.
 Phase 2: User confirms.
-Phase 3: `/nw:deliver "fix-missing-template-schema"` → crafter writes `test_bug_missing_template_schema.py` (RED), adds fallback path resolution (GREEN), commits.
+Phase 3: `/nw-deliver "fix-missing-template-schema"` → crafter writes `test_bug_missing_template_schema.py` (RED), adds fallback path resolution (GREEN), commits.
 
 ### Example 2: Silent failure
 ```
-/nw:bugfix "Skills plugin reports success but installs zero files when source has nw-prefixed layout"
+/nw-bugfix "Skills plugin reports success but installs zero files when source has nw-prefixed layout"
 ```
 Phase 1: Rex traces to `is_public_skill()` returning False for all nw-prefixed names due to ownership map key mismatch.
 Phase 2: User confirms.
-Phase 3: `/nw:deliver "fix-ownership-map-keys"` → crafter writes regression test with nw-prefixed fixture (RED), fixes ownership map keys (GREEN), commits.
+Phase 3: `/nw-deliver "fix-ownership-map-keys"` → crafter writes regression test with nw-prefixed fixture (RED), fixes ownership map keys (GREEN), commits.
 
 ### Example 3: Functional project bug
 ```
-/nw:bugfix "Pipeline composition breaks when filter predicate returns None"
+/nw-bugfix "Pipeline composition breaks when filter predicate returns None"
 ```
 Phase 1: Rex traces to missing None guard in compose() function.
 Phase 2: User confirms.
-Phase 3: `/nw:deliver "fix-compose-none-guard"` → paradigm detected as FP → @nw-functional-software-crafter writes property-based test (RED), adds None guard (GREEN), commits.
+Phase 3: `/nw-deliver "fix-compose-none-guard"` → paradigm detected as FP → @nw-functional-software-crafter writes property-based test (RED), adds None guard (GREEN), commits.
 
 ## Notes
 
-- This command is for **known defects** (something is broken). For new features, use `/nw:deliver`.
+- This command is for **known defects** (something is broken). For new features, use `/nw-deliver`.
 - The regression test is the primary deliverable — it prevents the bug from recurring.
-- Keep the fix minimal. Refactoring belongs in `/nw:refactor`, not here.
-- If the RCA reveals a design flaw (not just a code bug), escalate to `/nw:design` before fixing.
-- Phase 3 uses `/nw:deliver` which handles paradigm detection, DES enforcement, and rigor profile automatically.
+- Keep the fix minimal. Refactoring belongs in `/nw-refactor`, not here.
+- If the RCA reveals a design flaw (not just a code bug), escalate to `/nw-design` before fixing.
+- Phase 3 uses `/nw-deliver` which handles paradigm detection, DES enforcement, and rigor profile automatically.

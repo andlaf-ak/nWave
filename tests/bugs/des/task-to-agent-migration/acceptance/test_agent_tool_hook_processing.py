@@ -37,7 +37,7 @@ def _make_valid_des_prompt() -> str:
 # DES_METADATA
 Project: test-project
 Step: 01-01
-Command: /nw:execute
+Command: /nw-execute
 
 # AGENT_IDENTITY
 Agent: @software-crafter

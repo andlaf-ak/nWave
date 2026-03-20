@@ -73,7 +73,7 @@ class TestLogAuditEventDirectFields:
                 "TASK_INVOCATION_STARTED",
                 feature_name="audit-log-refactor",
                 step_id="03-01",
-                command="/nw:execute",
+                command="/nw-execute",
                 agent="@software-crafter",
             )
 
@@ -84,7 +84,7 @@ class TestLogAuditEventDirectFields:
             assert event.step_id == "03-01"
 
             # Extra kwargs in data dict
-            assert event.data["command"] == "/nw:execute"
+            assert event.data["command"] == "/nw-execute"
             assert event.data["agent"] == "@software-crafter"
 
             # NOT in data dict
@@ -101,7 +101,7 @@ class TestLogAuditEventDirectFields:
         with writer_patch, time_patch:
             _log_audit_event(
                 "TASK_INVOCATION_STARTED",
-                command="/nw:execute",
+                command="/nw-execute",
                 agent="@software-crafter",
             )
 
@@ -112,7 +112,7 @@ class TestLogAuditEventDirectFields:
             assert event.step_id is None
 
             # All kwargs in data dict
-            assert event.data["command"] == "/nw:execute"
+            assert event.data["command"] == "/nw-execute"
             assert event.data["agent"] == "@software-crafter"
 
     def test_none_valued_feature_name_excluded_from_data(self):
@@ -127,7 +127,7 @@ class TestLogAuditEventDirectFields:
                 "TASK_INVOCATION_STARTED",
                 feature_name=None,
                 step_id=None,
-                command="/nw:execute",
+                command="/nw-execute",
             )
 
             event = mock_writer.log_event.call_args[0][0]
@@ -141,4 +141,4 @@ class TestLogAuditEventDirectFields:
             assert "step_id" not in event.data
 
             # Non-None kwargs present in data
-            assert event.data["command"] == "/nw:execute"
+            assert event.data["command"] == "/nw-execute"

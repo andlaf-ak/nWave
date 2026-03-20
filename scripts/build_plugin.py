@@ -376,7 +376,7 @@ def copy_commands(config: BuildConfig, plugin_dir: Path) -> StepResult:
     Commands go flat into commands/ because the plugin name in plugin.json
     ("nw") automatically provides the namespace prefix. Claude Code generates
     slash commands as /{plugin-name}:{command-name}, so commands/deliver.md
-    becomes /nw:deliver.
+    becomes /nw-deliver.
     """
     source_dir = config.nwave_dir / "tasks" / "nw"
     dest_dir = plugin_dir / "commands"

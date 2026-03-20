@@ -78,7 +78,7 @@ Refer to Scout's quality gates in ~/.claude/agents/nw/nw-product-discoverer.md.
 
 ### Example 1: New SaaS product discovery
 ```
-/nw:discover invoice-automation
+/nw-discover invoice-automation
 ```
 Scout conducts customer development interviews, validates problem-solution fit through Mom Test questioning, and produces a lean canvas with evidence-backed assumptions.
 

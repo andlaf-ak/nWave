@@ -59,13 +59,13 @@ class TestLoadPublicAgents:
         assert missing == set(), f"Expected public agents missing: {missing}"
 
     def test_returns_empty_set_when_catalog_missing(self, tmp_path):
-        result = load_public_agents(tmp_path)
+        result = load_public_agents(tmp_path, strict=False)
         assert result == set()
 
     def test_returns_empty_set_when_yaml_invalid(self, tmp_path):
         catalog = tmp_path / "framework-catalog.yaml"
         catalog.write_text("{{invalid yaml: [")
-        result = load_public_agents(tmp_path)
+        result = load_public_agents(tmp_path, strict=False)
         assert result == set()
 
 

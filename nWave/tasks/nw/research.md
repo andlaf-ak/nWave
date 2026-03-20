@@ -74,13 +74,13 @@ Progressive write checkpoints:
 
 ### Example 1: Standalone research
 ```
-/nw:research "event sourcing patterns" --research_depth=detailed
+/nw-research "event sourcing patterns" --research_depth=detailed
 ```
 Nova researches event sourcing from trusted sources, cross-references 3+ sources per claim, produces comprehensive research document.
 
 ### Example 2: Research with agent skill
 ```
-/nw:research "mutation testing methodologies" --skill-for=software-crafter
+/nw-research "mutation testing methodologies" --skill-for=software-crafter
 ```
 Nova researches mutation testing, distills into practitioner-focused skill file at ~/.claude/nWave/skills/software-crafter/.
 

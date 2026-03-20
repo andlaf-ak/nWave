@@ -47,7 +47,7 @@ Execute \*create-diagrams for {architecture-component}.
 
 ### Example 1: Generate C4 container diagram
 ```
-/nw:diagram payment-service --diagram_type=component --format=mermaid --level=container
+/nw-diagram payment-service --diagram_type=component --format=mermaid --level=container
 ```
 Morgan reads architecture docs and produces a Mermaid container diagram showing service boundaries, data stores, and external integrations.
 

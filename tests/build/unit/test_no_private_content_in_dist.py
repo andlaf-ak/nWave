@@ -57,8 +57,10 @@ class TestBuildDistExcludesPrivateContent:
     def dist_builder(self):
         """Create a DistBuilder, build agents and skills."""
         from scripts.build_dist import DistBuilder
+        from scripts.shared.agent_catalog import load_public_agents
 
         builder = DistBuilder(project_root=PROJECT_ROOT)
+        builder.public_agents = load_public_agents(PROJECT_ROOT / "nWave")
         builder.clean()
         builder.build_agents()
         builder.build_skills()

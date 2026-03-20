@@ -25,6 +25,12 @@ class _InstallerTestHelper:
     @staticmethod
     def build_installer(tmp_path):
         """Build an NWaveInstaller with filesystem mocked."""
+        # Create minimal catalog to satisfy fail-closed load_public_agents
+        project_dir = tmp_path / "project" / "nWave"
+        project_dir.mkdir(parents=True)
+        (project_dir / "framework-catalog.yaml").write_text(
+            "agents:\n  test-agent:\n    public: true\n"
+        )
         with (
             patch(
                 "scripts.install.install_nwave.PathUtils.get_claude_config_dir"

@@ -54,7 +54,7 @@ class DESOrchestrator:
     Thin facade that delegates to extracted service modules.
     """
 
-    VALIDATION_COMMANDS = ["/nw:execute", "/nw:develop"]
+    VALIDATION_COMMANDS = ["/nw-execute", "/nw-develop"]
 
     def __init__(
         self,

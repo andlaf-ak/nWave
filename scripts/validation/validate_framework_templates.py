@@ -354,6 +354,7 @@ def validate_skill(filepath: Path, result: ValidationResult) -> None:
         "agent",
         "user-invocable",
         "disable-model-invocation",
+        "argument-hint",
     }
     extra_fields = set(fm.keys()) - allowed_fields
     if extra_fields:

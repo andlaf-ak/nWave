@@ -182,7 +182,7 @@ class TestGenerateRecoverySuggestions:
         has_actionable = any(
             pattern in combined
             for pattern in [
-                "/nw:execute",
+                "/nw-execute",
                 "steps/",
                 "transcript",
                 "NOT_EXECUTED",

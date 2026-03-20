@@ -38,6 +38,13 @@ def _make_context(tmp_path):
     agents_source = project_root / "nWave" / "agents"
     agents_source.mkdir(parents=True)
 
+    # Create minimal framework-catalog.yaml so load_public_agents(strict=True)
+    # does not raise CatalogNotFoundError. Empty agents section means all
+    # agents are treated as public (backward compatibility).
+    (project_root / "nWave" / "framework-catalog.yaml").write_text(
+        "agents: {}\n",
+    )
+
     claude_dir = tmp_path / ".claude"
     claude_dir.mkdir(parents=True)
 

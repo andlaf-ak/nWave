@@ -39,7 +39,7 @@ def _build_des_task_stdin() -> str:
         "# DES_METADATA\n"
         "Step: 01-01\n"
         "Project: test-project\n"
-        "Command: /nw:execute\n"
+        "Command: /nw-execute\n"
         "\n"
         "# AGENT_IDENTITY\n"
         "Agent: @software-crafter\n"

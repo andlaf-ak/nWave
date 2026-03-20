@@ -51,19 +51,19 @@ Execute mutation testing for project {feature-id}.
 
 ### Example 1: Python project with config generator
 ```bash
-/nw:mutation-test des-hook-enforcement tests/des/
+/nw-mutation-test des-hook-enforcement tests/des/
 ```
 Reads execution-log.json, runs `generate_scoped_configs.py des-hook-enforcement`, delegates to software-crafter with per-component configs. Agent runs cosmic-ray, produces mutation-report.md.
 
 ### Example 2: Python project without config generator
 ```bash
-/nw:mutation-test auth-upgrade tests/auth/
+/nw-mutation-test auth-upgrade tests/auth/
 ```
 Extracts files manually from execution-log.json, creates single cosmic-ray config with `module-path = [file1, file2, ...]` and `test-command = "pytest -x tests/auth/"`, delegates to agent.
 
 ### Example 3: Non-Python project
 ```bash
-/nw:mutation-test payment-gateway tests/payment/
+/nw-mutation-test payment-gateway tests/payment/
 ```
 Detects `package.json`, selects Stryker, delegates with Stryker-specific instructions.
 

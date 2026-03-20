@@ -39,18 +39,18 @@ The nWave methodology implements a systematic approach to software development t
 
 ### nWave Core Commands (DW Prefix)
 
-- `/nw:discover [product-concept]` - Wave 1: Evidence-based product discovery
-- `/nw:discuss [requirements]` - Wave 2: Business analysis
-- `/nw:design [system-context]` - Wave 3: Architecture design
-- `/nw:devops [deployment-target]` - Wave 4: Platform readiness and infrastructure
-- `/nw:distill [acceptance-criteria]` - Wave 5: Test scenarios
-- `/nw:deliver [feature-description]` - Wave 6: Outside-In TDD implementation
+- `/nw-discover [product-concept]` - Wave 1: Evidence-based product discovery
+- `/nw-discuss [requirements]` - Wave 2: Business analysis
+- `/nw-design [system-context]` - Wave 3: Architecture design
+- `/nw-devops [deployment-target]` - Wave 4: Platform readiness and infrastructure
+- `/nw-distill [acceptance-criteria]` - Wave 5: Test scenarios
+- `/nw-deliver [feature-description]` - Wave 6: Outside-In TDD implementation
 
 ### Specialist Commands
 
-- `/nw:mikado [target] [options]` - Complex refactoring roadmaps
-- `/nw:root-why [problem-description]` - Root cause analysis & debugging
-- `/nw:diagram [scope] [action]` - Architecture diagram management
+- `/nw-mikado [target] [options]` - Complex refactoring roadmaps
+- `/nw-root-why [problem-description]` - Root cause analysis & debugging
+- `/nw-diagram [scope] [action]` - Architecture diagram management
 
 ## Wave Directory Structure
 
@@ -105,13 +105,13 @@ The architecture-diagram-manager provides complete visual architecture lifecycle
 
 **Option 1: Automated DELIVER Wave (Recommended)**
 ```bash
-/nw:discover "User authentication market research"
-/nw:discuss "User registration and login requirements"
-/nw:design "Microservices with JWT authentication"
-/nw:distill "User can register and login securely"
-/nw:devops "user-authentication"
-/nw:distill "User can register and login securely"
-/nw:deliver "Implement user authentication with JWT"
+/nw-discover "User authentication market research"
+/nw-discuss "User registration and login requirements"
+/nw-design "Microservices with JWT authentication"
+/nw-distill "User can register and login securely"
+/nw-devops "user-authentication"
+/nw-distill "User can register and login securely"
+/nw-deliver "Implement user authentication with JWT"
   # Automatically: roadmap → execute all steps → finalize
   # Quality gates: 3 + 3N reviews (e.g., 10 steps = 33 reviews)
 ```
@@ -119,28 +119,28 @@ The architecture-diagram-manager provides complete visual architecture lifecycle
 **Option 2: Manual Granular Control (Advanced)**
 ```bash
 # DISCOVER and DISCUSS and DESIGN waves
-/nw:discover "User authentication market research"
-/nw:discuss "User registration requirements"
-/nw:design "JWT authentication architecture"
+/nw-discover "User authentication market research"
+/nw-discuss "User registration requirements"
+/nw-design "JWT authentication architecture"
 
 # DELIVER wave - manual orchestration
-/nw:roadmap @solution-architect "Implement user authentication"
+/nw-roadmap @solution-architect "Implement user authentication"
 
 # Execute individual steps with 11-phase TDD
-/nw:execute @software-crafter "docs/feature/user-authentication/steps/01-01.json"
-/nw:execute @software-crafter "docs/feature/user-authentication/steps/01-02.json"
+/nw-execute @software-crafter "docs/feature/user-authentication/steps/01-01.json"
+/nw-execute @software-crafter "docs/feature/user-authentication/steps/01-02.json"
 # ... (repeat for all steps)
 
-/nw:finalize @platform-architect "user-authentication"
+/nw-finalize @platform-architect "user-authentication"
 
 # DELIVER wave
-/nw:deliver "user-authentication"
+/nw-deliver "user-authentication"
 ```
 
 **Option 3: Execute Single Step with Complete 11-Phase TDD**
 ```bash
 # For executing one specific step with full TDD workflow
-/nw:execute @software-crafter "docs/feature/user-auth/steps/01-02.json"
+/nw-execute @software-crafter "docs/feature/user-auth/steps/01-02.json"
   # Automatic: PREPARE → RED → GREEN → REVIEW → REFACTOR → VALIDATE → COMMIT
   # Includes mandatory reviews and progressive refactoring (L1-L4)
 ```
@@ -148,14 +148,14 @@ The architecture-diagram-manager provides complete visual architecture lifecycle
 ### Complex Refactoring with Visual Tracking
 
 ```
-/nw:mikado "legacy-auth-modernization" --with-diagrams
-/nw:diagram mikado-tree "auth-refactoring" --visualize-dependencies
+/nw-mikado "legacy-auth-modernization" --with-diagrams
+/nw-diagram mikado-tree "auth-refactoring" --visualize-dependencies
 ```
 
 ### Walking Skeleton with Architecture Validation
 
 ```
-/nw:diagram skeleton "user-auth" --minimal-slice
+/nw-diagram skeleton "user-auth" --minimal-slice
 ```
 
 ## Quality Assurance

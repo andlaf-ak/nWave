@@ -18,7 +18,7 @@ nWave is an AI-powered workflow framework that orchestrates specialized Claude A
 nWave-dev/
 ├── nWave/                    # Framework definition (agents, commands, skills, templates)
 │   ├── agents/               # 23 agent specifications (YAML frontmatter + markdown)
-│   ├── tasks/nw/             # 21 slash command definitions (/nw:deliver, /nw:design, etc.)
+│   ├── tasks/nw/             # 21 slash command definitions (/nw-deliver, /nw-design, etc.)
 │   ├── skills/               # 98 agent skill files (deep domain knowledge)
 │   ├── templates/            # Methodology templates (TDD schema, pre-commit, README)
 │   ├── data/                 # Configuration data, methodologies, research references
@@ -237,12 +237,12 @@ DISCOVER → DISCUSS → DESIGN → DEVOPS → DISTILL → DELIVER
 
 | Wave | Command | Agent | Output |
 |------|---------|-------|--------|
-| DISCOVER | `/nw:discover` | product-discoverer | Evidence, opportunity validation |
-| DISCUSS | `/nw:discuss` | product-owner | User stories, acceptance criteria |
-| DESIGN | `/nw:design` | solution-architect | Architecture, component boundaries |
-| DEVOPS | `/nw:devops` | platform-architect | Infrastructure, CI/CD, deployment |
-| DISTILL | `/nw:distill` | acceptance-designer | BDD test scenarios (Given-When-Then) |
-| DELIVER | `/nw:deliver` | software-crafter | Working code via Outside-In TDD |
+| DISCOVER | `/nw-discover` | product-discoverer | Evidence, opportunity validation |
+| DISCUSS | `/nw-discuss` | product-owner | User stories, acceptance criteria |
+| DESIGN | `/nw-design` | solution-architect | Architecture, component boundaries |
+| DEVOPS | `/nw-devops` | platform-architect | Infrastructure, CI/CD, deployment |
+| DISTILL | `/nw-distill` | acceptance-designer | BDD test scenarios (Given-When-Then) |
+| DELIVER | `/nw-deliver` | software-crafter | Working code via Outside-In TDD |
 
 **Cross-wave agents**: researcher, troubleshooter, documentarist, visual-architect
 **Reviewers**: 11 peer review agents (one per specialist + specialized reviewers)

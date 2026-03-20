@@ -202,7 +202,7 @@ class SilentCompletionDetector:
             f"HOW: You can manually update the phase status based on what you find in the transcript. "
             f"Match each completed phase to its actual outcome (EXECUTED, FAILED, SKIPPED, etc.).\n\n"
             f"ACTION: Based on {transcript_path}, manually set each completed phase's status and outcome "
-            f"in the step file, then retry execution with `/nw:execute`."
+            f"in the step file, then retry execution with `/nw-execute`."
         )
 
         return suggestions
@@ -245,7 +245,7 @@ class SilentCompletionDetector:
             f"ACTION STEPS:\n"
             f"Step 1: `cat {transcript_path}` - Review agent execution history\n"
             f"Step 2: For each completed phase, update the step file with status and outcome\n"
-            f"Step 3: Run `/nw:execute` again to continue from the first incomplete phase\n"
+            f"Step 3: Run `/nw-execute` again to continue from the first incomplete phase\n"
             f"Step 4: Add OUTCOME_RECORDING section to your prompt template to prevent recurrence"
         )
 

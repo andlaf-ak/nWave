@@ -4,6 +4,23 @@ AI agents that guide you from idea to working code — with you in control at ev
 
 nWave runs inside [Claude Code](https://claude.com/product/claude-code). You describe what to build. Specialized agents handle requirements, architecture, test design, and implementation. You review and approve at each stage.
 
+## BREAKING CHANGE: Command Format (v2.8.0)
+
+**Starting with v2.8.0, all slash commands use hyphen format instead of colons.**
+
+| Before (v2.7.x) | After (v2.8.0+) |
+|---|---|
+| `/nw:deliver` | `/nw-deliver` |
+| `/nw:design` | `/nw-design` |
+| `/nw:discuss` | `/nw-discuss` |
+| `/nw:distill` | `/nw-distill` |
+| `/nw:discover` | `/nw-discover` |
+| *All other commands* | `/nw-{command}` |
+
+**Why?** Commands migrated from Claude Code's dynamic `commands/` directory to the stable `skills/` system to prevent commands from disappearing during long sessions.
+
+**To upgrade**: Run `pipx upgrade nwave-ai && nwave-ai install` (CLI) or `/plugin marketplace update nwave-marketplace` (plugin). Old `/nw:` commands are automatically removed.
+
 ## Quick Start
 
 ### Requirements
@@ -19,7 +36,7 @@ From Claude Code, run:
 /plugin install nw@nwave-marketplace
 ```
 
-Restart Claude Code and type `/nw:` to see all available commands.
+Restart Claude Code and type `/nw-` to see all available commands.
 
 ### CLI Installer (Alternative)
 
@@ -66,7 +83,7 @@ nwave-ai install
 **Compatibility notes:**
 - ~67% of nWave features work natively on OpenCode via compatibility paths
 - DES hooks integrate via OpenCode's `tool.execute.before` mechanism
-- Some advanced subagent coordination may differ from Claude Code — use the core `/nw:discuss`, `/nw:design`, `/nw:distill`, `/nw:deliver` commands for best results
+- Some advanced subagent coordination may differ from Claude Code — use the core `/nw-discuss`, `/nw-design`, `/nw-distill`, `/nw-deliver` commands for best results
 - For full feature parity and support, Claude Code remains the primary environment
 
 ### Which method?
@@ -81,10 +98,10 @@ nwave-ai install
 ### Use (inside Claude Code, after reopening it)
 
 ```
-/nw:discuss "user login with email and password"   # Requirements
-/nw:design --architecture=hexagonal                 # Architecture
-/nw:distill "user-login"                            # Acceptance tests
-/nw:deliver                                         # TDD implementation
+/nw-discuss "user login with email and password"   # Requirements
+/nw-design --architecture=hexagonal                 # Architecture
+/nw-distill "user-login"                            # Acceptance tests
+/nw-deliver                                         # TDD implementation
 ```
 
 Four commands. Four human checkpoints. One working feature.
@@ -136,12 +153,12 @@ Both methods remove agents, commands, and configuration from `~/.claude/`. Your 
 
 ## Token Efficiency — Scale Quality to Stakes
 
-nWave enforces proven engineering practices (TDD, peer review, mutation testing) at every step. Use `/nw:rigor` to adjust the depth of quality practices to match your task's risk level. A config tweak needs less rigor than a security-critical feature.
+nWave enforces proven engineering practices (TDD, peer review, mutation testing) at every step. Use `/nw-rigor` to adjust the depth of quality practices to match your task's risk level. A config tweak needs less rigor than a security-critical feature.
 
 ```
-/nw:rigor                    # Interactive: compare profiles
-/nw:rigor lean               # Quick switch to lean mode
-/nw:rigor custom             # Build your own combination
+/nw-rigor                    # Interactive: compare profiles
+/nw-rigor lean               # Quick switch to lean mode
+/nw-rigor custom             # Build your own combination
 ```
 
 | Profile | Agent | Reviewer | TDD | Mutation | Cost | Use When |
@@ -152,13 +169,13 @@ nWave enforces proven engineering practices (TDD, peer review, mutation testing)
 | **exhaustive** | opus | opus | full 5-phase | ≥80% kill | highest | Production core |
 | **custom** | *you choose* | *you choose* | *you choose* | *you choose* | varies | Exact combo needed |
 
-Picked once, persists across sessions. Every `/nw:deliver`, `/nw:design`, `/nw:review` respects your choice. Need to mix profiles? `/nw:rigor custom` walks through each setting.
+Picked once, persists across sessions. Every `/nw-deliver`, `/nw-design`, `/nw-review` respects your choice. Need to mix profiles? `/nw-rigor custom` walks through each setting.
 
 ```
-/nw:rigor lean        # prototype fast
-/nw:deliver           # haiku crafter, no review, RED→GREEN only
-/nw:rigor standard    # ready to ship — bump up
-/nw:deliver           # sonnet crafter, haiku reviewer, full TDD
+/nw-rigor lean        # prototype fast
+/nw-deliver           # haiku crafter, no review, RED→GREEN only
+/nw-rigor standard    # ready to ship — bump up
+/nw-deliver           # sonnet crafter, haiku reviewer, full TDD
 ```
 
 ## Understanding DES Messages
@@ -170,7 +187,7 @@ DES also runs automatic housekeeping at every session start: it removes audit lo
 | Message | What It Means | What To Do |
 |---------|---------------|-----------|
 | **DES_MARKERS_MISSING** | Agent prompt mentions a step ID (01-01 pattern) but lacks DES markers. | Either: add DES markers for step execution, OR add `<!-- DES-ENFORCEMENT : exempt -->` comment if it's not actually step work. |
-| **Source write blocked** | You tried to edit a file during active `/nw:deliver` outside a DES task. | Edit requests must go through the active deliver session. If you need to make changes, finalize the current session first. |
+| **Source write blocked** | You tried to edit a file during active `/nw-deliver` outside a DES task. | Edit requests must go through the active deliver session. If you need to make changes, finalize the current session first. |
 | **TDD phase incomplete** | Sub-agent returned without finishing all required TDD phases. | Re-dispatch the same agent to complete missing phases (typically COMMIT or refactoring steps). |
 | **nWave update available** | SessionStart detected a newer version available. | Optional. Run `pipx upgrade nwave-ai && nwave-ai install` when ready to upgrade, or dismiss and continue working. |
 | **False positive blocks** | Your prompt accidentally matches step-ID pattern (e.g., dates like "2026-02-09"). | Add `<!-- DES-ENFORCEMENT : exempt -->` comment to exempt the agent call from step-ID enforcement. |
@@ -189,16 +206,16 @@ These messages protect code quality but never prevent your work — they guide y
 
 Each wave produces artifacts that you review before the next wave begins. The machine never runs unsupervised end-to-end.
 
-The full workflow has six waves. Use all six for greenfield projects, or jump straight to `/nw:deliver` for brownfield work.
+The full workflow has six waves. Use all six for greenfield projects, or jump straight to `/nw-deliver` for brownfield work.
 
 | Wave | Command | Agent | Produces |
 |------|---------|-------|----------|
-| DISCOVER | `/nw:discover` | product-discoverer | Market validation |
-| DISCUSS | `/nw:discuss` | product-owner | Requirements |
-| DESIGN | `/nw:design` | solution-architect | Architecture + ADRs |
-| DEVOPS | `/nw:devops` | platform-architect | Infrastructure readiness |
-| DISTILL | `/nw:distill` | acceptance-designer | Given-When-Then tests |
-| DELIVER | `/nw:deliver` | software-crafter | Working implementation |
+| DISCOVER | `/nw-discover` | product-discoverer | Market validation |
+| DISCUSS | `/nw-discuss` | product-owner | Requirements |
+| DESIGN | `/nw-design` | solution-architect | Architecture + ADRs |
+| DEVOPS | `/nw-devops` | platform-architect | Infrastructure readiness |
+| DISTILL | `/nw-distill` | acceptance-designer | Given-When-Then tests |
+| DELIVER | `/nw-deliver` | software-crafter | Working implementation |
 
 23 agents total: 6 wave agents, 6 cross-wave specialists, 11 peer reviewers. Full list: **[Commands Reference](https://github.com/nwave-ai/nwave/tree/main/docs/reference/commands/index.md)**
 

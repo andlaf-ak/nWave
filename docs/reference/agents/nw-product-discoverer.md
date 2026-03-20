@@ -9,7 +9,7 @@ Conducts evidence-based product discovery through customer interviews, assumptio
 
 ## Commands
 
-- [`/nw:discover`](../commands/index.md)
+- [`/nw-discover`](../commands/index.md)
 
 ## Skills
 

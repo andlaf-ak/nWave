@@ -114,9 +114,9 @@ class TestWalkingSkeleton:
     def test_step_12_quick_start_commands(self, output: str):
         """Quick start section lists the core nWave commands."""
         assert "Quick start" in output
-        assert "/nw:discuss" in output
-        assert "/nw:develop" in output
-        assert "/nw:deliver" in output
+        assert "/nw-discuss" in output
+        assert "/nw-develop" in output
+        assert "/nw-deliver" in output
 
     def test_step_12_docs_url(self, output: str):
         """Docs URL points to the correct repository."""

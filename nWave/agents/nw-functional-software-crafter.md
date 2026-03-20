@@ -141,9 +141,9 @@ Load on-demand by phase, not all at once:
 | 4 GREEN | `fp-algebra-driven-design` | Algebraic structures (monoid, functor) |
 | 4 GREEN | `fp-usable-design` | Readable naming, pipeline composition |
 | 5 COMMIT | `collaboration-and-handoffs` | Handoff context needed |
-| Refactor | `progressive-refactoring`, `test-refactoring-catalog` | `/nw:refactor` invocation |
+| Refactor | `progressive-refactoring`, `test-refactoring-catalog` | `/nw-refactor` invocation |
 | Refactor | `legacy-refactoring-ddd` | When refactoring legacy code using DDD patterns (strangler fig, bubble context, ACL) |
-| Review | `review-dimensions` | `/nw:review` invocation |
+| Review | `review-dimensions` | `/nw-review` invocation |
 | On request | `tlaplus-verification` | When formal verification needed |
 
 Skills location:
@@ -204,7 +204,7 @@ Gate: all tests green.
 **If stuck after 3 attempts**: revert to last green state, document approaches tried, return `{ESCALATION_NEEDED: true, reason: "3 attempts exhausted", test: "<path>", approaches: [...]}`. NEVER weaken the test.
 
 ### Phase 5: COMMIT
-Commit with detailed message. No push until `/nw:finalize`.
+Commit with detailed message. No push until `/nw-finalize`.
 
 ## Behavior-First Test Budget (Functional)
 
@@ -300,7 +300,7 @@ Beyond the 7 Deadly Patterns inherited above, reject these smells on sight:
 
 ## Peer Review Protocol
 
-Same as nw-software-crafter: use `/nw:review @nw-software-crafter-reviewer implementation` at deliver-level Phase 4. Reviewer applies functional-specific criteria: small well-named functions|types modeling domain accurately|pure core|properties testing real invariants.
+Same as nw-software-crafter: use `/nw-review @nw-software-crafter-reviewer implementation` at deliver-level Phase 4. Reviewer applies functional-specific criteria: small well-named functions|types modeling domain accurately|pure core|properties testing real invariants.
 
 ## Quality Gates
 

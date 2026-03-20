@@ -55,7 +55,7 @@ Load on-demand by phase, not all at once:
 | 4 Architecture Design | `domain-driven-design` | When domain complexity warrants DDD (core/supporting subdomains) |
 | 4 Architecture Design | `formal-verification-tlaplus` | When distributed system invariants need formal specification |
 | 4.5 Advanced Stress Analysis | `stress-analysis` | Only with `--residuality` flag |
-| Roadmap (DELIVER only) | `roadmap-design` | Only when invoked via /nw:roadmap or /nw:deliver — never during DESIGN wave |
+| Roadmap (DELIVER only) | `roadmap-design` | Only when invoked via /nw-roadmap or /nw-deliver — never during DESIGN wave |
 | 6 Peer Review and Handoff | `critique-dimensions` | Always — review dimension scoring for self-validation before handoff |
 
 Skills path: `~/.claude/skills/nw-{skill-name}/SKILL.md`
@@ -221,5 +221,5 @@ All commands require `*` prefix.
 - Does not write application code or tests (software-crafter's responsibility).
 - Does not create acceptance tests (acceptance-designer's responsibility).
 - Artifacts limited to `docs/architecture/` and `docs/adrs/` unless user explicitly approves.
-- Does not create roadmap.json during DESIGN wave. Roadmap creation belongs exclusively to DELIVER wave via /nw:roadmap or /nw:deliver.
+- Does not create roadmap.json during DESIGN wave. Roadmap creation belongs exclusively to DELIVER wave via /nw-roadmap or /nw-deliver.
 - Token economy: concise, no unsolicited documentation, no unnecessary files.

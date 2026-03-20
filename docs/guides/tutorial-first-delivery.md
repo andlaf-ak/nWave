@@ -128,7 +128,7 @@ claude
 Then type this Claude Code command (not a terminal command):
 
 ```
-/nw:deliver "Image-to-ASCII art converter using PPM format"
+/nw-deliver "Image-to-ASCII art converter using PPM format"
 ```
 
 ### Reading the output
@@ -181,8 +181,8 @@ These are the Deterministic Execution System (DES) ensuring every step follows t
 | Symptom | Fix |
 |---------|-----|
 | No output for 2+ minutes | Check Claude Code status bar — a pulsing indicator means the agent is still working |
-| Tests still failing after delivery | Run `/nw:deliver` again — it resumes from where it left off |
-| Agent errors out mid-delivery | Type `/nw:deliver` again — it picks up the existing roadmap |
+| Tests still failing after delivery | Run `/nw-deliver` again — it resumes from where it left off |
+| Agent errors out mid-delivery | Type `/nw-deliver` again — it picks up the existing roadmap |
 | Want to start completely fresh | `git stash && git checkout main` then re-clone |
 
 *Next: you'll run the tests and try the converter yourself.*
@@ -295,7 +295,7 @@ You defined "done". nWave delivered it with engineering discipline you'd expect 
 
 ## Next Steps
 
-This tutorial used `/nw:deliver` directly — you wrote the acceptance tests by hand. The full nWave workflow has specialized agents for every stage:
+This tutorial used `/nw-deliver` directly — you wrote the acceptance tests by hand. The full nWave workflow has specialized agents for every stage:
 
 | Wave | What it does | Guide |
 |------|-------------|-------|

@@ -18,9 +18,9 @@ Output: `docs/feature/{feature-id}/deliver/roadmap.json`
 ## Usage
 
 ```bash
-/nw:roadmap @nw-solution-architect "Migrate monolith to microservices"
-/nw:roadmap @nw-software-crafter "Replace legacy authentication system"
-/nw:roadmap @nw-product-owner "Implement multi-tenant support"
+/nw-roadmap @nw-solution-architect "Migrate monolith to microservices"
+/nw-roadmap @nw-software-crafter "Replace legacy authentication system"
+/nw-roadmap @nw-product-owner "Implement multi-tenant support"
 ```
 
 ## Execution Steps
@@ -104,26 +104,26 @@ For performance roadmaps, include measurement context inline so agent can valida
 
 ### Example 1: Standard architecture roadmap
 ```
-/nw:roadmap @nw-solution-architect "Migrate authentication to OAuth2"
+/nw-roadmap @nw-solution-architect "Migrate authentication to OAuth2"
 ```
 Derives feature-id="migrate-auth-to-oauth2", scaffolds skeleton, invokes agent to fill TODOs, validates. Produces docs/feature/migrate-auth-to-oauth2/deliver/roadmap.json.
 
 ### Example 2: Performance roadmap with measurement context
 ```
-/nw:roadmap @nw-solution-architect "Optimize test suite execution"
+/nw-roadmap @nw-solution-architect "Optimize test suite execution"
 ```
 Passes measurement data inline. Agent fills skeleton, validates targets against baseline, prioritizes largest bottleneck first.
 
 ### Example 3: Mikado refactoring
 ```
-/nw:roadmap @nw-software-crafter "Extract payment module from monolith"
+/nw-roadmap @nw-software-crafter "Extract payment module from monolith"
 ```
 Agent fills skeleton with methodology: mikado, references mikado-graph.md, maps leaf nodes to steps.
 
 ## Workflow Context
 
 ```bash
-/nw:roadmap @agent "goal"           # 1. Plan (init -> agent fills -> validate)
-/nw:execute @agent "feature-id" "01-01" # 2. Execute steps
-/nw:finalize @agent "feature-id"        # 3. Finalize
+/nw-roadmap @agent "goal"           # 1. Plan (init -> agent fills -> validate)
+/nw-execute @agent "feature-id" "01-01" # 2. Execute steps
+/nw-finalize @agent "feature-id"        # 3. Finalize
 ```

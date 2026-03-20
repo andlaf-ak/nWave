@@ -15,7 +15,7 @@ Learn nWave by building a complete feature end-to-end.
 You'll build a "user login" feature through four commands. Each command launches a specialized AI agent that produces artifacts for you to review before continuing.
 
 ```text
-/nw:discuss  →  /nw:design  →  /nw:distill  →  /nw:deliver
+/nw-discuss  →  /nw-design  →  /nw-distill  →  /nw-deliver
 Requirements    Architecture    Acceptance      TDD
                                 Tests           Implementation
 ```
@@ -29,7 +29,7 @@ At every step, the agent generates — you review and approve.
 Start by telling nWave what you want to build.
 
 ```
-/nw:discuss "user login with email and password"
+/nw-discuss "user login with email and password"
 ```
 
 The `@product-owner` agent will ask you clarifying questions:
@@ -52,7 +52,7 @@ docs/feature/user-login/discuss/requirements.md
 With requirements in hand, design how the feature will be built.
 
 ```
-/nw:design --architecture=hexagonal
+/nw-design --architecture=hexagonal
 ```
 
 The `@solution-architect` agent reads your requirements and produces:
@@ -75,7 +75,7 @@ docs/feature/user-login/design/architecture-design.md
 Before writing any code, define what "done" looks like.
 
 ```
-/nw:distill "user-login"
+/nw-distill "user-login"
 ```
 
 The `@acceptance-designer` agent creates Given-When-Then scenarios based on your requirements:
@@ -110,7 +110,7 @@ These tests will fail — that's the point. They define the target.
 Now build the feature. This single command runs the full inner loop.
 
 ```
-/nw:deliver
+/nw-deliver
 ```
 
 Here's what happens automatically:
@@ -139,10 +139,10 @@ Four commands. Four human checkpoints. One working feature.
 ```text
 You typed          Agent produced              You reviewed
 ─────────          ──────────────              ────────────
-/nw:discuss        Requirements doc            ✓ Scope correct?
-/nw:design         Architecture + ADRs         ✓ Design sound?
-/nw:distill        Acceptance test scenarios    ✓ Coverage complete?
-/nw:deliver        Working implementation       ✓ Tests pass?
+/nw-discuss        Requirements doc            ✓ Scope correct?
+/nw-design         Architecture + ADRs         ✓ Design sound?
+/nw-distill        Acceptance test scenarios    ✓ Coverage complete?
+/nw-deliver        Working implementation       ✓ Tests pass?
 ```
 
 Your feature artifacts live in `docs/feature/user-login/` — requirements, architecture, and execution history are all traceable.

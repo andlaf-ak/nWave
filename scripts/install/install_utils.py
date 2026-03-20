@@ -487,8 +487,8 @@ Framework Components:
 - Quality validation network with Level 1-6 refactoring
 
 Usage:
-- Use nWave commands: '/nw:discuss', '/nw:design', '/nw:distill', '/nw:develop', '/nw:deliver'
-- Use '/nw:start "feature description"' to initialize nWave workflow
+- Use nWave commands: '/nw-discuss', '/nw-design', '/nw-distill', '/nw-develop', '/nw-deliver'
+- Use '/nw-start "feature description"' to initialize nWave workflow
 - All agents available globally across projects
 
 For help: https://github.com/nWave-ai/nWave

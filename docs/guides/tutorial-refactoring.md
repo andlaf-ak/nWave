@@ -3,7 +3,7 @@
 **Time**: ~20 minutes (8 steps)
 **Platform**: macOS or Linux (Windows: use WSL)
 **Prerequisites**: Python 3.10+, Claude Code with nWave installed, [Tutorial 1](./tutorial-first-delivery.md) completed
-**What this is**: An interactive walkthrough of `/nw:refactor` and `/nw:mikado` -- nWave's safe refactoring commands. You will take a working but messy Python project and incrementally clean it up without breaking anything.
+**What this is**: An interactive walkthrough of `/nw-refactor` and `/nw-mikado` -- nWave's safe refactoring commands. You will take a working but messy Python project and incrementally clean it up without breaking anything.
 
 ---
 
@@ -15,7 +15,7 @@ A cleanly refactored expense tracker -- extracted from a single messy file into 
 
 **After**: Clean modules with single responsibilities, no duplication, configurable values, and the same tests passing throughout. You will also have a Mikado dependency graph showing exactly which refactorings depend on which.
 
-**Why this matters**: Refactoring messy code is risky. Change one thing, break three others. `/nw:refactor` analyzes your code and creates a safe, incremental plan. `/nw:mikado` maps dependencies between refactorings so you tackle them in the right order -- leaf-first, never breaking the build.
+**Why this matters**: Refactoring messy code is risky. Change one thing, break three others. `/nw-refactor` analyzes your code and creates a safe, incremental plan. `/nw-mikado` maps dependencies between refactorings so you tackle them in the right order -- leaf-first, never breaking the build.
 
 ---
 
@@ -216,7 +216,7 @@ git add -A && git commit -m "feat: messy expense tracker (starting point for ref
 
 > **If any test fails**: Double-check you copied the entire `expenses.py` and `test_expenses.py` files. The tax calculation uses `0.21` (21%) -- make sure there are no typos in the amounts.
 
-*Next: you will run `/nw:refactor` to analyze the code smells and get a refactoring plan.*
+*Next: you will run `/nw-refactor` to analyze the code smells and get a refactoring plan.*
 
 ---
 
@@ -225,7 +225,7 @@ git add -A && git commit -m "feat: messy expense tracker (starting point for ref
 You should still be in the `expense-tracker` directory from Step 1. In Claude Code, type:
 
 ```
-/nw:refactor expense-tracker
+/nw-refactor expense-tracker
 ```
 
 > **AI output varies between runs.** Your session will differ from the examples below. That is expected -- the agent analyzes your specific code and may phrase findings differently. What matters is the structure (smell identification, level classification, refactoring plan), not the exact wording.
@@ -395,7 +395,7 @@ Or the agent may have kept everything in `expenses.py` with separate classes. Ei
 
 > **If tests fail after L2**: Class extraction can break imports. Check that `test_expenses.py` still imports from the right location. The agent should update test imports automatically, but if it missed one, add the import manually and re-run.
 
-*Next: you will use `/nw:mikado` to visualize which L3 refactorings depend on L1 and L2.*
+*Next: you will use `/nw-mikado` to visualize which L3 refactorings depend on L1 and L2.*
 
 ---
 
@@ -406,7 +406,7 @@ For L3 and above, refactorings have dependencies. Introducing an `Expense` datac
 In Claude Code, type:
 
 ```
-/nw:mikado expense-tracker
+/nw-mikado expense-tracker
 ```
 
 The agent will analyze remaining refactoring opportunities and produce a dependency graph:
@@ -568,9 +568,9 @@ The Mikado graph is not just a planning tool -- it is an insurance policy. If an
 
 ## Next Steps
 
-- **L4 (Architectural)**: If you want to continue to hexagonal architecture, run `/nw:refactor` again -- it will detect the current state and suggest L4 steps
-- **Apply to your own code**: Run `/nw:refactor` on any Python project with tests. The agent works with whatever code smells it finds
-- **Combine with `/nw:deliver`**: Use `/nw:refactor` to clean up before adding new features with `/nw:deliver` -- clean code is easier to extend
+- **L4 (Architectural)**: If you want to continue to hexagonal architecture, run `/nw-refactor` again -- it will detect the current state and suggest L4 steps
+- **Apply to your own code**: Run `/nw-refactor` on any Python project with tests. The agent works with whatever code smells it finds
+- **Combine with `/nw-deliver`**: Use `/nw-refactor` to clean up before adding new features with `/nw-deliver` -- clean code is easier to extend
 
 ---
 
@@ -578,10 +578,10 @@ The Mikado graph is not just a planning tool -- it is an insurance policy. If an
 
 | Symptom | Fix |
 |---------|-----|
-| `/nw:refactor` does not start | Make sure nWave is installed. Run `/nw:help` to verify. |
+| `/nw-refactor` does not start | Make sure nWave is installed. Run `/nw-help` to verify. |
 | Agent finds no code smells | Your code may already be clean. Try it on a larger, older codebase. |
 | Tests break during refactoring | Run `git diff` to see what changed. The agent should revert and retry with a smaller step. If it does not, run `git checkout -- src/` to reset and ask the agent to split the step. |
-| Mikado graph is empty | Run `/nw:refactor` first to complete at least L1. `/nw:mikado` needs existing analysis to build the dependency tree. |
+| Mikado graph is empty | Run `/nw-refactor` first to complete at least L1. `/nw-mikado` needs existing analysis to build the dependency tree. |
 | Agent skips levels | Say "Start at L1, do not skip ahead" to enforce progressive execution. |
 | `ModuleNotFoundError` after class extraction | The agent may have created new files without updating imports. Check `test_expenses.py` imports match the new file structure. |
 | Want to start fresh | Run `git checkout -- .` to reset all files, or `git stash` to save current state and try again. |

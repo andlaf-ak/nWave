@@ -9,7 +9,7 @@ Four practical use cases demonstrating nWave's core workflows. Each includes the
 **Prompt:**
 
 ```
-/nw:deliver "Add password reset with email verification"
+/nw-deliver "Add password reset with email verification"
 ```
 
 **What happens:**
@@ -50,7 +50,7 @@ Plus: committed, tested code with conventional commit messages per step, all tes
 **Prompt:**
 
 ```
-/nw:discuss "User onboarding optimization"
+/nw-discuss "User onboarding optimization"
 ```
 
 **What happens:**
@@ -77,7 +77,7 @@ Plus: committed, tested code with conventional commit messages per step, all tes
 
 **Expected output:**
 
-A structured requirements document with user stories, acceptance criteria in BDD format, emotional arc diagram, and a Definition of Ready checklist. Ready for handoff to `/nw:design` (architecture) and `/nw:distill` (test scenarios).
+A structured requirements document with user stories, acceptance criteria in BDD format, emotional arc diagram, and a Definition of Ready checklist. Ready for handoff to `/nw-design` (architecture) and `/nw-distill` (test scenarios).
 
 ---
 
@@ -86,7 +86,7 @@ A structured requirements document with user stories, acceptance criteria in BDD
 **Prompt:**
 
 ```
-/nw:research "Compare event sourcing vs CQRS for order processing"
+/nw-research "Compare event sourcing vs CQRS for order processing"
 ```
 
 **What happens:**
@@ -102,10 +102,10 @@ A structured requirements document with user stories, acceptance criteria in BDD
    - Recommendations with evidence backing
    - Source citations
 
-4. **Adversarial review** (optional follow-up with `/nw:review`):
+4. **Adversarial review** (optional follow-up with `/nw-review`):
 
    ```
-   /nw:review @nw-researcher-reviewer research "docs/research/event-sourcing-vs-cqrs.md"
+   /nw-review @nw-researcher-reviewer research "docs/research/event-sourcing-vs-cqrs.md"
    ```
 
    A reviewer agent critiques the research for:
@@ -125,7 +125,7 @@ A cited research document in `docs/research/` with evidence-backed recommendatio
 **Prompt:**
 
 ```
-/nw:forge "security-auditor"
+/nw-forge "security-auditor"
 ```
 
 **What happens:**
@@ -163,4 +163,4 @@ nWave/skills/security-auditor/         # Domain knowledge skills
   secrets-detection.md
 ```
 
-A production-ready agent definition that can be invoked via `/nw:review @nw-security-auditor security` or integrated into the DELIVER wave.
+A production-ready agent definition that can be invoked via `/nw-review @nw-security-auditor security` or integrated into the DELIVER wave.

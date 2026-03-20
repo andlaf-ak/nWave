@@ -168,7 +168,7 @@ class CommandName:
     value: str
 
     # Valid DES commands
-    VALID_COMMANDS = ["/nw:execute", "/nw:develop", "/nw:research"]
+    VALID_COMMANDS = ["/nw-execute", "/nw-develop", "/nw-research"]
 
     def __post_init__(self) -> None:
         """Validate command format."""
@@ -183,4 +183,4 @@ class CommandName:
 
     def is_validation_command(self) -> bool:
         """Check if this command requires DES validation."""
-        return self.value in ["/nw:execute", "/nw:develop"]
+        return self.value in ["/nw-execute", "/nw-develop"]

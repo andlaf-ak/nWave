@@ -142,7 +142,7 @@ def _write_manifest(
         "version": "1.0",
     }
     manifest_path = target_dir / _MANIFEST_FILENAME
-    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
+    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 
 
 def _read_manifest(target_dir: Path) -> dict | None:
@@ -157,7 +157,7 @@ def _read_manifest(target_dir: Path) -> dict | None:
     manifest_path = target_dir / _MANIFEST_FILENAME
     if not manifest_path.exists():
         return None
-    return json.loads(manifest_path.read_text())
+    return json.loads(manifest_path.read_text(encoding="utf-8"))
 
 
 class OpenCodeAgentsPlugin(InstallationPlugin):
@@ -219,12 +219,12 @@ class OpenCodeAgentsPlugin(InstallationPlugin):
                 if not is_public_agent(source_file.name, public_agents):
                     continue
                 agent_name = source_file.stem
-                content = source_file.read_text()
+                content = source_file.read_text(encoding="utf-8")
 
                 transformed = _transform_agent(content)
 
                 target_file = target_dir / f"{agent_name}.md"
-                target_file.write_text(transformed)
+                target_file.write_text(transformed, encoding="utf-8")
 
                 installed_names.append(agent_name)
                 installed_files.append(target_file)

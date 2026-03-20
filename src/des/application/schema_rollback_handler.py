@@ -67,7 +67,7 @@ PHASES_V3_CONSOLIDATED = [
 ]
 
 # V4.0 Schema: 5-phase streamlined TDD cycle
-# REVIEW moved to deliver-level Phase 4 (Adversarial Review via /nw:review)
+# REVIEW moved to deliver-level Phase 4 (Adversarial Review via /nw-review)
 # REFACTOR_CONTINUOUS moved to deliver-level Phase 3 (Complete Refactoring L1-L4)
 PHASES_V4_STREAMLINED = [
     PhaseName.PREPARE,

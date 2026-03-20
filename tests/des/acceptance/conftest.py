@@ -337,7 +337,7 @@ def valid_task_json():
 # DES_METADATA
 Project: test-project
 Step: 01-01
-Command: /nw:execute
+Command: /nw-execute
 
 # AGENT_IDENTITY
 Agent: @software-crafter

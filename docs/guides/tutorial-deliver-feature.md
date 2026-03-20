@@ -3,7 +3,7 @@
 **Time**: ~20 minutes (9 steps)
 **Platform**: macOS or Linux (Windows: use WSL)
 **Prerequisites**: Python 3.10+, Claude Code with nWave installed, [Tutorial 7](./tutorial-distill.md) completed
-**What this is**: A hands-on walkthrough of `/nw:deliver` on a real multi-component feature. You will watch the delivery pipeline implement your bookmark CLI against the acceptance tests from Tutorial 7, guided by the hexagonal architecture from Tutorial 6.
+**What this is**: A hands-on walkthrough of `/nw-deliver` on a real multi-component feature. You will watch the delivery pipeline implement your bookmark CLI against the acceptance tests from Tutorial 7, guided by the hexagonal architecture from Tutorial 6.
 
 ---
 
@@ -15,7 +15,7 @@ A fully implemented bookmark CLI -- domain logic, CLI adapter, and SQLite storag
 
 **After**: Every acceptance test passes. The bookmark CLI saves, searches, and manages bookmarks through a clean hexagonal architecture. The domain layer was built first, then the adapters -- exactly as the architecture prescribed. Every line of code exists because a test demanded it.
 
-**Why this matters**: Tutorial 1 showed `/nw:deliver` on a simple, single-component feature. This tutorial shows what happens when the pipeline has architecture to follow and acceptance tests to satisfy. The roadmap respects component boundaries. The crafter implements domain logic before adapters. The result is a codebase where architecture decisions are enforced by the delivery process, not just documented and hoped for.
+**Why this matters**: Tutorial 1 showed `/nw-deliver` on a simple, single-component feature. This tutorial shows what happens when the pipeline has architecture to follow and acceptance tests to satisfy. The roadmap respects component boundaries. The crafter implements domain logic before adapters. The result is a codebase where architecture decisions are enforced by the delivery process, not just documented and hoped for.
 
 ---
 
@@ -49,7 +49,7 @@ You should see:
 docs/architecture/architecture-design.md
 ```
 
-> **If either is missing**: Complete the prerequisite tutorials first. `/nw:deliver` reads both acceptance tests and architecture documents to build the roadmap. [Tutorial 6](./tutorial-design.md) produces architecture; [Tutorial 7](./tutorial-distill.md) produces acceptance tests.
+> **If either is missing**: Complete the prerequisite tutorials first. `/nw-deliver` reads both acceptance tests and architecture documents to build the roadmap. [Tutorial 6](./tutorial-design.md) produces architecture; [Tutorial 7](./tutorial-distill.md) produces acceptance tests.
 
 *Next: you will launch the delivery and watch the solution architect plan the work.*
 
@@ -60,7 +60,7 @@ docs/architecture/architecture-design.md
 In Claude Code, type:
 
 ```
-/nw:deliver "bookmark-cli"
+/nw-deliver "bookmark-cli"
 ```
 
 > **AI output varies between runs.** Your delivery session will differ from the examples below. The agent generates a roadmap and code based on your specific acceptance tests and architecture. What matters is the structure (phases, order, quality gates), not the exact output.
@@ -350,7 +350,7 @@ bookmark-cli/
 
 ```
 DISCOVER         DISCUSS          DESIGN           DISTILL          DELIVER
-(/nw:discover)   (/nw:discuss)    (/nw:design)     (/nw:distill)    (/nw:deliver)
+(/nw-discover)   (/nw-discuss)    (/nw-design)     (/nw-distill)    (/nw-deliver)
 ──────────────   ──────────────   ──────────────   ──────────────   ──────────────
 "Is the problem  "What should     "How should we   "What does done  "Build it with
  real?"           we build?"       build it?"       look like?"      quality gates"
@@ -368,7 +368,7 @@ Each wave constrained the next. Requirements shaped the architecture. Architectu
 
 ## Next Steps
 
-- **[Tutorial 9: Production Readiness](./tutorial-devops.md)** -- Take your delivered feature into `/nw:devops` for CI/CD and deployment strategy
+- **[Tutorial 9: Production Readiness](./tutorial-devops.md)** -- Take your delivered feature into `/nw-devops` for CI/CD and deployment strategy
 - **Run it again on a different feature** -- Add a new feature to the bookmark CLI (e.g., "bookmark export to markdown") by running through tutorials 5-8 again
 - **Read the evolution document** -- `docs/evolution/bookmark-cli.md` traces every decision. Compare it to your architecture document to see how closely the implementation followed the plan
 - **[Tutorial 3: Understanding the Delivery Pipeline](./tutorial-delivery-pipeline.md)** -- If you want to understand each phase in more detail
@@ -379,16 +379,16 @@ Each wave constrained the next. Requirements shaped the architecture. Architectu
 
 | Symptom | Fix |
 |---------|-----|
-| `/nw:deliver` does not start | Make sure nWave is installed. Run `/nw:help` to verify. |
+| `/nw-deliver` does not start | Make sure nWave is installed. Run `/nw-help` to verify. |
 | Architect cannot find acceptance tests | Ensure `.feature` files exist under `tests/acceptance/`. Run `find tests -name "*.feature"` to check. |
 | Architect cannot find architecture docs | Ensure `docs/architecture/architecture-design.md` exists. Complete [Tutorial 6](./tutorial-design.md) if missing. |
 | Roadmap has many more steps than expected | The architect breaks work into small, testable increments. More steps means more granularity, not more complexity. |
-| Crafter stuck on RED for more than 5 minutes | The step may be too large for one TDD cycle. Let it continue -- the crafter often needs multiple attempts. If it truly hangs, press Ctrl+C and run `/nw:deliver` again. It resumes from the last committed step. |
-| Review requests changes repeatedly (3+ rounds) | The pipeline stops after 2 rounds. Review the requested changes manually and fix them, then run `/nw:deliver` again. |
+| Crafter stuck on RED for more than 5 minutes | The step may be too large for one TDD cycle. Let it continue -- the crafter often needs multiple attempts. If it truly hangs, press Ctrl+C and run `/nw-deliver` again. It resumes from the last committed step. |
+| Review requests changes repeatedly (3+ rounds) | The pipeline stops after 2 rounds. Review the requested changes manually and fix them, then run `/nw-deliver` again. |
 | Mutation kill rate below 80% after retries | Check `docs/feature/bookmark-cli/mutation/mutation-report.md`. Some surviving mutants are semantically equivalent (the change does not affect behavior). If the gap is small, this may be acceptable. |
 | `pytest` cannot find tests after delivery | Make sure `pytest-bdd` is installed: `pip install pytest-bdd`. Also check that `conftest.py` exists in the test directory. |
 | Import errors when running the CLI | The module path depends on what the crafter created. Check `setup.py` or `pyproject.toml` for the package name and entry points. |
-| Want to start fresh | Run `git log --oneline` to find the commit before delivery started, then `git reset --hard <commit>` and run `/nw:deliver` again. |
+| Want to start fresh | Run `git log --oneline` to find the commit before delivery started, then `git reset --hard <commit>` and run `/nw-deliver` again. |
 
 ---
 

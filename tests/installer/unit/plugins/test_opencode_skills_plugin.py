@@ -30,6 +30,10 @@ def _make_context(tmp_path):
     skills_source = project_root / "nWave" / "skills"
     skills_source.mkdir(parents=True)
 
+    # Create minimal catalog to satisfy fail-closed load_public_agents.
+    # Empty agents section -> public_agents is empty -> all skills treated as public.
+    (project_root / "nWave" / "framework-catalog.yaml").write_text("agents: {}\n")
+
     claude_dir = tmp_path / ".claude"
     claude_dir.mkdir(parents=True)
 

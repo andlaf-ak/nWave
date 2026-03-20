@@ -9,8 +9,8 @@ Use for review and critique tasks - Code quality and implementation review speci
 
 ## Commands
 
-- [`/nw:deliver`](../commands/index.md)
-- [`/nw:review`](../commands/index.md)
+- [`/nw-deliver`](../commands/index.md)
+- [`/nw-review`](../commands/index.md)
 
 ## Skills
 

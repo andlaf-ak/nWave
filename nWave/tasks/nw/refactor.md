@@ -52,25 +52,25 @@ Execute \*refactor for {target-class-or-module}.
 
 ### Example 1: Module-level readability refactor
 ```
-/nw:refactor src/auth/token_manager.py --level=2 --scope=module
+/nw-refactor src/auth/token_manager.py --level=2 --scope=module
 ```
 Crafty applies RPP L1-L2: rename ambiguous variables|extract magic numbers into constants|remove dead code (L1), then simplify conditionals|extract long methods (L2).
 
 ### Example 2: SOLID-level design refactor
 ```
-/nw:refactor src/billing/ --level=6 --scope=module --mikado_planning=true
+/nw-refactor src/billing/ --level=6 --scope=module --mikado_planning=true
 ```
 Crafty uses Mikado Method for multi-class refactoring, applies dependency inversion|interface segregation across billing module.
 
 ### Example 3: RPP range sweep (L1-L3)
 ```
-/nw:refactor src/des/domain/ --from=1 --to=3 --scope=module
+/nw-refactor src/des/domain/ --from=1 --to=3 --scope=module
 ```
 Sweeps L1 readability|L2 complexity|L3 responsibility smells. Cascade rule: L2 only after L1 clean, L3 only after L2 clean.
 
 ### Example 4: Targeted single-level refactor
 ```
-/nw:refactor src/des/cli/verify.py --level=3 --scope=file
+/nw-refactor src/des/cli/verify.py --level=3 --scope=file
 ```
 Targets L3 responsibility smells only (Large Class, Feature Envy, Shotgun Surgery). Assumes L1-L2 already clean.
 

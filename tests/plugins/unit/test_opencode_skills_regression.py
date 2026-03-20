@@ -282,7 +282,20 @@ class TestOpenCodeSkillsRegression:
         nwave_dir = project_root / "nWave"
         nwave_dir.mkdir(parents=True)
 
-        # No catalog -> all agents treated as public (backward compat)
+        # Create minimal catalog to satisfy fail-closed load_public_agents
+        (nwave_dir / "framework-catalog.yaml").write_text(
+            "agents:\n  crafter:\n    public: true\n"
+        )
+
+        # Create agent file so ownership map links skills to the public agent
+        agents_dir = nwave_dir / "agents"
+        agents_dir.mkdir()
+        _create_agent_file(
+            agents_dir,
+            "nw-crafter",
+            ["nw-tdd-methodology", "nw-quality-framework"],
+        )
+
         # Use project layout (nWave/skills/) instead of dist layout
         skills_dir = nwave_dir / "skills"
         skills_dir.mkdir()

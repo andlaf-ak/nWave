@@ -321,7 +321,7 @@
       "GREEN - Implement minimum code + verify acceptance (green acceptance is consequence of green unit)",
       "COMMIT - Commit with detailed message (absorbs FINAL_VALIDATE metadata checks)"
     ],
-    "refactoring_policy": "Moved to deliver-level Phase 3 (Complete Refactoring L1-L4) - runs ONCE after all steps complete, delegated to @software-crafter via /nw:refactor",
-    "review_policy": "Moved to deliver-level Phase 4 (Adversarial Review) - runs ONCE via /nw:review with @nw-software-crafter-reviewer"
+    "refactoring_policy": "Moved to deliver-level Phase 3 (Complete Refactoring L1-L4) - runs ONCE after all steps complete, delegated to @software-crafter via /nw-refactor",
+    "review_policy": "Moved to deliver-level Phase 4 (Adversarial Review) - runs ONCE via /nw-review with @nw-software-crafter-reviewer"
   }
 }

@@ -9,9 +9,9 @@ Use for DISTILL wave - designs E2E acceptance tests from user stories and archit
 
 ## Commands
 
-- [`/nw:devops`](../commands/index.md)
-- [`/nw:distill`](../commands/index.md)
-- [`/nw:finalize`](../commands/index.md)
+- [`/nw-devops`](../commands/index.md)
+- [`/nw-distill`](../commands/index.md)
+- [`/nw-finalize`](../commands/index.md)
 
 ## Skills
 

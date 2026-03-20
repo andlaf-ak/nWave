@@ -22,27 +22,27 @@ The framework operates as a sequential pipeline of 6 waves:
 
 **Skip waves you don't need** — brownfield work may start at `deliver`, bug fixes at `root-why` + `execute`.
 
-### What `/nw:deliver` Automates
+### What `/nw-deliver` Automates
 
-`/nw:deliver` orchestrates the full inner loop with DES (Deterministic Execution System):
+`/nw-deliver` orchestrates the full inner loop with DES (Deterministic Execution System):
 
 ```text
-/nw:deliver = roadmap → execute → refactor → review → mutation-test → finalize
+/nw-deliver = roadmap → execute → refactor → review → mutation-test → finalize
 ```
 
 ### Manual Inner Loop (Learning Mode)
 
-If you are still learning the framework, run each step yourself instead of `/nw:deliver`:
+If you are still learning the framework, run each step yourself instead of `/nw-deliver`:
 
 ```bash
-/nw:execute @software-crafter "implement login endpoint" # Execute one task
-/nw:refactor                                             # Improve structure
-/nw:review @software-crafter task "implement login endpoint" # Quality check
-/nw:mutation-test                            # Validate test effectiveness
-/nw:finalize                                 # Archive and clean up
+/nw-execute @software-crafter "implement login endpoint" # Execute one task
+/nw-refactor                                             # Improve structure
+/nw-review @software-crafter task "implement login endpoint" # Quality check
+/nw-mutation-test                            # Validate test effectiveness
+/nw-finalize                                 # Archive and clean up
 ```
 
-This gives you hands-on understanding of each step without DES orchestration. Graduate to `/nw:deliver` when the pattern feels natural.
+This gives you hands-on understanding of each step without DES orchestration. Graduate to `/nw-deliver` when the pattern feels natural.
 
 **Cross-wave commands** (can be used anytime): `research`, `diagram`, `root-why`, `document`, `refactor`, `mikado`
 
@@ -64,13 +64,13 @@ Research is not a fixed step in a sequence - it's a capability you invoke **when
 
 ```bash
 # Domain research before requirements
-/nw:research "multi-tenant architecture patterns"
+/nw-research "multi-tenant architecture patterns"
 
 # Technology evaluation
-/nw:research "compare OAuth2 providers for enterprise"
+/nw-research "compare OAuth2 providers for enterprise"
 
 # Research with embed for agent knowledge
-/nw:research "Residuality Theory" --embed-for=solution-architect
+/nw-research "Residuality Theory" --embed-for=solution-architect
 ```
 
 ---
@@ -103,13 +103,13 @@ Research is not a fixed step in a sequence - it's a capability you invoke **when
 **Example Commands**:
 
 ```bash
-/nw:research "authentication best practices for SaaS"
-/nw:discuss "authentication requirements"
-/nw:design --architecture=hexagonal
-/nw:devops
-/nw:diagram --format=mermaid --level=container
-/nw:distill "user-login-story"
-/nw:deliver
+/nw-research "authentication best practices for SaaS"
+/nw-discuss "authentication requirements"
+/nw-design --architecture=hexagonal
+/nw-devops
+/nw-diagram --format=mermaid --level=container
+/nw-distill "user-login-story"
+/nw-deliver
 ```
 
 ---
@@ -131,8 +131,8 @@ Research is not a fixed step in a sequence - it's a capability you invoke **when
 **Example Commands**:
 
 ```bash
-/nw:research "xUnit parallelization strategies"  # Optional: gather options
-/nw:deliver
+/nw-research "xUnit parallelization strategies"  # Optional: gather options
+/nw-deliver
 ```
 
 ---
@@ -165,12 +165,12 @@ Research is not a fixed step in a sequence - it's a capability you invoke **when
 
 ```bash
 # Simple refactoring
-/nw:mikado "extract payment processing module"
-/nw:refactor --target="PaymentService" --level=3
+/nw-mikado "extract payment processing module"
+/nw-refactor --target="PaymentService" --level=3
 
 # Complex refactoring with full tracking
-/nw:research "strangler fig pattern for legacy replacement"
-/nw:deliver
+/nw-research "strangler fig pattern for legacy replacement"
+/nw-deliver
 ```
 
 ---
@@ -192,10 +192,10 @@ Research is not a fixed step in a sequence - it's a capability you invoke **when
 **Example Commands**:
 
 ```bash
-/nw:research "JWT token expiration edge cases"  # Optional: if unfamiliar with area
-/nw:root-why "authentication timeout errors in production"
-/nw:execute @software-crafter "fix-auth-timeout"
-/nw:review @software-crafter implementation "src/auth/"
+/nw-research "JWT token expiration edge cases"  # Optional: if unfamiliar with area
+/nw-root-why "authentication timeout errors in production"
+/nw-execute @software-crafter "fix-auth-timeout"
+/nw-review @software-crafter implementation "src/auth/"
 ```
 
 ---
@@ -218,13 +218,13 @@ research → [decision point: which job to pursue next]
 
 ```bash
 # Technology evaluation
-/nw:research "compare OAuth2 providers for enterprise use"
+/nw-research "compare OAuth2 providers for enterprise use"
 
 # Domain understanding
-/nw:research "event sourcing patterns for audit trails"
+/nw-research "event sourcing patterns for audit trails"
 
 # Research with knowledge embedding for future use
-/nw:research "Hexagonal Architecture" --embed-for=solution-architect
+/nw-research "Hexagonal Architecture" --embed-for=solution-architect
 ```
 
 ---
@@ -252,46 +252,46 @@ This section breaks down what specific job each wave command fulfills.
 
 | Job | Command | Outcome |
 |-----|---------|---------|
-| Validate problem exists | `/nw:discover` | Evidence-based validation |
-| Market research | `/nw:discover` | Competitive analysis |
+| Validate problem exists | `/nw-discover` | Evidence-based validation |
+| Market research | `/nw-discover` | Competitive analysis |
 
 ### DISCUSS Wave
 
 | Job | Command | Outcome |
 |-----|---------|---------|
-| Capture stakeholder needs | `/nw:discuss` | Requirements documented |
-| Align business and tech | `/nw:discuss` | Shared understanding |
-| Define acceptance criteria | `/nw:discuss` | Testable requirements |
+| Capture stakeholder needs | `/nw-discuss` | Requirements documented |
+| Align business and tech | `/nw-discuss` | Shared understanding |
+| Define acceptance criteria | `/nw-discuss` | Testable requirements |
 
 ### DESIGN Wave
 
 | Job | Command | Outcome |
 |-----|---------|---------|
-| Choose architecture pattern | `/nw:design` | Architecture decision |
-| Select technology stack | `/nw:design` | Technology rationale |
-| Define component boundaries | `/nw:design` | Clear module separation |
-| Communicate architecture visually | `/nw:diagram` | Stakeholder-ready diagrams |
+| Choose architecture pattern | `/nw-design` | Architecture decision |
+| Select technology stack | `/nw-design` | Technology rationale |
+| Define component boundaries | `/nw-design` | Clear module separation |
+| Communicate architecture visually | `/nw-diagram` | Stakeholder-ready diagrams |
 
 ### DEVOPS Wave
 
 | Job | Command | Outcome |
 |-----|---------|---------|
-| Platform readiness | `/nw:devops` | CI/CD and infrastructure design |
-| Deployment strategy | `/nw:devops` | Production deployment plan |
+| Platform readiness | `/nw-devops` | CI/CD and infrastructure design |
+| Deployment strategy | `/nw-devops` | Production deployment plan |
 
 ### DISTILL Wave
 
 | Job | Command | Outcome |
 |-----|---------|---------|
-| Define what "done" looks like | `/nw:distill` | Acceptance tests (Given-When-Then) |
+| Define what "done" looks like | `/nw-distill` | Acceptance tests (Given-When-Then) |
 
 ### DELIVER Wave
 
 | Job | Command | Outcome |
 |-----|---------|---------|
-| Plan and execute with TDD | `/nw:deliver` | Working, tested code |
-| Track progress | `/nw:deliver` | TODO → IN_PROGRESS → DONE |
-| Quality gates | `/nw:deliver` | Review at each step |
+| Plan and execute with TDD | `/nw-deliver` | Working, tested code |
+| Track progress | `/nw-deliver` | TODO → IN_PROGRESS → DONE |
+| Quality gates | `/nw-deliver` | Review at each step |
 
 ### Cross-Wave Jobs
 
@@ -299,27 +299,27 @@ This section breaks down what specific job each wave command fulfills.
 
 | Job | Command | Outcome |
 |-----|---------|---------|
-| Gather evidence before deciding | `/nw:research` | Cited findings |
-| Evaluate technology options | `/nw:research` | Comparison analysis |
-| Understand unfamiliar domain | `/nw:research` | Knowledge base |
-| Find root cause (not symptoms) | `/nw:root-why` | 5 Whys analysis |
-| Understand failure patterns | `/nw:root-why` | Multi-causal map |
+| Gather evidence before deciding | `/nw-research` | Cited findings |
+| Evaluate technology options | `/nw-research` | Comparison analysis |
+| Understand unfamiliar domain | `/nw-research` | Knowledge base |
+| Find root cause (not symptoms) | `/nw-root-why` | 5 Whys analysis |
+| Understand failure patterns | `/nw-root-why` | Multi-causal map |
 
 #### Development (standalone)
 
 | Job | Command | Outcome |
 |-----|---------|---------|
-| Execute single task | `/nw:execute` | Clean context per task |
-| Refactor safely | `/nw:refactor` | Improved structure |
-| Handle complex dependencies | `/nw:mikado` | Reversible change path |
-| Expert critique | `/nw:review` | Domain-specific feedback |
+| Execute single task | `/nw-execute` | Clean context per task |
+| Refactor safely | `/nw-refactor` | Improved structure |
+| Handle complex dependencies | `/nw-mikado` | Reversible change path |
+| Expert critique | `/nw-review` | Domain-specific feedback |
 
 #### Operations
 
 | Job | Command | Outcome |
 |-----|---------|---------|
-| Archive completed work | `/nw:finalize` | Clean project closure |
-| Create documentation | `/nw:document` | DIVIO-compliant docs |
+| Archive completed work | `/nw-finalize` | Clean project closure |
+| Create documentation | `/nw-document` | DIVIO-compliant docs |
 
 ### Job Categories Summary
 
@@ -342,7 +342,7 @@ Skip early waves when:
 - Architecture is established → skip `design`
 - Platform is ready → skip `devops`
 - Acceptance tests exist → skip `distill`
-- Go straight to `/nw:deliver`
+- Go straight to `/nw-deliver`
 
 ---
 
@@ -362,41 +362,41 @@ For complete agent specifications and selection guidance, see the [nWave Command
 ### Full Greenfield Feature
 
 ```bash
-/nw:discover "feature market research"
-/nw:discuss "feature requirements"
-/nw:design --architecture=hexagonal
-/nw:devops
-/nw:distill "acceptance tests"
-/nw:deliver
+/nw-discover "feature market research"
+/nw-discuss "feature requirements"
+/nw-design --architecture=hexagonal
+/nw-devops
+/nw-distill "acceptance tests"
+/nw-deliver
 ```
 
 ### New Feature on Existing Codebase
 
 ```bash
-/nw:research "best practices for {feature-domain}"  # Optional
-/nw:deliver
+/nw-research "best practices for {feature-domain}"  # Optional
+/nw-deliver
 ```
 
 ### Legacy System Modernization
 
 ```bash
-/nw:research "strangler fig pattern"
-/nw:root-why "current system limitations"
-/nw:deliver
+/nw-research "strangler fig pattern"
+/nw-root-why "current system limitations"
+/nw-deliver
 ```
 
 ### Quick Bug Fix
 
 ```bash
-/nw:root-why "users cannot login after password reset"
-/nw:execute @software-crafter "fix-password-reset-flow"
-/nw:review @software-crafter implementation "src/auth/"
+/nw-root-why "users cannot login after password reset"
+/nw-execute @software-crafter "fix-password-reset-flow"
+/nw-review @software-crafter implementation "src/auth/"
 ```
 
 ### Pure Research Task
 
 ```bash
-/nw:research "event sourcing vs CRUD for audit requirements"
+/nw-research "event sourcing vs CRUD for audit requirements"
 # Output: docs/research/{category}/{topic}.md
 # Decision: proceed with JOB 1, 2, or 3 based on findings
 ```
@@ -404,14 +404,14 @@ For complete agent specifications and selection guidance, see the [nWave Command
 ### Architecture with Visual Documentation
 
 ```bash
-/nw:design --architecture=hexagonal
-/nw:diagram --format=mermaid --level=container
+/nw-design --architecture=hexagonal
+/nw-diagram --format=mermaid --level=container
 ```
 
 ### Creating a New Agent
 
 ```bash
-/nw:forge  # Uses agent-builder to create new agent from template
+/nw-forge  # Uses agent-builder to create new agent from template
 ```
 
 ---

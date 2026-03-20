@@ -229,13 +229,13 @@ class RecoveryGuidanceHandler:
             "suggestions": [
                 "WHY: Your agent stopped during {phase} and left it marked IN_PROGRESS.\n"
                 "HOW: Reset the phase status to NOT_EXECUTED so the system knows it can retry.\n"
-                "ACTION: Review {transcript_path} for what went wrong, then run `/nw:execute` to try {phase} again.",
+                "ACTION: Review {transcript_path} for what went wrong, then run `/nw-execute` to try {phase} again.",
                 "WHY: A phase stuck IN_PROGRESS blocks your system from continuing.\n"
                 "HOW: Resetting clears the incomplete state and lets execution continue.\n"
                 "ACTION: Update your step file: change state.tdd_cycle.{phase}.status to 'NOT_EXECUTED'.",
                 "WHY: You need to understand why the agent stopped to fix the real problem.\n"
                 "HOW: The transcript contains the error details and what the agent was doing.\n"
-                "ACTION: Check the transcript at {transcript_path}, then run `/nw:execute @software-crafter '{step_file}'` to retry.",
+                "ACTION: Check the transcript at {transcript_path}, then run `/nw-execute @software-crafter '{step_file}'` to retry.",
             ],
         },
         "silent_completion": {
@@ -310,7 +310,7 @@ class RecoveryGuidanceHandler:
                 "ACTION: Review {transcript_path}, identify the failure, then decide: fix the error and retry, or adjust your configuration.",
                 "WHY: Your {phase} phase can't continue until you fix the crash issue.\n"
                 "HOW: Once you know the cause, reset the phase and retry with better conditions.\n"
-                "ACTION: After reviewing {transcript_path}, reset {phase} to NOT_EXECUTED and run `/nw:execute` again.",
+                "ACTION: After reviewing {transcript_path}, reset {phase} to NOT_EXECUTED and run `/nw-execute` again.",
             ],
         },
         "invalid_skip": {
@@ -332,7 +332,7 @@ class RecoveryGuidanceHandler:
                 "ACTION: Check {transcript_path} to see what happened, then reset {phase} to NOT_EXECUTED and retry.",
                 "WHY: A phase that's been stuck for {stale_threshold_hours}+ hours won't complete on its own.\n"
                 "HOW: Reset it to NOT_EXECUTED so the system can retry from a clean state.\n"
-                "ACTION: Update state.tdd_cycle.{phase}.status to 'NOT_EXECUTED', then run `/nw:execute` again.",
+                "ACTION: Update state.tdd_cycle.{phase}.status to 'NOT_EXECUTED', then run `/nw-execute` again.",
                 "WHY: Stale execution blocks your whole workflow from continuing to the next phase.\n"
                 "HOW: Clearing the stale state lets the system progress instead of waiting forever.\n"
                 "ACTION: After reviewing {transcript_path}, force-reset {phase} to NOT_EXECUTED in your step file.",

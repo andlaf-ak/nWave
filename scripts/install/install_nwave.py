@@ -447,25 +447,28 @@ class NWaveInstaller:
                 f"    {'✅' if agent_ok else '❌'} Agents verified ({agent_matched}/{agent_expected})"
             )
 
-        # Commands: dist/commands/nw/ or nWave/tasks/nw/
-        dist_commands = self.framework_source / "commands" / "nw"
-        if dist_commands.exists():
-            commands_source = dist_commands
-        else:
-            commands_source = self.project_root / "nWave" / "tasks" / "nw"
-        commands_target = self.claude_config_dir / "commands" / "nw"
-        if commands_source.exists():
-            cmd_source_files = sorted(commands_source.glob("*.md"))
-            cmd_matched = sum(
-                1 for f in cmd_source_files if (commands_target / f.name).exists()
-            )
-            cmd_expected = len(cmd_source_files)
-            cmd_ok = cmd_matched == cmd_expected and cmd_expected > 0
-            if not cmd_ok:
-                all_synced = False
-            self.logger.info(
-                f"    {'✅' if cmd_ok else '❌'} Commands verified ({cmd_matched}/{cmd_expected})"
-            )
+        # Commands: now installed as skills (nw-{name}/SKILL.md with user-invocable)
+        skills_target = self.claude_config_dir / "skills"
+        essential_commands = [
+            "nw-deliver",
+            "nw-design",
+            "nw-discuss",
+            "nw-distill",
+            "nw-devops",
+            "nw-review",
+        ]
+        cmd_matched = sum(
+            1
+            for name in essential_commands
+            if (skills_target / name / "SKILL.md").exists()
+        )
+        cmd_expected = len(essential_commands)
+        cmd_ok = cmd_matched == cmd_expected
+        if not cmd_ok:
+            all_synced = False
+        self.logger.info(
+            f"    {'✅' if cmd_ok else '❌'} Commands verified ({cmd_matched}/{cmd_expected})"
+        )
 
         # Templates from framework_source/templates/
         templates_source = self.framework_source / "templates"
@@ -607,12 +610,12 @@ def show_installation_summary(logger: Logger) -> None:
     logger.info("")
     logger.info("  📖 Quick start")
     commands = [
-        ("/nw:discover", "Evidence-based product discovery"),
-        ("/nw:discuss", "Requirements gathering and business analysis"),
-        ("/nw:design", "Architecture design with visual representation"),
-        ("/nw:distill", "Acceptance test creation and business validation"),
-        ("/nw:develop", "Outside-In TDD implementation with refactoring"),
-        ("/nw:deliver", "Production readiness validation"),
+        ("/nw-discover", "Evidence-based product discovery"),
+        ("/nw-discuss", "Requirements gathering and business analysis"),
+        ("/nw-design", "Architecture design with visual representation"),
+        ("/nw-distill", "Acceptance test creation and business validation"),
+        ("/nw-develop", "Outside-In TDD implementation with refactoring"),
+        ("/nw-deliver", "Production readiness validation"),
     ]
     for cmd, desc in commands:
         logger.info(f"    {cmd:<16} {desc}")

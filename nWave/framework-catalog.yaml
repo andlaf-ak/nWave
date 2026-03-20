@@ -1,5 +1,5 @@
 name: nWave
-version: 2.7.0
+version: 2.7.1
 description: "Comprehensive DISCOVER\u2192DISCUSS\u2192DESIGN\u2192DEVOPS\u2192DISTILL\u2192\
   DELIVER methodology with visual architecture lifecycle management"
 author: nWave Team
@@ -195,15 +195,6 @@ commands:
     - research_document
     - divio_documentation
     - validation_report
-  mutation_test:
-    description: Runs feature-scoped mutation testing to validate test suite quality.
-      Use after implementation to verify tests catch real bugs (kill rate >= 80%).
-    argument_hint: '[feature-id] - Optional: --threshold=[75|80|85] --language=[auto|python|java|javascript]'
-    agents:
-    - software_crafter
-    wave: DELIVER
-    outputs:
-    - mutation_report
   devops:
     description: Designs CI/CD pipelines, infrastructure, observability, and deployment
       strategy. Use when preparing platform readiness for a feature.
@@ -264,17 +255,6 @@ commands:
     outputs:
     - updated_diagrams
     - visual_architecture
-  refactor:
-    description: Applies the Refactoring Priority Premise (RPP) levels L1-L6 for systematic
-      code refactoring. Use when improving code quality through structured refactoring
-      passes.
-    argument_hint: '[target-class-or-module] - Optional: --level=[1-6] --method=[extract|inline|rename|move]
-      --scope=[method|class|module]'
-    agents:
-    - systematic_refactorer
-    outputs:
-    - refactored_code
-    - refactoring_log
   roadmap:
     description: Creates a phased roadmap.json for a feature goal with acceptance
       criteria and TDD steps. Use when planning implementation steps before execution.

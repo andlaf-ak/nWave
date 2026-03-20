@@ -3,7 +3,7 @@
 **Time**: ~17 minutes (9 steps)
 **Platform**: macOS or Linux (Windows: use WSL)
 **Prerequisites**: Python 3.10+, Claude Code with nWave installed, [Tutorial 4](./tutorial-discovery.md) completed
-**What this is**: An interactive walkthrough of `/nw:discuss` -- nWave's requirements and UX journey command. You will turn a validated problem into structured user stories with acceptance criteria.
+**What this is**: An interactive walkthrough of `/nw-discuss` -- nWave's requirements and UX journey command. You will turn a validated problem into structured user stories with acceptance criteria.
 
 ---
 
@@ -15,7 +15,7 @@ A complete requirements package -- user stories with Given/When/Then acceptance 
 
 **After**: You have a UX journey map showing how the bookmark CLI should *feel* to use, structured user stories with real-world examples, BDD acceptance criteria, and a Definition of Ready validation confirming everything is ready for the DESIGN wave.
 
-**Why this matters**: Jumping from "the problem is real" to "start coding" skips the most important question: what exactly should we build? `/nw:discuss` fills that gap with testable requirements.
+**Why this matters**: Jumping from "the problem is real" to "start coding" skips the most important question: what exactly should we build? `/nw-discuss` fills that gap with testable requirements.
 
 ---
 
@@ -45,7 +45,7 @@ You should see your problem validation document with a recommendation (likely "P
 
 > **If `docs/discovery/` does not exist**: Complete [Tutorial 4](./tutorial-discovery.md) first. This tutorial builds directly on its output.
 
-> **If your discovery recommended KILL**: You can still follow this tutorial for practice. `/nw:discuss` works regardless of the discovery outcome -- but in a real project, you would pick a different idea first.
+> **If your discovery recommended KILL**: You can still follow this tutorial for practice. `/nw-discuss` works regardless of the discovery outcome -- but in a real project, you would pick a different idea first.
 
 *Next: you will launch the discuss command and meet Luna, the product owner agent.*
 
@@ -62,7 +62,7 @@ claude
 Start the requirements conversation:
 
 ```
-/nw:discuss bookmark-cli
+/nw-discuss bookmark-cli
 ```
 
 > **AI output varies between runs.** Your conversation with Luna will differ from the examples below. That is expected -- Luna adapts to your answers and your discovery artifacts. What matters is the structure (questions, journey design, user stories), not the exact wording.
@@ -374,7 +374,7 @@ You started with a validated problem and ended with a complete requirements pack
 ### The Wave So Far
 
 ```
-DISCOVER (/nw:discover)     DISCUSS (/nw:discuss)        DESIGN (/nw:design)
+DISCOVER (/nw-discover)     DISCUSS (/nw-discuss)        DESIGN (/nw-design)
 ─────────────────────────   ──────────────────────────   ───────────────────
 "Is the problem real?"  --> "What should we build?"  --> "How should we
                                                           build it?"
@@ -390,7 +390,7 @@ Each wave validates before the next one begins. No handoff without evidence.
 
 ## Next Steps
 
-- **[Tutorial 6: Architecture Design](./TUTORIAL-INDEX.md)** -- Take your requirements into `/nw:design` to make architecture decisions before writing code
+- **[Tutorial 6: Architecture Design](./TUTORIAL-INDEX.md)** -- Take your requirements into `/nw-design` to make architecture decisions before writing code
 - **Review the journey visual** -- Open `docs/ux/bookmark-cli/journey-core-visual.md` and trace the emotional arc from frustration to relief
 - **Read a user story aloud** -- If the Given/When/Then reads naturally, the acceptance criteria are well-written. If it sounds awkward, Luna may have been too technical.
 
@@ -400,12 +400,12 @@ Each wave validates before the next one begins. No handoff without evidence.
 
 | Symptom | Fix |
 |---------|-----|
-| Luna does not start after `/nw:discuss` | Make sure nWave is installed. Run `/nw:help` to verify. |
+| Luna does not start after `/nw-discuss` | Make sure nWave is installed. Run `/nw-help` to verify. |
 | Luna skips the journey and goes straight to stories | Say `*journey "bookmark-cli"` to explicitly start the journey phase. |
 | DoR validation fails repeatedly | Say "let's simplify -- focus on the 2 most important stories only." Fewer stories are easier to validate. |
-| No `docs/ux/` directory after the session | Luna writes journey artifacts after the discovery questions. If you ended the session early, run `/nw:discuss bookmark-cli` again. |
+| No `docs/ux/` directory after the session | Luna writes journey artifacts after the discovery questions. If you ended the session early, run `/nw-discuss bookmark-cli` again. |
 | Luna asks too many questions | Say "I think you have enough to sketch the journey now." Luna will proceed to visualization. |
-| Want to start fresh | Delete `docs/ux/` and `docs/requirements/` and run `/nw:discuss` again. |
+| Want to start fresh | Delete `docs/ux/` and `docs/requirements/` and run `/nw-discuss` again. |
 
 ---
 

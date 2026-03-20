@@ -141,19 +141,29 @@ def minimal_source_tree(tmp_path: Path) -> Path:
         encoding="utf-8",
     )
 
-    # 1 agent
-    agents_dir = root / "nWave" / "agents"
-    agents_dir.mkdir(parents=True)
-    (agents_dir / "nw-test-agent.md").write_text(
-        "---\nname: nw-test-agent\n---\n# Test Agent\n",
+    # Framework catalog (required for fail-closed agent filtering)
+    nwave_dir = root / "nWave"
+    nwave_dir.mkdir(parents=True)
+    (nwave_dir / "framework-catalog.yaml").write_text(
+        "agents:\n  test-agent:\n    wave: DELIVER\n    public: true\n"
+        '    description: "Test agent"\n',
         encoding="utf-8",
     )
 
-    # 1 skill
-    skills_dir = root / "nWave" / "skills" / "test-agent"
+    # 1 agent (with skills list for ownership map)
+    agents_dir = nwave_dir / "agents"
+    agents_dir.mkdir(parents=True)
+    (agents_dir / "nw-test-agent.md").write_text(
+        "---\nname: nw-test-agent\nskills:\n  - nw-test-skill\n---\n# Test Agent\n",
+        encoding="utf-8",
+    )
+
+    # 1 skill (NEW_FLAT layout: nw-prefixed dir with SKILL.md)
+    skills_dir = root / "nWave" / "skills" / "nw-test-skill"
     skills_dir.mkdir(parents=True)
-    (skills_dir / "test-skill.md").write_text(
-        "---\nname: test-skill\n---\n# Test Skill\n",
+    (skills_dir / "SKILL.md").write_text(
+        "---\nname: nw-test-skill\ndescription: Test skill\n"
+        "disable-model-invocation: true\n---\n# Test Skill\n",
         encoding="utf-8",
     )
 

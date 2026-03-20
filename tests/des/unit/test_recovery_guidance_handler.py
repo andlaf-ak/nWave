@@ -78,7 +78,7 @@ class TestGenerateRecoverySuggestions:
 
         # At least one should mention NOT_EXECUTED or execution command
         has_execution_ref = any(
-            "NOT_EXECUTED" in s or "/nw:execute" in s or "execute" in s.lower()
+            "NOT_EXECUTED" in s or "/nw-execute" in s or "execute" in s.lower()
             for s in suggestions
         )
         assert has_execution_ref, "Should reference execution or phase status"
@@ -110,7 +110,7 @@ class TestFormatSuggestion:
         formatted = handler.format_suggestion(
             why_text="The agent crashed during phase execution",
             how_text="Reset the phase status to NOT_EXECUTED and retry",
-            actionable_command="/nw:execute @software-crafter 'steps/01-01.json'",
+            actionable_command="/nw-execute @software-crafter 'steps/01-01.json'",
         )
 
         assert formatted is not None
@@ -123,7 +123,7 @@ class TestFormatSuggestion:
 
         why_text = "Phase left in IN_PROGRESS state indicates interruption"
         how_text = "Resetting allows framework to retry from clean state"
-        command = "/nw:execute @software-crafter 'steps/01-01.json'"
+        command = "/nw-execute @software-crafter 'steps/01-01.json'"
 
         formatted = handler.format_suggestion(
             why_text=why_text,

@@ -2,6 +2,7 @@
 name: nw-fp-kotlin
 agent: nw-functional-software-crafter
 description: Kotlin language-specific patterns with Arrow, Raise DSL, and coroutine-based effects
+user-invocable: false
 disable-model-invocation: true
 ---
 

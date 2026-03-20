@@ -3,7 +3,7 @@
 **Time**: ~12 minutes (5 steps)
 **Platform**: macOS or Linux (Windows: use WSL)
 **Prerequisites**: Claude Code with nWave installed
-**What this is**: A walkthrough of `/nw:document` -- nWave's documentation generator. You will create a small Python module, then use `/nw:document` to generate DIVIO-compliant documentation for it. The result is a polished reference document that Quill (the documentarist agent) writes and reviews automatically.
+**What this is**: A walkthrough of `/nw-document` -- nWave's documentation generator. You will create a small Python module, then use `/nw-document` to generate DIVIO-compliant documentation for it. The result is a polished reference document that Quill (the documentarist agent) writes and reviews automatically.
 
 ---
 
@@ -15,7 +15,7 @@ A reference document for a Python string utilities module -- generated, classifi
 
 **After**: You run one command and get a structured, type-appropriate document that follows the DIVIO documentation framework. It is classified as the right type (tutorial, how-to, reference, or explanation), checked for quality, and ready to commit.
 
-**Why this matters**: Most documentation fails because it mixes purposes -- a "getting started" guide that also tries to be an API reference and an architecture explainer. The DIVIO framework solves this by separating documentation into four distinct types, each with its own rules. `/nw:document` enforces this automatically, so your docs stay focused and useful.
+**Why this matters**: Most documentation fails because it mixes purposes -- a "getting started" guide that also tries to be an API reference and an architecture explainer. The DIVIO framework solves this by separating documentation into four distinct types, each with its own rules. `/nw-document` enforces this automatically, so your docs stay focused and useful.
 
 ---
 
@@ -113,12 +113,12 @@ You should see the Claude Code prompt:
 Verify nWave is available:
 
 ```
-/nw:help
+/nw-help
 ```
 
-You should see a list of nWave commands, including `/nw:document`. If you see an error, nWave is not installed -- follow the [installation guide](./installation-guide.md) first.
+You should see a list of nWave commands, including `/nw-document`. If you see an error, nWave is not installed -- follow the [installation guide](./installation-guide.md) first.
 
-*Next: you will run `/nw:document` to generate documentation for this module.*
+*Next: you will run `/nw-document` to generate documentation for this module.*
 
 ---
 
@@ -127,7 +127,7 @@ You should see a list of nWave commands, including `/nw:document`. If you see an
 Run the document command, specifying a reference document type:
 
 ```
-/nw:document "string_utils module" --type=reference
+/nw-document "string_utils module" --type=reference
 ```
 
 The documentation pipeline starts. You will see phases scroll by:
@@ -143,7 +143,7 @@ This takes 3-4 minutes. The pipeline researches your code, writes the document, 
 
 > **AI output varies between runs.** Your generated documentation will differ from the examples in this tutorial. The agents produce content based on your specific code. What matters is the structure and type classification, not exact wording.
 
-> **If the command does not start**: Run `/nw:help` to verify nWave is installed. If `/nw:document` is not listed, reinstall nWave.
+> **If the command does not start**: Run `/nw-help` to verify nWave is installed. If `/nw-document` is not listed, reinstall nWave.
 
 *Next: you will read the generated documentation and understand the DIVIO types.*
 
@@ -263,7 +263,7 @@ Quill detects five collapse patterns:
 Generate a how-to guide for the same module to see how the output changes:
 
 ```
-/nw:document "truncating user input with string_utils" --type=howto
+/nw-document "truncating user input with string_utils" --type=howto
 ```
 
 Watch for how the output differs from the reference document:
@@ -283,7 +283,7 @@ You produced two documentation artifacts:
 
 Both were automatically classified, validated for type purity, checked for collapse patterns, and reviewed for quality.
 
-### When to Use `/nw:document`
+### When to Use `/nw-document`
 
 - You have code with no documentation and need to start somewhere
 - You want to ensure existing docs follow DIVIO principles
@@ -309,7 +309,7 @@ If you omit `--type`, the command will ask you to choose interactively.
 
 | Symptom | Fix |
 |---------|-----|
-| `/nw:document` does not start | Make sure nWave is installed. Run `/nw:help` to verify the command is listed. |
+| `/nw-document` does not start | Make sure nWave is installed. Run `/nw-help` to verify the command is listed. |
 | Pipeline takes more than 5 minutes | Complex modules with many functions take longer. This is normal. For large codebases, scope the topic to a single module or component. |
 | Collapse violations in the validation report | The pipeline auto-revises up to 2 times. If collapse persists, it means the content genuinely spans multiple types. Consider generating separate documents for each type. |
 | Generated doc is too short or generic | Add more docstrings to your code. Quill works best with functions that have type hints, docstrings, and clear parameter descriptions. |

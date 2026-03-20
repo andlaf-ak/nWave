@@ -48,7 +48,7 @@ Findings MUST be priority-ordered: blocking issues first, then suggestions, then
 ## Syntax
 
 ```
-/nw:review @{agent-name} {artifact-type} "{artifact-path}" [step_id={id}] [--dimensions=rpp] [--from=1] [--to=3]
+/nw-review @{agent-name} {artifact-type} "{artifact-path}" [step_id={id}] [--dimensions=rpp] [--from=1] [--to=3]
 ```
 
 **Parameters:**
@@ -110,31 +110,31 @@ On validation failure, return specific error and stop.
 
 ### Example 1: Step review
 ```
-/nw:review @nw-software-crafter step "docs/feature/auth-upgrade/execution-log.json" step_id=02-01
+/nw-review @nw-software-crafter step "docs/feature/auth-upgrade/execution-log.json" step_id=02-01
 ```
 Invokes `nw-software-crafter-reviewer` with step review of execution log, step 02-01.
 
 ### Example 2: Roadmap review
 ```
-/nw:review @nw-solution-architect roadmap "docs/feature/auth-upgrade/roadmap.json"
+/nw-review @nw-solution-architect roadmap "docs/feature/auth-upgrade/roadmap.json"
 ```
 Invokes `nw-solution-architect-reviewer` with roadmap review.
 
 ### Example 3: Implementation review
 ```
-/nw:review @nw-platform-architect implementation "docs/feature/auth-upgrade/execution-log.json" step_id=01-01
+/nw-review @nw-platform-architect implementation "docs/feature/auth-upgrade/execution-log.json" step_id=01-01
 ```
 Invokes `nw-platform-architect-reviewer` with implementation review of step 01-01.
 
 ### Example 4: RPP code quality review
 ```
-/nw:review @nw-software-crafter implementation "src/des/" --dimensions=rpp --from=1 --to=3
+/nw-review @nw-software-crafter implementation "src/des/" --dimensions=rpp --from=1 --to=3
 ```
 Invokes `nw-software-crafter-reviewer` with implementation review + RPP L1-L3 code smell detection using cascade rule.
 
 ## Error Messages
 
-- Invalid agent: "Unknown agent: {name}. Check available agents with /nw:agents."
+- Invalid agent: "Unknown agent: {name}. Check available agents with /nw-agents."
 - Invalid type: "Invalid artifact type: {type}. Use: baseline, roadmap, step, task, implementation."
 - Missing file: "Artifact not found: {path}."
 - Missing step_id: "step_id required for {type} reviews."

@@ -9,13 +9,13 @@ Use for DESIGN wave - collaborates with user to define system architecture, comp
 
 ## Commands
 
-- [`/nw:deliver`](../commands/index.md)
-- [`/nw:design`](../commands/index.md)
-- [`/nw:diagram`](../commands/index.md)
-- [`/nw:discuss`](../commands/index.md)
-- [`/nw:finalize`](../commands/index.md)
-- [`/nw:review`](../commands/index.md)
-- [`/nw:roadmap`](../commands/index.md)
+- [`/nw-deliver`](../commands/index.md)
+- [`/nw-design`](../commands/index.md)
+- [`/nw-diagram`](../commands/index.md)
+- [`/nw-discuss`](../commands/index.md)
+- [`/nw-finalize`](../commands/index.md)
+- [`/nw-review`](../commands/index.md)
+- [`/nw-roadmap`](../commands/index.md)
 
 ## Skills
 

@@ -205,8 +205,8 @@ def attempt_filter():
     if hasattr(pytest, "no_catalog") and pytest.no_catalog:
         from scripts.shared.agent_catalog import load_public_agents
 
-        # Pass a non-existent path
-        result = load_public_agents(Path("/nonexistent"))
+        # Pass a non-existent path with strict=False for backward compat
+        result = load_public_agents(Path("/nonexistent"), strict=False)
         pytest.filter_fallback = len(result) == 0  # Empty set = include all
 
 
@@ -255,7 +255,7 @@ def run_dist_build(skills_source_dir: Path, tmp_path: Path):
     (project_root / "src" / "des" / "__init__.py").write_text("")
     (project_root / "scripts").mkdir(parents=True, exist_ok=True)
     (project_root / "nWave" / "framework-catalog.yaml").write_text(
-        'name: "nWave"\nversion: "1.0.0"\n', encoding="utf-8"
+        "agents: {}\n", encoding="utf-8"
     )
 
     # Import and run the real DistBuilder

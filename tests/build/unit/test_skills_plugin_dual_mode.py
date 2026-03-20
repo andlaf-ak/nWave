@@ -48,6 +48,15 @@ def new_flat_source(tmp_path: Path) -> Path:
         d = source / name
         d.mkdir()
         (d / "SKILL.md").write_text(f"# {name}\nContent.\n", encoding="utf-8")
+    # Create minimal framework-catalog.yaml so load_public_agents(strict=True) works.
+    # In _make_context, project_root = framework_source.parent = source.parent.parent
+    # = tmp_path. So the catalog is at tmp_path/nWave/framework-catalog.yaml.
+    nwave_dir = tmp_path / "nWave"
+    nwave_dir.mkdir(parents=True, exist_ok=True)
+    (nwave_dir / "framework-catalog.yaml").write_text(
+        "agents: {}\n",
+        encoding="utf-8",
+    )
     return source
 
 

@@ -2,6 +2,15 @@
 
 Install nWave to your global Claude Code configuration. This adds 23 specialized agents (12 primary + 11 reviewers) and 22 slash commands across all your projects.
 
+## v2.8.0 Breaking Change: Command Format
+
+Starting with v2.8.0, all nWave commands use hyphens instead of colons:
+
+- **Before**: `/nw:deliver`, `/nw:design`, `/nw:discuss`, etc.
+- **After**: `/nw-deliver`, `/nw-design`, `/nw-discuss`, etc.
+
+If you upgrade from an earlier version, run the installer again to clean up old `/nw:` commands. No data loss — only the command format changes.
+
 ## Choose Your Method
 
 | Scenario | Use | Why |
@@ -64,7 +73,7 @@ From Claude Code, run:
 /plugin install nw@nwave-marketplace
 ```
 
-Restart Claude Code and type `/nw:` to see all available commands.
+Restart Claude Code and type `/nw-` to see all available commands.
 
 > The plugin method is in beta preview. It provides the same agents and commands as the CLI installer. If you encounter issues, switch to the CLI method above.
 
@@ -170,11 +179,11 @@ Both methods remove agents, commands, and configuration from `~/.claude/`. Your 
 nwave-ai version
 ```
 
-Then in Claude Code, type `@` to see agents or `/nw:` to see commands.
+Then in Claude Code, type `@` to see agents or `/nw-` to see commands.
 
 ### Plugin method
 
-Restart Claude Code after installation. Type `/nw:` in the command palette — you should see all 22 commands. Type `@nw` to see agents.
+Restart Claude Code after installation. Type `/nw-` in the command palette — you should see all 22 commands. Type `@nw` to see agents.
 
 > If commands don't appear after plugin install, quit Claude Code completely and reopen it.
 
@@ -288,15 +297,15 @@ After installation, navigate to any project and start your first workflow:
 
 ```
 # For fresh features (greenfield)
-/nw:discover "feature market research"
-/nw:discuss "feature requirements"
-/nw:design
-/nw:devops
-/nw:distill "acceptance tests"
-/nw:deliver
+/nw-discover "feature market research"
+/nw-discuss "feature requirements"
+/nw-design
+/nw-devops
+/nw-distill "acceptance tests"
+/nw-deliver
 
 # Or for existing code (brownfield)
-/nw:deliver
+/nw-deliver
 ```
 
 For workflow guidance, see [Jobs To Be Done Guide](jobs-to-be-done-guide.md).

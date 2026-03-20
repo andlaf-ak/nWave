@@ -2,14 +2,14 @@
 
 **Time**: ~16 minutes (12 steps)
 **Platform**: macOS or Linux (Windows: use WSL)
-**Prerequisites**: [Tutorial 1](./tutorial-first-delivery.md) completed (or Tutorial 2). You should have seen `/nw:deliver` run at least once.
+**Prerequisites**: [Tutorial 1](./tutorial-first-delivery.md) completed (or Tutorial 2). You should have seen `/nw-deliver` run at least once.
 **What this is**: A conceptual walkthrough, not a hands-on coding tutorial. You will explore artifacts that already exist in your completed project.
 
 ---
 
 ## What You'll Learn
 
-After Tutorial 1, you watched `/nw:deliver` produce working code from failing tests. But what actually happened? This tutorial answers that question.
+After Tutorial 1, you watched `/nw-deliver` produce working code from failing tests. But what actually happened? This tutorial answers that question.
 
 **Before**: You see a wall of scrolling output and hope it worked.
 
@@ -47,10 +47,10 @@ The delivery pipeline takes your feature description and turns it into tested, r
 
 ## Step 2 of 12: The Pipeline at a Glance (~1 minute)
 
-Every `/nw:deliver` run follows a seven-phase pipeline. You do not need to memorize each phase -- just know the flow goes from planning to code to quality checks:
+Every `/nw-deliver` run follows a seven-phase pipeline. You do not need to memorize each phase -- just know the flow goes from planning to code to quality checks:
 
 ```
-/nw:deliver "your feature"
+/nw-deliver "your feature"
     |
     1. ROADMAP         Plans the work
     2. EXECUTE         Writes code via TDD
@@ -331,8 +331,8 @@ This evolution document contains a summary of the feature, the steps taken, qual
 
 ## Next Steps
 
-- **Try it yourself**: Run `/nw:deliver` on a new feature in your Tutorial 1 or 2 project. This time, watch the output with the pipeline phases in mind.
-- **[Tutorial 4: From Idea to Validated Problem](./tutorial-discovery.md)** -- Start from the very beginning of the nWave workflow with `/nw:discover`
+- **Try it yourself**: Run `/nw-deliver` on a new feature in your Tutorial 1 or 2 project. This time, watch the output with the pipeline phases in mind.
+- **[Tutorial 4: From Idea to Validated Problem](./tutorial-discovery.md)** -- Start from the very beginning of the nWave workflow with `/nw-discover`
 - **[Tutorial 13: Validating Your Test Suite](./tutorial-mutation-testing.md)** -- Deep dive into mutation testing as a standalone tool
 
 ---

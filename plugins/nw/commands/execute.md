@@ -14,7 +14,7 @@ Dispatch a single roadmap step to an agent. Orchestrator extracts step context f
 ## Syntax
 
 ```
-/nw:execute @{agent} "{feature-id}" "{step-id}"
+/nw-execute @{agent} "{feature-id}" "{step-id}"
 ```
 
 ## Context Files Required
@@ -52,7 +52,7 @@ Use this DES template verbatim. Fill `{placeholders}` from roadmap. Without DES 
 # DES_METADATA
 Step: {step-id}
 Feature: {feature-id}
-Command: /nw:execute
+Command: /nw-execute
 
 # AGENT_IDENTITY
 Agent: {agent-name}
@@ -64,7 +64,7 @@ Always load at PREPARE: tdd-methodology.md, quality-framework.md
 Load on-demand per phase as specified in your Skill Loading Strategy table.
 
 # TASK_CONTEXT
-{step context from roadmap - name|description|acceptance_criteria|test_file|scenario_name|quality_gates|implementation_notes|dependencies|estimated_hours|deliverables}
+{step context from roadmap - name|description|acceptance_criteria|test_file|scenario_name|quality_gates|implementation_notes|dependencies|estimated_hours|deliverables|files_to_modify}
 
 # DESIGN_CONTEXT
 {Summary of architectural decisions relevant to this step, extracted by the orchestrator from design wave artifacts (architecture-design.md, component-boundaries.md, wave-decisions.md). Include: component structure, dependency boundaries, technology choices, and any design constraints that affect implementation. If no design artifacts exist, write "No design artifacts available — use project conventions."}
@@ -175,9 +175,9 @@ Resume costs ~50% more tokens/call due to context replay (measured: 3.7K vs 2.5K
 ## Examples
 
 ```bash
-/nw:execute @nw-software-crafter "des-us007-boundary-rules" "02-01"
-/nw:execute @nw-researcher "auth-upgrade" "01-01"
-/nw:execute @nw-software-crafter "des-us007" "03-01"  # retry after failure
+/nw-execute @nw-software-crafter "des-us007-boundary-rules" "02-01"
+/nw-execute @nw-researcher "auth-upgrade" "01-01"
+/nw-execute @nw-software-crafter "des-us007" "03-01"  # retry after failure
 ```
 
 ## TDD_PHASES
@@ -194,5 +194,5 @@ Resume costs ~50% more tokens/call due to context replay (measured: 3.7K vs 2.5K
 
 ## Next Wave
 
-**Handoff To**: /nw:review for post-execution review
+**Handoff To**: /nw-review for post-execution review
 **Deliverables**: Updated execution-log.json|implementation artifacts|git commits

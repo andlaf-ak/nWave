@@ -30,18 +30,17 @@ def mock_project(tmp_path):
     # nWave/agents/ — agent markdown files
     agents_dir = tmp_path / "nWave" / "agents"
     agents_dir.mkdir(parents=True)
-    for name in [
-        "nw-solution-architect.md",
-        "nw-software-crafter.md",
-        "nw-researcher.md",
-    ]:
-        (agents_dir / name).write_text(f"# {name}\nAgent definition.")
-
-    # nWave/tasks/nw/ — command markdown files
-    commands_dir = tmp_path / "nWave" / "tasks" / "nw"
-    commands_dir.mkdir(parents=True)
-    for name in ["deliver.md", "design.md", "execute.md"]:
-        (commands_dir / name).write_text(f"# {name}\nCommand definition.")
+    (agents_dir / "nw-solution-architect.md").write_text(
+        "---\nname: nw-solution-architect\ndescription: test\ntools: Read\n---\n"
+    )
+    (agents_dir / "nw-software-crafter.md").write_text(
+        "---\nname: nw-software-crafter\ndescription: test\ntools: Read\n"
+        "skills:\n  - nw-tdd-methodology\n  - nw-hexagonal-testing\n"
+        "  - nw-progressive-refactoring\n---\n"
+    )
+    (agents_dir / "nw-researcher.md").write_text(
+        "---\nname: nw-researcher\ndescription: test\ntools: Read\n---\n"
+    )
 
     # nWave/templates/ — schema and config templates
     templates_dir = tmp_path / "nWave" / "templates"
@@ -50,6 +49,7 @@ def mock_project(tmp_path):
     (templates_dir / "roadmap-compact.yaml").write_text("roadmap: compact")
 
     # nWave/skills/ — nw-prefixed skill directories with SKILL.md
+    # Agent skills (with disable-model-invocation)
     for skill_name in [
         "nw-tdd-methodology",
         "nw-hexagonal-testing",
@@ -58,8 +58,19 @@ def mock_project(tmp_path):
         skill_dir = tmp_path / "nWave" / "skills" / skill_name
         skill_dir.mkdir(parents=True)
         (skill_dir / "SKILL.md").write_text(
-            f"---\nname: {skill_name.removeprefix('nw-')}\n"
-            f"description: Test skill\n---\n\n# {skill_name}\n\nContent.\n"
+            f"---\nname: {skill_name}\n"
+            f"description: Test skill\ndisable-model-invocation: true\n"
+            f"---\n\n# {skill_name}\n\nContent.\n"
+        )
+
+    # Command-skills (with user-invocable) — migrated from tasks/nw/
+    for cmd_name in ["nw-deliver", "nw-design", "nw-discuss", "nw-distill"]:
+        cmd_dir = tmp_path / "nWave" / "skills" / cmd_name
+        cmd_dir.mkdir(parents=True)
+        (cmd_dir / "SKILL.md").write_text(
+            f"---\nname: {cmd_name}\n"
+            f"description: Test command\nuser-invocable: true\n"
+            f"---\n\n# {cmd_name}\n\nCommand content.\n"
         )
 
     # nWave/scripts/des/ — DES utility scripts
@@ -68,9 +79,22 @@ def mock_project(tmp_path):
     (des_scripts_dir / "check_stale_phases.py").write_text("# stale phases checker")
     (des_scripts_dir / "scope_boundary_check.py").write_text("# scope boundary check")
 
-    # nWave/framework-catalog.yaml
+    # nWave/framework-catalog.yaml (must include agents section for strict mode)
     (tmp_path / "nWave" / "framework-catalog.yaml").write_text(
         'name: "nWave"\nversion: "2.13.3"\ndescription: "Test framework"\n'
+        "agents:\n"
+        "  solution-architect:\n"
+        "    wave: DESIGN\n"
+        "    public: true\n"
+        '    description: "Solution architect"\n'
+        "  software-crafter:\n"
+        "    wave: DELIVER\n"
+        "    public: true\n"
+        '    description: "Software crafter"\n'
+        "  researcher:\n"
+        "    wave: RESEARCH\n"
+        "    public: true\n"
+        '    description: "Researcher"\n'
     )
 
     # src/des/ — DES module with imports to rewrite
@@ -142,7 +166,6 @@ class TestDistStructureValidator:
 
     STATIC_REQUIRED_DIRS = [
         "agents/nw",
-        "commands/nw",
         "templates",
         "skills",
         "scripts/des",
@@ -161,10 +184,12 @@ class TestDistStructureValidator:
         agents = list((built_dist / "agents" / "nw").glob("nw-*.md"))
         assert len(agents) > 0, "No agent files in dist/agents/nw/"
 
-    def test_dist_has_commands(self, built_dist):
-        """dist/commands/nw/ contains *.md files."""
-        commands = list((built_dist / "commands" / "nw").glob("*.md"))
-        assert len(commands) > 0, "No command files in dist/commands/nw/"
+    def test_dist_has_command_skills(self, built_dist):
+        """dist/skills/ contains command-skills (nw-deliver, nw-design, etc.)."""
+        essential = ["nw-deliver", "nw-design", "nw-discuss", "nw-distill"]
+        for name in essential:
+            skill_file = built_dist / "skills" / name / "SKILL.md"
+            assert skill_file.exists(), f"Missing command-skill: {name}/SKILL.md"
 
     def test_dist_has_templates(self, built_dist):
         """dist/templates/ has schema and config files."""
@@ -305,7 +330,6 @@ class TestDistManifest:
         manifest = json.loads((built_dist / "MANIFEST.json").read_text())
         contents = manifest["contents"]
         assert "agents" in contents
-        assert "commands" in contents
         assert "templates" in contents
         assert "skills" in contents
         assert "des_module" in contents
@@ -316,11 +340,9 @@ class TestDistManifest:
         contents = manifest["contents"]
 
         actual_agents = len(list((built_dist / "agents" / "nw").glob("nw-*.md")))
-        actual_commands = len(list((built_dist / "commands" / "nw").glob("*.md")))
         actual_templates = len(list((built_dist / "templates").iterdir()))
 
         assert contents["agents"] == actual_agents
-        assert contents["commands"] == actual_commands
         assert contents["templates"] == actual_templates
 
 
@@ -338,11 +360,10 @@ class TestDistConsistencyWithSource:
         dist_count = len(list((built_dist / "agents" / "nw").glob("nw-*.md")))
         assert dist_count == source_count
 
-    def test_command_count_matches_source(self, mock_project, built_dist):
-        """dist commands == nWave/tasks/nw/*.md count."""
-        source_count = len(list((mock_project / "nWave" / "tasks" / "nw").glob("*.md")))
-        dist_count = len(list((built_dist / "commands" / "nw").glob("*.md")))
-        assert dist_count == source_count
+    def test_command_skills_in_dist(self, built_dist):
+        """dist skills include command-skills (user-invocable)."""
+        for name in ["nw-deliver", "nw-design", "nw-discuss", "nw-distill"]:
+            assert (built_dist / "skills" / name / "SKILL.md").exists()
 
     def test_template_files_match_source(self, mock_project, built_dist):
         """All nWave/templates/ files present in dist."""

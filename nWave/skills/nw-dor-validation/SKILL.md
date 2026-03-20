@@ -1,6 +1,7 @@
 ---
 name: nw-dor-validation
 description: Definition of Ready checklist criteria, antipattern detection patterns, UAT quality rules, and domain language enforcement for product owner review
+user-invocable: false
 disable-model-invocation: true
 ---
 

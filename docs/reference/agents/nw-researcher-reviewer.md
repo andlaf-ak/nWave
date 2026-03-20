@@ -9,7 +9,7 @@ Use for review and critique tasks - Research quality and evidence review special
 
 ## Commands
 
-- [`/nw:document`](../commands/index.md)
+- [`/nw-document`](../commands/index.md)
 
 ## Skills
 

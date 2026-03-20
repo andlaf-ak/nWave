@@ -155,7 +155,7 @@ def _write_manifest(
         "version": "1.0",
     }
     manifest_path = target_dir / _MANIFEST_FILENAME
-    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
+    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 
 
 def _read_manifest(target_dir: Path) -> dict | None:
@@ -170,7 +170,7 @@ def _read_manifest(target_dir: Path) -> dict | None:
     manifest_path = target_dir / _MANIFEST_FILENAME
     if not manifest_path.exists():
         return None
-    return json.loads(manifest_path.read_text())
+    return json.loads(manifest_path.read_text(encoding="utf-8"))
 
 
 class OpenCodeSkillsPlugin(InstallationPlugin):
@@ -257,10 +257,10 @@ class OpenCodeSkillsPlugin(InstallationPlugin):
                     source_file = entry.source_path / "SKILL.md"
                 else:
                     source_file = entry.source_path
-                content = source_file.read_text()
+                content = source_file.read_text(encoding="utf-8")
                 if resolved_name != entry.name:
                     content = _rewrite_frontmatter_name(content, resolved_name)
-                target_file.write_text(content)
+                target_file.write_text(content, encoding="utf-8")
 
                 installed_names.append(resolved_name)
                 installed_files.append(target_file)

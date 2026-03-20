@@ -56,6 +56,10 @@
 
 - [nw-br-review-criteria](../../../nWave/skills/nw-br-review-criteria/SKILL.md) — Review criteria, ethical boundaries, compliance checklists, and numerical benchmarks for business artifact review
 
+## nw-bugfix
+
+- [nw-bugfix](../../../nWave/skills/nw-bugfix/SKILL.md) — Bug fix workflow: root cause analysis → user review → regression test + fix via TDD
+
 ## nw-canary
 
 - [nw-canary](../../../nWave/skills/nw-canary/SKILL.md) — Canary skill for auto-injection detection
@@ -100,6 +104,10 @@
 
 - [nw-compliance-framework](../../../nWave/skills/nw-compliance-framework/SKILL.md) — GDPR LIA template, CCPA thresholds, ethical OSINT principles, data retention policies, and clear boundaries for what CAN vs SHOULD NOT be collected.
 
+## nw-continue
+
+- [nw-continue](../../../nWave/skills/nw-continue/SKILL.md) — Detects current wave progress for a feature and resumes at the next step. Scans docs/feature/ for artifacts.
+
 ## nw-copy-paste-quality
 
 - [nw-copy-paste-quality](../../../nWave/skills/nw-copy-paste-quality/SKILL.md) — Copy-paste quality standards — self-contained snippet validation, environment assumptions, expected output contracts, and test script generation
@@ -128,6 +136,10 @@
 
 - [nw-database-technology-selection](../../../nWave/skills/nw-database-technology-selection/SKILL.md) — Database comparison catalogs, RDBMS vs NoSQL selection criteria, CAP/ACID/BASE theory, OLTP vs OLAP, and technology-specific characteristics
 
+## nw-deliver
+
+- [nw-deliver](../../../nWave/skills/nw-deliver/SKILL.md) — Orchestrates the full DELIVER wave end-to-end (roadmap > execute-all > finalize). Use when all prior waves are complete and the feature is ready for implementation.
+
 ## nw-deliver-orchestration
 
 - [nw-deliver-orchestration](../../../nWave/skills/nw-deliver-orchestration/SKILL.md) — DELIVER wave orchestration workflow -- 9 phases from baseline to finalization. Load when user invokes *deliver command. Covers state tracking, smart skip logic, retry, resume, and quality gate enforcement.
@@ -140,6 +152,10 @@
 
 - [nw-der-review-criteria](../../../nWave/skills/nw-der-review-criteria/SKILL.md) — Evaluation criteria and scoring for data engineering artifact reviews
 
+## nw-design
+
+- [nw-design](../../../nWave/skills/nw-design/SKILL.md) — Designs system architecture with C4 diagrams and technology selection. Use when defining component boundaries, choosing tech stacks, or creating architecture documents.
+
 ## nw-design-methodology
 
 - [nw-design-methodology](../../../nWave/skills/nw-design-methodology/SKILL.md) — Apple LeanUX++ design workflow, journey schema, emotional arc patterns, and CLI UX patterns. Load when transitioning from discovery to visualization or when designing journey artifacts.
@@ -147,6 +163,18 @@
 ## nw-design-patterns
 
 - [nw-design-patterns](../../../nWave/skills/nw-design-patterns/SKILL.md) — 7 agentic design patterns with decision tree for choosing the right pattern for each agent type
+
+## nw-devops
+
+- [nw-devops](../../../nWave/skills/nw-devops/SKILL.md) — Designs CI/CD pipelines, infrastructure, observability, and deployment strategy. Use when preparing platform readiness for a feature.
+
+## nw-diagram
+
+- [nw-diagram](../../../nWave/skills/nw-diagram/SKILL.md) — Generates C4 architecture diagrams (context, container, component) in Mermaid or PlantUML. Use when creating or updating architecture visualizations.
+
+## nw-discover
+
+- [nw-discover](../../../nWave/skills/nw-discover/SKILL.md) — Conducts evidence-based product discovery through customer interviews and assumption testing. Use at project start to validate problem-solution fit.
 
 ## nw-discovery-methodology
 
@@ -156,9 +184,21 @@
 
 - [nw-discovery-workflow](../../../nWave/skills/nw-discovery-workflow/SKILL.md) — 4-phase discovery workflow with decision gates, phase transitions, success metrics, and state tracking
 
+## nw-discuss
+
+- [nw-discuss](../../../nWave/skills/nw-discuss/SKILL.md) — Conducts Jobs-to-be-Done analysis, UX journey design, and requirements gathering through interactive discovery. Use when starting feature analysis, defining user stories, or creating acceptance criteria.
+
+## nw-distill
+
+- [nw-distill](../../../nWave/skills/nw-distill/SKILL.md) — Creates E2E acceptance tests in Given-When-Then format from requirements and architecture. Use when preparing executable specifications before implementation.
+
 ## nw-divio-framework
 
 - [nw-divio-framework](../../../nWave/skills/nw-divio-framework/SKILL.md) — DIVIO/Diataxis four-quadrant documentation framework - type definitions, classification decision tree, and signal catalog
+
+## nw-document
+
+- [nw-document](../../../nWave/skills/nw-document/SKILL.md) — Creates evidence-based documentation following DIVIO/Diataxis principles. Use when writing tutorials, how-to guides, reference docs, or explanations.
 
 ## nw-domain-driven-design
 
@@ -180,6 +220,18 @@
 
 - [nw-entity-resolution](../../../nWave/skills/nw-entity-resolution/SKILL.md) — Cross-platform identity matching techniques for resolving entities across multiple OSINT sources, with confidence scoring framework, blocking strategies, and LLM-assisted validation.
 
+## nw-execute
+
+- [nw-execute](../../../nWave/skills/nw-execute/SKILL.md) — Dispatches a single roadmap step to a specialized agent for TDD execution. Use when implementing a specific step from a roadmap.json plan.
+
+## nw-fast-forward
+
+- [nw-fast-forward](../../../nWave/skills/nw-fast-forward/SKILL.md) — Fast-forwards through remaining waves end-to-end without stopping for review between waves.
+
+## nw-finalize
+
+- [nw-finalize](../../../nWave/skills/nw-finalize/SKILL.md) — Archives a completed feature to docs/evolution/, migrates lasting artifacts to permanent directories, and cleans up the temporary workspace. Use after all implementation steps pass and mutation testing completes.
+
 ## nw-fisher-ury-preparation
 
 - [nw-fisher-ury-preparation](../../../nWave/skills/nw-fisher-ury-preparation/SKILL.md) — Principled negotiation structural analysis from Getting to Yes — BATNA, ZOPA estimation, interests mapping, option generation, objective criteria
@@ -187,6 +239,10 @@
 ## nw-five-whys-methodology
 
 - [nw-five-whys-methodology](../../../nWave/skills/nw-five-whys-methodology/SKILL.md) — Toyota 5 Whys methodology with multi-causal branching, evidence requirements, and validation techniques
+
+## nw-forge
+
+- [nw-forge](../../../nWave/skills/nw-forge/SKILL.md) — Creates new specialized agents using the 5-phase workflow (ANALYZE > DESIGN > CREATE > VALIDATE > REFINE). Use when building a new AI agent or validating an existing agent specification.
 
 ## nw-formal-verification-tlaplus
 
@@ -243,6 +299,10 @@
 ## nw-hexagonal-testing
 
 - [nw-hexagonal-testing](../../../nWave/skills/nw-hexagonal-testing/SKILL.md) — 5-layer agent output validation, I/O contract specification, vertical slice development, and test doubles policy with per-layer examples
+
+## nw-hotspot
+
+- [nw-hotspot](../../../nWave/skills/nw-hotspot/SKILL.md) — Git change frequency hotspot analysis — find the most-changed files in your codebase
 
 ## nw-icp-design
 
@@ -304,13 +364,25 @@
 
 - [nw-liberating-structures-facilitation](../../../nWave/skills/nw-liberating-structures-facilitation/SKILL.md) — Practitioner guide for selecting and specifying Liberating Structures, World Café, and Open Space Technology based on group size and learning intent
 
+## nw-mikado
+
+- [nw-mikado](../../../nWave/skills/nw-mikado/SKILL.md) — [EXPERIMENTAL] Complex refactoring roadmaps with visual tracking
+
 ## nw-mikado-method
 
 - [nw-mikado-method](../../../nWave/skills/nw-mikado-method/SKILL.md) — Enhanced Mikado Method for complex architectural refactoring - systematic dependency discovery, tree-based planning, and bottom-up execution
 
+## nw-mutation-test
+
+- [nw-mutation-test](../../../nWave/skills/nw-mutation-test/SKILL.md) — Runs feature-scoped mutation testing to validate test suite quality. Use after implementation to verify tests catch real bugs (kill rate >= 80%).
+
 ## nw-neuroscience-learning
 
 - [nw-neuroscience-learning](../../../nWave/skills/nw-neuroscience-learning/SKILL.md) — Evidence-based neuroscience findings applied to workshop design — primacy/recency effects, retrieval practice, spaced/interleaved practice, emotional arousal encoding, and attention-fatigue management
+
+## nw-new
+
+- [nw-new](../../../nWave/skills/nw-new/SKILL.md) — Guided wizard to start a new feature. Asks what you want to build, recommends the right starting wave, and launches it.
 
 ## nw-online-facilitation-miro-boards
 
@@ -444,9 +516,21 @@
 
 - [nw-query-optimization](../../../nWave/skills/nw-query-optimization/SKILL.md) — SQL and NoSQL query optimization techniques, indexing strategies, execution plan analysis, JOIN algorithms, cardinality estimation, and database-specific query patterns
 
+## nw-refactor
+
+- [nw-refactor](../../../nWave/skills/nw-refactor/SKILL.md) — Applies the Refactoring Priority Premise (RPP) levels L1-L6 for systematic code refactoring. Use when improving code quality through structured refactoring passes.
+
+## nw-research
+
+- [nw-research](../../../nWave/skills/nw-research/SKILL.md) — Gathers knowledge from web and files, cross-references across multiple sources, and produces cited research documents. Use when investigating technologies, patterns, or decisions that need evidence backing.
+
 ## nw-research-methodology
 
 - [nw-research-methodology](../../../nWave/skills/nw-research-methodology/SKILL.md) — Research output templates, distillation workflow, and quality standards for evidence-driven research
+
+## nw-review
+
+- [nw-review](../../../nWave/skills/nw-review/SKILL.md) — Dispatches an expert reviewer agent to critique workflow artifacts. Use when a roadmap, implementation, or step needs quality review before proceeding.
 
 ## nw-review-output-format
 
@@ -456,6 +540,14 @@
 
 - [nw-review-workflow](../../../nWave/skills/nw-review-workflow/SKILL.md) — Detailed review process, v2 validation checklist, and scoring methodology for agent definition reviews
 
+## nw-rigor
+
+- [nw-rigor](../../../nWave/skills/nw-rigor/SKILL.md) — Selects a quality-vs-token-consumption profile (lean, standard, thorough, exhaustive, custom, inherit) and persists it globally (~/.nwave/global-config.json) or per-project (.nwave/des-config.json). Use when tuning how much rigor wave commands apply.
+
+## nw-roadmap
+
+- [nw-roadmap](../../../nWave/skills/nw-roadmap/SKILL.md) — Creates a phased roadmap.json for a feature goal with acceptance criteria and TDD steps. Use when planning implementation steps before execution.
+
 ## nw-roadmap-design
 
 - [nw-roadmap-design](../../../nWave/skills/nw-roadmap-design/SKILL.md) — Roadmap concision rules, step decomposition efficiency, AC abstraction guidelines, and step-to-scenario mapping. Load when creating implementation roadmaps.
@@ -463,6 +555,10 @@
 ## nw-roadmap-review-checks
 
 - [nw-roadmap-review-checks](../../../nWave/skills/nw-roadmap-review-checks/SKILL.md) — Roadmap-specific validation checks for architecture reviews. Load when reviewing roadmaps for implementation readiness.
+
+## nw-root-why
+
+- [nw-root-why](../../../nWave/skills/nw-root-why/SKILL.md) — Root cause analysis and debugging
 
 ## nw-rr-critique-dimensions
 
@@ -585,4 +681,4 @@
 
 ## nw-wizard-shared-rules
 
-- [nw-wizard-shared-rules](../../../nWave/skills/nw-wizard-shared-rules/SKILL.md) — Shared rules for feature ID derivation and wave detection used by /nw:new, /nw:continue, and /nw:fast-forward wizards
+- [nw-wizard-shared-rules](../../../nWave/skills/nw-wizard-shared-rules/SKILL.md) — Shared rules for feature ID derivation and wave detection used by /nw-new, /nw-continue, and /nw-fast-forward wizards

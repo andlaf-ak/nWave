@@ -18,7 +18,7 @@ from des.ports.driven_ports.time_provider_port import TimeProvider
 
 
 # Commands that require full DES validation
-VALIDATION_COMMANDS = ["/nw:execute", "/nw:develop"]
+VALIDATION_COMMANDS = ["/nw-execute", "/nw-develop"]
 
 
 def get_validation_level(command: str | None) -> str:

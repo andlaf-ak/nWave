@@ -73,11 +73,11 @@ Acceptance test files and cross-feature documents live outside the per-feature t
 | `tests/{test-type}/{feature-id}/acceptance/` | Acceptance test files (.feature, step definitions) | Actual executable tests, not documentation | acceptance-designer (DISTILL) |
 | `CLAUDE.md` (project root) | Development paradigm (OOP or Functional), mutation testing strategy | Shared across all features in project | solution-architect (DESIGN), platform-architect (DEVOPS) |
 | `docs/adrs/` | Architecture Decision Records | Cross-feature decisions affecting multiple features | solution-architect (DESIGN) |
-| `docs/evolution/` | Post-completion archives | Centralized history of completed features | platform-architect (/nw:finalize) |
+| `docs/evolution/` | Post-completion archives | Centralized history of completed features | platform-architect (/nw-finalize) |
 
 ## Feature ID Derivation
 
-When you run `/nw:new`, `/nw:deliver`, or any wave command, nWave derives a feature ID from your description:
+When you run `/nw-new`, `/nw-deliver`, or any wave command, nWave derives a feature ID from your description:
 
 1. Strip common prefixes: "implement", "add", "create", "build"
 2. Remove English stop words: "a", "the", "to", "for", "with", "and", "in", "on", "of"
@@ -107,7 +107,7 @@ This separation is critical: `docs/feature/{feature-id}/distill/` contains desig
 
 ## Wave Detection
 
-`/nw:continue` uses these rules to detect progress:
+`/nw-continue` uses these rules to detect progress:
 
 | Wave | Complete When |
 |------|--------------|
@@ -145,7 +145,7 @@ DISTILL  → DELIVER reads distill/ + design/ (acceptance tests + architecture)
 DELIVER  → reads deliver/ (roadmap + execution log for resumption)
 ```
 
-After DELIVER completes and all tests pass, `/nw:finalize` archives a summary to `docs/evolution/`.
+After DELIVER completes and all tests pass, `/nw-finalize` archives a summary to `docs/evolution/`.
 
 ## Critical Distinctions
 

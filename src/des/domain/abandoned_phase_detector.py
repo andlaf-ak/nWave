@@ -184,7 +184,7 @@ class AbandonedPhaseDetector:
         if reason == "timeout":
             why = f"Your {phase_name} phase is stuck IN_PROGRESS. The agent either crashed or timed out, leaving the phase incomplete."
             how = "Resetting the phase status to NOT_EXECUTED lets the system know it can try again from the beginning, ensuring a clean state."
-            action = f"Reset {phase_name} status to 'NOT_EXECUTED' in your step file ({step_file_path}), then run `/nw:execute` to retry."
+            action = f"Reset {phase_name} status to 'NOT_EXECUTED' in your step file ({step_file_path}), then run `/nw-execute` to retry."
 
         elif reason == "stalled_turns":
             why = f"Your {phase_name} phase started but never made any progress (turn count stayed at 0), suggesting the agent encountered an immediate error."
@@ -194,7 +194,7 @@ class AbandonedPhaseDetector:
         else:
             why = f"Your {phase_name} phase appears abandoned or stalled."
             how = "Check the agent transcript to understand what happened, then reset the phase to NOT_EXECUTED."
-            action = f"Review your step file at {step_file_path} and agent transcript, then retry with `/nw:execute`."
+            action = f"Review your step file at {step_file_path} and agent transcript, then retry with `/nw-execute`."
 
         return f"WHY: {why}\n\nHOW: {how}\n\nACTION: {action}"
 

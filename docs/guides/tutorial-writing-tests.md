@@ -311,7 +311,7 @@ claude
 Then type this Claude Code command (not a terminal command):
 
 ```
-/nw:deliver "Markdown-to-HTML converter"
+/nw-deliver "Markdown-to-HTML converter"
 ```
 
 This takes 3-5 minutes. You'll see phases scroll by:
@@ -372,7 +372,7 @@ You should see something like:
 
 Your exact output may differ slightly — what matters is that all four Markdown features are converted.
 
-> **If tests fail after delivery**: Run `/nw:deliver` again — it resumes from where it left off and fixes remaining failures.
+> **If tests fail after delivery**: Run `/nw-deliver` again — it resumes from where it left off and fixes remaining failures.
 
 > **If you see no output for 2+ minutes**: Check the Claude Code status bar at the bottom. A pulsing indicator means it's still working.
 
@@ -415,9 +415,9 @@ You started with an empty project and wrote four acceptance tests. nWave turned 
 
 ## Next Steps
 
-- **[Tutorial 3: Understanding the Delivery Pipeline](./tutorial-delivery-pipeline.md)** — See exactly what happens inside `/nw:deliver` and learn to read the output like a pro
-- **[Tutorial 7: Generating Acceptance Tests](./tutorial-distill.md)** — Don't want to write tests by hand? `/nw:distill` generates them from user stories
-- **Try it on your own project** — Pick a small feature, write 3-4 tests that define "done", and run `/nw:deliver`
+- **[Tutorial 3: Understanding the Delivery Pipeline](./tutorial-delivery-pipeline.md)** — See exactly what happens inside `/nw-deliver` and learn to read the output like a pro
+- **[Tutorial 7: Generating Acceptance Tests](./tutorial-distill.md)** — Don't want to write tests by hand? `/nw-distill` generates them from user stories
+- **Try it on your own project** — Pick a small feature, write 3-4 tests that define "done", and run `/nw-deliver`
 
 ---
 
@@ -427,7 +427,7 @@ You started with an empty project and wrote four acceptance tests. nWave turned 
 |---------|-----|
 | `ImportError` when running tests before delivery | Expected — the function doesn't exist yet. That's the point of red tests. |
 | `ModuleNotFoundError` after delivery | Make sure your venv is active and `pyproject.toml` has `pythonpath = ["src"]` |
-| Tests still failing after delivery | Run `/nw:deliver` again — it resumes and fixes remaining failures |
+| Tests still failing after delivery | Run `/nw-deliver` again — it resumes and fixes remaining failures |
 | Agent creates files in wrong location | Check that `src/md_converter/__init__.py` exists before delivery |
 | Want to start over | `git stash && git checkout main` then recreate the test file |
 | Delivery takes more than 10 minutes | Normal for slower machines. Check the Claude Code status bar for activity. |

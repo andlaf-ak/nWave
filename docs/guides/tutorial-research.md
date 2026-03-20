@@ -3,7 +3,7 @@
 **Time**: ~10 minutes (5 steps)
 **Platform**: macOS, Linux, or Windows
 **Prerequisites**: Claude Code with nWave installed
-**What this is**: A walkthrough of `/nw:research` -- nWave's evidence-based research command. You will ask it to compare pytest vs unittest, and get back a structured research document with citations, cross-referenced claims, and a confidence-rated recommendation.
+**What this is**: A walkthrough of `/nw-research` -- nWave's evidence-based research command. You will ask it to compare pytest vs unittest, and get back a structured research document with citations, cross-referenced claims, and a confidence-rated recommendation.
 
 ---
 
@@ -15,7 +15,7 @@ A research document that compares two Python testing libraries -- pytest and uni
 
 **After**: You run one command and get a structured comparison backed by verified sources, with a confidence level on the recommendation so you know how much to trust it.
 
-**Why this matters**: Technology decisions made on gut feeling or a single blog post create technical debt. `/nw:research` gathers evidence from multiple sources, cross-references claims (does Source A's claim hold up when checked against Source B?), and tells you how confident it is in the recommendation. You get a decision document you can share with your team, not a browser tab you will lose.
+**Why this matters**: Technology decisions made on gut feeling or a single blog post create technical debt. `/nw-research` gathers evidence from multiple sources, cross-references claims (does Source A's claim hold up when checked against Source B?), and tells you how confident it is in the recommendation. You get a decision document you can share with your team, not a browser tab you will lose.
 
 ---
 
@@ -36,10 +36,10 @@ You should see the Claude Code prompt:
 Verify nWave is available:
 
 ```
-/nw:help
+/nw-help
 ```
 
-You should see a list of nWave commands, including `/nw:research`. If you see an error, nWave is not installed -- follow the [installation guide](./installation-guide.md) first.
+You should see a list of nWave commands, including `/nw-research`. If you see an error, nWave is not installed -- follow the [installation guide](./installation-guide.md) first.
 
 That is all the setup. No project, no dependencies, no configuration.
 
@@ -52,7 +52,7 @@ That is all the setup. No project, no dependencies, no configuration.
 Type the following in Claude Code:
 
 ```
-/nw:research "Should I use pytest or unittest for a new Python project? Compare developer experience, ecosystem, and learning curve."
+/nw-research "Should I use pytest or unittest for a new Python project? Compare developer experience, ecosystem, and learning curve."
 ```
 
 The researcher agent will start gathering evidence. You will see phases scroll by:
@@ -71,7 +71,7 @@ This takes 3-4 minutes. The agent is doing three things:
 
 > **AI output varies between runs.** Your research document will differ from the examples in this tutorial. The agent generates findings based on its knowledge, and phrasing will vary. What matters is the structure (sources, cross-references, recommendation with confidence), not the exact wording.
 
-> **If the command does not start**: Run `/nw:help` to verify nWave is installed. If the command is not listed, reinstall nWave.
+> **If the command does not start**: Run `/nw-help` to verify nWave is installed. If the command is not listed, reinstall nWave.
 
 *Next: you will read the research output and understand its structure.*
 
@@ -151,7 +151,7 @@ Pick one cross-referenced claim and think about it yourself. Does the claim matc
 
 If the agent says "High confidence" but only consulted 2 sources with no cross-referencing, that is a red flag. High confidence should come from multiple agreeing sources. Medium or Low confidence with an honest explanation is more trustworthy than inflated High confidence.
 
-**What just happened?** You used `/nw:research` to generate a structured research document, then applied critical thinking to verify the output. The command does the heavy lifting of gathering and organizing evidence, but the final judgment is yours. This is the intended workflow -- the agent provides evidence, you make the decision.
+**What just happened?** You used `/nw-research` to generate a structured research document, then applied critical thinking to verify the output. The command does the heavy lifting of gathering and organizing evidence, but the final judgment is yours. This is the intended workflow -- the agent provides evidence, you make the decision.
 
 > **If the document seems thin or generic**: Rephrase your question with more specifics. Compare: "pytest vs unittest" (vague) vs "Should I use pytest or unittest for a new Python project with 50+ modules, CI/CD on GitHub Actions, and a team of 3?" (specific). More context produces better research.
 
@@ -164,7 +164,7 @@ If the agent says "High confidence" but only consulted 2 sources with no cross-r
 Run a second research query on a different topic to see how the output adapts:
 
 ```
-/nw:research "What are the trade-offs between SQLite and PostgreSQL for a CLI tool that stores local user data?"
+/nw-research "What are the trade-offs between SQLite and PostgreSQL for a CLI tool that stores local user data?"
 ```
 
 Watch for how the output structure stays consistent (sources, cross-references, confidence) while the content changes to match the new question.
@@ -184,7 +184,7 @@ You produced two evidence-based research documents:
 
 Both follow the same pattern: question, evidence gathering, cross-referencing, and a confidence-rated recommendation.
 
-### When to Use `/nw:research`
+### When to Use `/nw-research`
 
 - Choosing between two libraries or frameworks
 - Evaluating whether to adopt a new technology
@@ -203,7 +203,7 @@ Both follow the same pattern: question, evidence gathering, cross-referencing, a
 
 | Symptom | Fix |
 |---------|-----|
-| `/nw:research` does not start | Make sure nWave is installed. Run `/nw:help` to verify the command is listed. |
+| `/nw-research` does not start | Make sure nWave is installed. Run `/nw-help` to verify the command is listed. |
 | Research output is too generic | Add more context to your question. Specify your use case, team size, constraints, and what you care about most. |
 | Agent gives "High confidence" but evidence seems weak | This can happen with well-established topics where consensus is strong. Check the cross-references -- if multiple sources agree, the confidence may be justified even if the document is short. |
 | Research takes more than 5 minutes | Complex questions with many dimensions take longer. This is normal for broad questions. Narrow your question to get faster results. |

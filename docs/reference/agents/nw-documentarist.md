@@ -9,7 +9,7 @@ Use for documentation quality enforcement using DIVIO/Diataxis principles. Class
 
 ## Commands
 
-- [`/nw:document`](../commands/index.md)
+- [`/nw-document`](../commands/index.md)
 
 ## Skills
 

@@ -120,7 +120,7 @@ class TestHookInstallerConfiguration:
         # CRITICAL: Plugin MUST reference claude_code_hook_adapter
         assert "claude_code_hook_adapter" in plugin_code, (
             "Plugin installer does not reference claude_code_hook_adapter!\n"
-            "Hooks installed via /nw:install will not work.\n"
+            "Hooks installed via /nw-install will not work.\n"
             "Update HOOK_COMMAND_TEMPLATE constant."
         )
 
@@ -223,7 +223,7 @@ class TestHookConfigurationIntegrity:
     def test_installed_module_has_hook_adapter(self):
         """Verify installed DES module includes claude_code_hook_adapter.
 
-        NOTE: May be skipped if module not installed via /nw:install.
+        NOTE: May be skipped if module not installed via /nw-install.
         """
         installed_module_path = (
             Path.home()
@@ -231,13 +231,13 @@ class TestHookConfigurationIntegrity:
         )
 
         if not installed_module_path.parent.exists():
-            pytest.skip("DES module not installed (run /nw:install)")
+            pytest.skip("DES module not installed (run /nw-install)")
 
         # CRITICAL: Installed module MUST include the hook adapter
         assert installed_module_path.exists(), (
             f"Hook adapter not found in installed module: {installed_module_path}\n"
             "This means hooks are configured but the module is missing!\n"
-            "Re-run /nw:install to fix installation."
+            "Re-run /nw-install to fix installation."
         )
 
 

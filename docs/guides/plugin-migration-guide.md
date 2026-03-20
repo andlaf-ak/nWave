@@ -32,7 +32,7 @@ claude plugin install nw --marketplace https://github.com/nwave-ai/nwave-plugin
 Run a quick verification:
 
 ```bash
-/nw:deliver "test-feature"
+/nw-deliver "test-feature"
 ```
 
 Verify:
@@ -67,10 +67,10 @@ The plugin remains unaffected because it uses a completely separate directory tr
 ## Verification Checklist
 
 After migration, verify:
-- [ ] `/nw:deliver` executes successfully
+- [ ] `/nw-deliver` executes successfully
 - [ ] DES enforcement blocks incorrect tool use during TDD phases
 - [ ] Agent definitions are discovered (23 agents visible)
-- [ ] All commands available (`/nw:design`, `/nw:discuss`, etc.)
+- [ ] All commands available (`/nw-design`, `/nw-discuss`, etc.)
 - [ ] Skills load on demand (check agent output references skills)
 
 ## Rollback

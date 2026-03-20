@@ -469,7 +469,7 @@ def render_agent_detail(agent: Agent, skills: list[Skill]) -> str:
         lines.append("## Commands")
         lines.append("")
         for cmd_name in commands:
-            lines.append(f"- [`/nw:{cmd_name}`](../commands/index.md)")
+            lines.append(f"- [`/nw-{cmd_name}`](../commands/index.md)")
         lines.append("")
     if agent_skills:
         lines.append("## Skills")
@@ -489,7 +489,7 @@ def render_commands_index(commands: list[Command]) -> str:
     for c in sorted(commands, key=lambda x: x["name"]):
         agent_links = ", ".join(f"[{a}](../agents/{a}.md)" for a in c.get("agents", []))
         rows.append(
-            [f"`/nw:{c['name']}`", c["description"], agent_links, c["argument_hint"]]
+            [f"`/nw-{c['name']}`", c["description"], agent_links, c["argument_hint"]]
         )
     table = _md_table(["Command", "Description", "Agents", "Arguments"], rows)
     return f"# Commands\n\n{table}\n"

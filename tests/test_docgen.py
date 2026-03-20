@@ -410,7 +410,7 @@ class TestCommandAgentCrossRefs:
         data = enrich(extract_all(paths))
         page = render(data)["agents/nw-crafter.md"]
         assert "## Commands" in page
-        assert "`/nw:deliver`" in page
+        assert "`/nw-deliver`" in page
 
 
 # ---------------------------------------------------------------------------

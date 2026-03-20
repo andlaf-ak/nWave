@@ -3,7 +3,7 @@
 **Time**: ~15 minutes (7 steps)
 **Platform**: macOS or Linux (Windows: use WSL)
 **Prerequisites**: Python 3.10+, Claude Code with nWave installed, [Tutorials 1-3](./TUTORIAL-INDEX.md) completed
-**What this is**: An interactive walkthrough of `/nw:discover` -- nWave's product discovery command. You will validate a product idea before writing any code.
+**What this is**: An interactive walkthrough of `/nw-discover` -- nWave's product discovery command. You will validate a product idea before writing any code.
 
 ---
 
@@ -89,7 +89,7 @@ claude
 Then type this Claude Code command (not a terminal command):
 
 ```
-/nw:discover bookmark-cli
+/nw-discover bookmark-cli
 ```
 
 > **AI output varies between runs.** Your conversation with Scout will differ from the examples below. That is expected -- Scout adapts to your specific answers. What matters is the structure of the conversation (questions about past behavior, assumption tracking), not the exact wording.
@@ -275,7 +275,7 @@ You should see:
 [main ...] docs: problem validation from discovery session
 ```
 
-> **If `docs/discovery/` does not exist**: Scout may not have reached the point of writing artifacts. This happens if the conversation was very short. Run `/nw:discover bookmark-cli` again -- it picks up where it left off.
+> **If `docs/discovery/` does not exist**: Scout may not have reached the point of writing artifacts. This happens if the conversation was very short. Run `/nw-discover bookmark-cli` again -- it picks up where it left off.
 
 *Next: a recap of what you learned and where to go from here.*
 
@@ -309,8 +309,8 @@ You started with an idea ("bookmark manager CLI tool") and three untested assump
 
 ## Next Steps
 
-- **[Tutorial 5: Requirements and UX Journey](./TUTORIAL-INDEX.md)** -- If Scout said "proceed," the next step is `/nw:discuss` to turn your validated problem into user stories with acceptance criteria
-- **Run discovery on your own idea** -- Pick a feature you have been meaning to build. Run `/nw:discover` and see if the problem holds up under scrutiny
+- **[Tutorial 5: Requirements and UX Journey](./TUTORIAL-INDEX.md)** -- If Scout said "proceed," the next step is `/nw-discuss` to turn your validated problem into user stories with acceptance criteria
+- **Run discovery on your own idea** -- Pick a feature you have been meaning to build. Run `/nw-discover` and see if the problem holds up under scrutiny
 - **Re-read your project brief** -- Compare your original assumptions to what the evidence showed. How many survived?
 
 ---
@@ -319,11 +319,11 @@ You started with an idea ("bookmark manager CLI tool") and three untested assump
 
 | Symptom | Fix |
 |---------|-----|
-| Scout does not start after `/nw:discover` | Make sure nWave is installed. Run `/nw:help` to verify. |
+| Scout does not start after `/nw-discover` | Make sure nWave is installed. Run `/nw-help` to verify. |
 | Scout asks too many questions | Say "let's evaluate the gate now" -- Scout will run the evaluation with whatever evidence exists. |
-| No `docs/discovery/` directory after the session | Scout writes artifacts at phase transitions. If you ended the session early, run `/nw:discover bookmark-cli` again to resume. |
+| No `docs/discovery/` directory after the session | Scout writes artifacts at phase transitions. If you ended the session early, run `/nw-discover bookmark-cli` again to resume. |
 | Scout recommended KILL and you disagree | That is fine -- Scout advises, you decide. But document why you are overriding the evidence. |
-| Want to start discovery fresh | Delete `docs/discovery/` and run `/nw:discover` again. |
+| Want to start discovery fresh | Delete `docs/discovery/` and run `/nw-discover` again. |
 
 ---
 

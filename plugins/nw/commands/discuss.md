@@ -5,7 +5,7 @@ argument-hint: "[feature-name] - Optional: --phase=[jtbd|journey|requirements] -
 
 # NW-DISCUSS: Jobs-to-be-Done Analysis, UX Journey Design, and Requirements Gathering
 
-**Wave**: DISCUSS (wave 2 of 6) | **Agent**: Luna (nw-product-owner) | **Command**: `/nw:discuss`
+**Wave**: DISCUSS (wave 2 of 6) | **Agent**: Luna (nw-product-owner) | **Command**: `/nw-discuss`
 
 ## Overview
 
@@ -216,24 +216,24 @@ docs/feature/{feature-id}/discuss/
 
 ### Example 1: User-facing feature with comprehensive UX research
 ```
-/nw:discuss first-time-setup
+/nw-discuss first-time-setup
 ```
 Orchestrator asks Decision 1-3. User selects "User-facing", "No skeleton", "Comprehensive". Luna starts with JTBD analysis: discovers jobs like "When I first open the app, I want to feel productive immediately, so I can justify the purchase." Maps four forces for each job. Scores opportunities. Then runs journey discovery informed by JTBD, produces visual journey + YAML + Gherkin. Finally crafts stories where each traces to a job, validates DoR, and prepares handoff.
 
 ### Example 2: JTBD-only invocation
 ```
-/nw:discuss --phase=jtbd onboarding-flow
+/nw-discuss --phase=jtbd onboarding-flow
 ```
 Runs only Luna's JTBD analysis phase (job discovery + dimensions + four forces + opportunity scoring). Produces JTBD artifacts without proceeding to journey design or requirements. Useful for early discovery when you need to understand user motivations before committing to UX design.
 
 ### Example 3: Journey-only invocation
 ```
-/nw:discuss --phase=journey release-nwave
+/nw-discuss --phase=journey release-nwave
 ```
 Runs only Luna's journey design phases (discovery + visualization + coherence validation). Produces journey artifacts without proceeding to requirements crafting. Useful when JTBD is already done and journey design needs standalone iteration.
 
 ### Example 4: Requirements-only invocation
 ```
-/nw:discuss --phase=requirements new-plugin-system
+/nw-discuss --phase=requirements new-plugin-system
 ```
 Runs only Luna's requirements phases (gathering + crafting + DoR validation). Assumes JTBD and journey artifacts already exist or are not needed (e.g., backend feature).

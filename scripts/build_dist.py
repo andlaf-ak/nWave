@@ -3,12 +3,14 @@
 
 Assembles a distributable layout from scattered source directories:
   nWave/agents/       → dist/agents/nw/
-  nWave/tasks/nw/     → dist/commands/nw/    (tasks → commands mapping)
   nWave/templates/    → dist/templates/
-  nWave/skills/nw-*/  → dist/skills/nw-*/    (flat layout, no nw/ wrapper)
+  nWave/skills/nw-*/  → dist/skills/nw-*/    (flat layout, includes command-skills)
   nWave/scripts/des/  → dist/scripts/des/
   src/des/            → dist/lib/python/des/  (imports rewritten: src.des → des)
   scripts/*.py        → dist/scripts/
+
+Note: Commands are now installed as skills (nw-{name}/SKILL.md) since v2.8.0.
+The legacy commands/nw/ directory is no longer built.
 
 Usage:
     python scripts/build_dist.py
@@ -31,6 +33,7 @@ if _project_root not in sys.path:
 
 from scripts.shared.agent_catalog import (  # noqa: E402
     build_ownership_map,
+    detect_command_skills,
     is_public_agent,
     load_public_agents,
 )
@@ -45,7 +48,6 @@ from scripts.shared.skill_distribution import (  # noqa: E402
 # Skills use dynamic validation (nw-* directories under skills/).
 REQUIRED_DIRS = [
     "agents/nw",
-    "commands/nw",
     "templates",
     "skills",
     "scripts/des",
@@ -91,7 +93,7 @@ class DistBuilder:
         self.dist_dir = self.project_root / "dist"
         self.nwave_dir = self.project_root / "nWave"
         self.version = _get_version(self.project_root)
-        self.public_agents = load_public_agents(self.nwave_dir)
+        self.public_agents: set[str] = set()  # loaded in run() after source validation
 
     def _log(self, message: str, level: str = "INFO"):
         print(f"[{level}] {message}")
@@ -141,20 +143,6 @@ class DistBuilder:
         self._log(msg)
         return count
 
-    def build_commands(self) -> int:
-        """nWave/tasks/nw/*.md → dist/commands/nw/ (tasks → commands mapping)."""
-        src = self.nwave_dir / "tasks" / "nw"
-        dst = self.dist_dir / "commands" / "nw"
-        dst.mkdir(parents=True, exist_ok=True)
-
-        count = 0
-        for md_file in src.glob("*.md"):
-            shutil.copy2(md_file, dst / md_file.name)
-            count += 1
-
-        self._log(f"Commands: {count} files")
-        return count
-
     def build_templates(self) -> int:
         """nWave/templates/ → dist/templates/"""
         src = self.nwave_dir / "templates"
@@ -171,7 +159,7 @@ class DistBuilder:
         return count
 
     def build_skills(self) -> int:
-        """nWave/skills/nw-*/ → dist/skills/nw-*/ (flat, public only)."""
+        """nWave/skills/nw-*/ → dist/skills/nw-*/ (flat, public + commands)."""
         src = self.nwave_dir / "skills"
         dst = self.dist_dir / "skills"
         dst.mkdir(parents=True, exist_ok=True)
@@ -179,15 +167,16 @@ class DistBuilder:
         # Build ownership map for flat namespace filtering (ADR-003)
         agents_dir = self.nwave_dir / "agents"
         ownership_map = build_ownership_map(agents_dir) if agents_dir.exists() else {}
+        command_skills = detect_command_skills(src)
 
         entries = enumerate_skills(src)
         public_entries = filter_public_skills(
-            entries, self.public_agents, ownership_map
+            entries, self.public_agents, ownership_map, command_skills
         )
         count = copy_skills_to_target(public_entries, dst)
 
         skipped = len(entries) - len(public_entries)
-        msg = f"Skills: {count} directories"
+        msg = f"Skills: {count} directories ({len(command_skills)} commands)"
         if skipped:
             msg += f" ({skipped} private, excluded)"
         self._log(msg)
@@ -265,7 +254,6 @@ class DistBuilder:
             "built_at": datetime.now(timezone.utc).isoformat(),
             "contents": {
                 "agents": len(list((self.dist_dir / "agents" / "nw").glob("nw-*.md"))),
-                "commands": len(list((self.dist_dir / "commands" / "nw").glob("*.md"))),
                 "templates": len(list((self.dist_dir / "templates").iterdir())),
                 "skills": counts.get("skills", 0),
                 "des_module": counts.get("des_module", 0),
@@ -317,6 +305,9 @@ class DistBuilder:
             self._log(f"nWave/ not found at {self.nwave_dir}", "ERROR")
             return False
 
+        # Load public agents (after source validation)
+        self.public_agents = load_public_agents(self.nwave_dir)
+
         # Always clean first
         self.clean()
 
@@ -325,7 +316,6 @@ class DistBuilder:
 
         counts = {}
         counts["agents"] = self.build_agents()
-        counts["commands"] = self.build_commands()
         counts["templates"] = self.build_templates()
         counts["skills"] = self.build_skills()
         self.build_des_scripts()

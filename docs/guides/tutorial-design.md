@@ -3,7 +3,7 @@
 **Time**: ~15 minutes (9 steps)
 **Platform**: macOS or Linux (Windows: use WSL)
 **Prerequisites**: Python 3.10+, Claude Code with nWave installed, [Tutorial 5](./tutorial-discuss.md) completed
-**What this is**: An interactive walkthrough of `/nw:design` and `/nw:diagram` -- nWave's architecture design commands. You will turn requirements into a technical architecture with visual diagrams.
+**What this is**: An interactive walkthrough of `/nw-design` and `/nw-diagram` -- nWave's architecture design commands. You will turn requirements into a technical architecture with visual diagrams.
 
 ---
 
@@ -15,7 +15,7 @@ A complete architecture package for the bookmark CLI -- component boundaries, te
 
 **After**: You have an architecture document defining how the bookmark CLI is structured (domain layer, CLI adapter, storage adapter), ADRs explaining each technology choice, and Mermaid diagrams you can render in any markdown viewer.
 
-**Why this matters**: Jumping from requirements to code skips the question "how should the pieces fit together?" `/nw:design` answers that question with documented decisions and visual diagrams, so the DISTILL and DELIVER waves have clear boundaries to work within.
+**Why this matters**: Jumping from requirements to code skips the question "how should the pieces fit together?" `/nw-design` answers that question with documented decisions and visual diagrams, so the DISTILL and DELIVER waves have clear boundaries to work within.
 
 ---
 
@@ -60,7 +60,7 @@ claude
 Start the architecture design:
 
 ```
-/nw:design bookmark-cli
+/nw-design bookmark-cli
 ```
 
 > **AI output varies between runs.** Your conversation with Morgan will differ from the examples below. That is expected -- Morgan adapts to your requirements and codebase. What matters is the structure (decisions, architecture document, diagrams), not the exact wording.
@@ -228,7 +228,7 @@ Each ADR follows a standard template: **Status**, **Context**, **Decision**, **A
 With the architecture defined, generate visual diagrams:
 
 ```
-/nw:diagram bookmark-cli --format=mermaid --level=container
+/nw-diagram bookmark-cli --format=mermaid --level=container
 ```
 
 Morgan reads the architecture documents and produces Mermaid diagrams. You will see:
@@ -274,9 +274,9 @@ To render the diagram, paste the Mermaid block into any Mermaid-compatible viewe
 - **VS Code**: Install the "Mermaid Preview" extension
 - **Online**: Paste at [mermaid.live](https://mermaid.live)
 
-**What just happened?** `/nw:diagram` read the architecture documents from the design phase and produced visual representations. The diagrams follow the C4 model: context (who uses the system), container (major components), and component (internal structure). You chose the container level, which shows how the CLI, domain, and storage relate.
+**What just happened?** `/nw-diagram` read the architecture documents from the design phase and produced visual representations. The diagrams follow the C4 model: context (who uses the system), container (major components), and component (internal structure). You chose the container level, which shows how the CLI, domain, and storage relate.
 
-> **If you see "No architecture documents found"**: Make sure Step 3 completed successfully. Run `/nw:design bookmark-cli` again if needed -- Morgan will pick up where it left off.
+> **If you see "No architecture documents found"**: Make sure Step 3 completed successfully. Run `/nw-design bookmark-cli` again if needed -- Morgan will pick up where it left off.
 
 *Next: you will review all artifacts and commit them.*
 
@@ -346,7 +346,7 @@ You started with requirements and ended with a complete architecture package:
 
 ```
 DISCOVER             DISCUSS              DESIGN               DISTILL
-(/nw:discover)       (/nw:discuss)        (/nw:design)         (/nw:distill)
+(/nw-discover)       (/nw-discuss)        (/nw-design)         (/nw-distill)
 ────────────────     ────────────────     ────────────────     ────────────────
 "Is the problem      "What should we      "How should we       "Generate test
  real?"               build?"              build it?"           specs"
@@ -364,7 +364,7 @@ Each wave builds on the previous one. The architecture document references your 
 
 ## Next Steps
 
-- **[Tutorial 7: Generating Acceptance Tests](./tutorial-distill.md)** -- Take your architecture into `/nw:distill` to auto-generate BDD acceptance tests from user stories and component boundaries
+- **[Tutorial 7: Generating Acceptance Tests](./tutorial-distill.md)** -- Take your architecture into `/nw-distill` to auto-generate BDD acceptance tests from user stories and component boundaries
 - **Read an ADR aloud** -- If the "Alternatives Considered" section explains why each was rejected, the ADR is well-written. If it just lists names without rationale, it needs more detail.
 - **Render a diagram** -- Paste the Mermaid code into [mermaid.live](https://mermaid.live) and see the visual architecture. Share it with a teammate to validate the design.
 
@@ -374,13 +374,13 @@ Each wave builds on the previous one. The architecture document references your 
 
 | Symptom | Fix |
 |---------|-----|
-| Morgan does not start after `/nw:design` | Make sure nWave is installed. Run `/nw:help` to verify. |
+| Morgan does not start after `/nw-design` | Make sure nWave is installed. Run `/nw-help` to verify. |
 | Morgan skips the four decisions and designs immediately | Say `*design-architecture bookmark-cli` to explicitly start the interactive flow. |
 | Peer review fails repeatedly | Say "let's simplify -- focus on the core components only." Fewer components are easier to validate. |
-| No `docs/architecture/` directory after the session | Morgan writes architecture artifacts after the four decisions. If you ended the session early, run `/nw:design bookmark-cli` again. |
-| `/nw:diagram` says "No architecture documents found" | Run `/nw:design` first. Diagrams require the architecture documents as input. |
+| No `docs/architecture/` directory after the session | Morgan writes architecture artifacts after the four decisions. If you ended the session early, run `/nw-design bookmark-cli` again. |
+| `/nw-diagram` says "No architecture documents found" | Run `/nw-design` first. Diagrams require the architecture documents as input. |
 | Diagrams do not render | Verify the Mermaid syntax at [mermaid.live](https://mermaid.live). If it fails, the diagram file may have a formatting issue -- copy just the content between the triple backticks. |
-| Want to start fresh | Delete `docs/architecture/` and `docs/adrs/` and run `/nw:design` again. |
+| Want to start fresh | Delete `docs/architecture/` and `docs/adrs/` and run `/nw-design` again. |
 
 ---
 

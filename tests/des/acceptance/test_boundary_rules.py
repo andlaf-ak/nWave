@@ -47,7 +47,7 @@ class TestBoundaryRulesInclusion:
         self, tmp_project_root, minimal_step_file, des_orchestrator
     ):
         """
-        GIVEN /nw:execute command invoked with step file for UserRepository
+        GIVEN /nw-execute command invoked with step file for UserRepository
         WHEN orchestrator renders the full Task prompt
         THEN prompt contains BOUNDARY_RULES section header
 
@@ -60,8 +60,8 @@ class TestBoundaryRulesInclusion:
         Software-crafter working on step 01-01 for UserRepository receives
         prompt with BOUNDARY_RULES section defining what files it can touch.
         """
-        # GIVEN: /nw:execute command with step file
-        command = "/nw:execute"
+        # GIVEN: /nw-execute command with step file
+        command = "/nw-execute"
         agent = "@software-crafter"
         step_file_path = str(minimal_step_file.relative_to(tmp_project_root))
 
@@ -102,7 +102,7 @@ class TestAllowedActionEnumeration:
         self, tmp_project_root, minimal_step_file, des_orchestrator
     ):
         """
-        GIVEN /nw:execute command for step 01-01 targeting UserRepository
+        GIVEN /nw-execute command for step 01-01 targeting UserRepository
         WHEN orchestrator renders the full Task prompt
         THEN BOUNDARY_RULES section explicitly lists ALLOWED files/patterns
 
@@ -120,13 +120,13 @@ class TestAllowedActionEnumeration:
         Without explicit ALLOWED list, agents might assume they can
         modify anything, leading to scope creep.
         """
-        # GIVEN: /nw:execute command with step targeting UserRepository
+        # GIVEN: /nw-execute command with step targeting UserRepository
         step_data = _create_step_file_for_user_repository()
         minimal_step_file.write_text(json.dumps(step_data, indent=2))
 
         # WHEN: Orchestrator renders full Task prompt
         prompt = des_orchestrator.render_full_prompt(
-            command="/nw:execute",
+            command="/nw-execute",
             agent="@software-crafter",
             step_file=str(minimal_step_file.relative_to(tmp_project_root)),
             project_root=tmp_project_root,
@@ -203,7 +203,7 @@ class TestAllowedActionEnumeration:
 
         # WHEN: Orchestrator renders full Task prompt
         prompt = des_orchestrator.render_full_prompt(
-            command="/nw:execute",
+            command="/nw-execute",
             agent="@software-crafter",
             step_file=str(step_file.relative_to(tmp_project_root)),
             project_root=tmp_project_root,
@@ -238,7 +238,7 @@ class TestForbiddenActionEnumeration:
         self, tmp_project_root, minimal_step_file, des_orchestrator
     ):
         """
-        GIVEN /nw:execute command for step 01-01
+        GIVEN /nw-execute command for step 01-01
         WHEN orchestrator renders the full Task prompt
         THEN BOUNDARY_RULES section explicitly lists FORBIDDEN actions
 
@@ -254,11 +254,11 @@ class TestForbiddenActionEnumeration:
         - Configuration files (unless explicitly in scope)
         - Production deployment files
         """
-        # GIVEN: /nw:execute command with step file
+        # GIVEN: /nw-execute command with step file
         step_data = _create_step_file_for_user_repository()
         minimal_step_file.write_text(json.dumps(step_data, indent=2))
 
-        command = "/nw:execute"
+        command = "/nw-execute"
         step_file_path = str(minimal_step_file.relative_to(tmp_project_root))
 
         # WHEN: Orchestrator renders full Task prompt
@@ -295,7 +295,7 @@ class TestForbiddenActionEnumeration:
         self, tmp_project_root, minimal_step_file, des_orchestrator
     ):
         """
-        GIVEN /nw:execute command for step 01-01
+        GIVEN /nw-execute command for step 01-01
         WHEN orchestrator renders the full Task prompt
         THEN FORBIDDEN section includes prohibition against continuing to next step
 
@@ -309,12 +309,12 @@ class TestForbiddenActionEnumeration:
         IMMEDIATELY after step completion. Marcus will explicitly start
         the next step when ready."
         """
-        # GIVEN: /nw:execute command with step file
+        # GIVEN: /nw-execute command with step file
         step_file_path = str(minimal_step_file.relative_to(tmp_project_root))
 
         # WHEN: Orchestrator renders full Task prompt
         prompt = des_orchestrator.render_full_prompt(
-            command="/nw:execute",
+            command="/nw-execute",
             agent="@software-crafter",
             step_file=step_file_path,
             project_root=tmp_project_root,
@@ -797,7 +797,7 @@ class TestBoundaryRulesCompleteness:
         self, tmp_project_root, minimal_step_file, des_orchestrator
     ):
         """
-        GIVEN /nw:execute command with step file
+        GIVEN /nw-execute command with step file
         WHEN orchestrator renders full prompt
         THEN BOUNDARY_RULES section contains:
              - ALLOWED subsection with file patterns
@@ -809,12 +809,12 @@ class TestBoundaryRulesCompleteness:
         and negative (FORBIDDEN) constraints, plus explicit instruction
         about returning control after completion.
         """
-        # GIVEN: /nw:execute command
+        # GIVEN: /nw-execute command
         step_file_path = str(minimal_step_file.relative_to(tmp_project_root))
 
         # WHEN: Orchestrator renders full prompt
         prompt = des_orchestrator.render_full_prompt(
-            command="/nw:execute",
+            command="/nw-execute",
             agent="@software-crafter",
             step_file=step_file_path,
             project_root=tmp_project_root,
@@ -844,21 +844,21 @@ class TestBoundaryRulesCompleteness:
         self, tmp_project_root, minimal_step_file, des_orchestrator
     ):
         """
-        GIVEN /nw:develop command with step file
+        GIVEN /nw-develop command with step file
         WHEN orchestrator renders full prompt
         THEN prompt includes BOUNDARY_RULES (same as execute)
 
         Business Context:
-        Both /nw:execute and /nw:develop are production workflows
+        Both /nw-execute and /nw-develop are production workflows
         requiring full DES validation. BOUNDARY_RULES must be present
         for both command types to ensure consistent scope enforcement.
         """
-        # GIVEN: /nw:develop command
+        # GIVEN: /nw-develop command
         step_file_path = str(minimal_step_file.relative_to(tmp_project_root))
 
         # WHEN: Orchestrator renders full prompt
         prompt = des_orchestrator.render_full_prompt(
-            command="/nw:develop",
+            command="/nw-develop",
             agent="@software-crafter",
             step_file=step_file_path,
             project_root=tmp_project_root,
@@ -866,7 +866,7 @@ class TestBoundaryRulesCompleteness:
 
         # THEN: BOUNDARY_RULES present
         assert "BOUNDARY_RULES" in prompt, (
-            "/nw:develop command must include BOUNDARY_RULES like /nw:execute"
+            "/nw-develop command must include BOUNDARY_RULES like /nw-execute"
         )
 
         # Verify it has same structure

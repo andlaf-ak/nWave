@@ -9,7 +9,7 @@ Use when creating new AI agents, validating agent specifications, optimizing com
 
 ## Commands
 
-- [`/nw:forge`](../commands/index.md)
+- [`/nw-forge`](../commands/index.md)
 
 ## Skills
 

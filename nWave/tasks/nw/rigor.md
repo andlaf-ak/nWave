@@ -6,7 +6,7 @@ argument-hint: '[profile] - Optional: lean, standard, thorough, exhaustive, cust
 
 # NW-RIGOR: Quality Profile Selection
 
-**Wave**: CROSS_WAVE | **Agent**: Main Instance (self) | **Command**: `/nw:rigor [profile]`
+**Wave**: CROSS_WAVE | **Agent**: Main Instance (self) | **Command**: `/nw-rigor [profile]`
 
 ## Overview
 
@@ -291,7 +291,7 @@ Ask user to confirm via AskUserQuestion:
 
 Same as Mode 1 Steps 6 and 7. Uses `{target_file}` from Step 1.5.
 
-### Mode 3: Custom Builder (`/nw:rigor custom` or selected from interactive)
+### Mode 3: Custom Builder (`/nw-rigor custom` or selected from interactive)
 
 Build a profile setting by setting. Each question uses AskUserQuestion with sensible defaults (standard values pre-selected). After all questions, show summary and confirm.
 
@@ -420,36 +420,36 @@ Same as Mode 1 Steps 6 and 7. Uses `{target_file}` from Step 1.5. Save with `"pr
 
 ### Example 1: Interactive first-time selection
 ```
-/nw:rigor
+/nw-rigor
 ```
 No current profile set. Shows comparison table, user picks "standard", sees detail view, confirms. Config written with full rigor block.
 
 ### Example 2: Quick switch to lean
 ```
-/nw:rigor lean
+/nw-rigor lean
 ```
 Current profile is "standard". Shows diff: loses review, loses PREPARE/COMMIT phases, loses refactoring pass. Agent drops from sonnet to haiku. User confirms. Config updated.
 
 ### Example 3: Quick switch up
 ```
-/nw:rigor thorough
+/nw-rigor thorough
 ```
 Current profile is "standard". Shows diff: sonnet->opus agent, haiku->sonnet reviewer, double review enabled. No losses to highlight (pure upgrade). User confirms. Config updated.
 
 ### Example 4: Custom profile builder
 ```
-/nw:rigor custom
+/nw-rigor custom
 ```
 Walks through 6 questions: agent model (opus), reviewer (haiku), double review (no), TDD (full 5-phase), refactoring (yes), mutation (yes). Saves as custom profile with opus agent, haiku reviewer, single review, full TDD, refactoring, and mutation testing — a combination no preset offers.
 
 ### Example 5: Invalid profile name
 ```
-/nw:rigor turbo
+/nw-rigor turbo
 ```
 Error: "Unknown profile 'turbo'. Available: lean, standard, thorough, exhaustive, inherit"
 
 ### Example 6: No nWave installed
 ```
-/nw:rigor
+/nw-rigor
 ```
 No `.nwave/` directory found. Shows: "No nWave config directory found. Run nwave install first." Stops.

@@ -117,9 +117,7 @@ def uninstaller_result(project_root, tmp_path_factory):
         assert (claude_config_dir / "agents" / "nw").exists(), (
             "Install did not create agents"
         )
-        assert (claude_config_dir / "commands" / "nw").exists(), (
-            "Install did not create commands"
-        )
+        assert (claude_config_dir / "skills").exists(), "Install did not create skills"
 
         # ── Phase 2: uninstall with --force --backup, capture output ──
         sys.argv = ["uninstall_nwave.py", "--force", "--backup"]

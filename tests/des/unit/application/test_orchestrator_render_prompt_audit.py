@@ -29,7 +29,7 @@ class TestRenderPromptAuditFeatureName:
 
         with log_patch:
             des_orchestrator.render_prompt(
-                command="/nw:execute",
+                command="/nw-execute",
                 agent="@software-crafter",
                 step_file="steps/03-02.json",
                 project_id="audit-log-refactor",
@@ -54,7 +54,7 @@ class TestRenderPromptAuditFeatureName:
 
         with log_patch:
             des_orchestrator.render_prompt(
-                command="/nw:execute",
+                command="/nw-execute",
                 agent="@software-crafter",
                 step_file="steps/03-02.json",
                 project_id="audit-log-refactor",
@@ -78,7 +78,7 @@ class TestRenderPromptAuditFeatureName:
 
         with log_patch:
             des_orchestrator.render_prompt(
-                command="/nw:execute",
+                command="/nw-execute",
                 agent="@software-crafter",
                 step_file="steps/03-02.json",
                 project_id="audit-log-refactor",
@@ -105,7 +105,7 @@ class TestRenderPromptAuditFeatureName:
 
         with log_patch:
             des_orchestrator.render_prompt(
-                command="/nw:execute",
+                command="/nw-execute",
                 agent="@software-crafter",
                 step_file="steps/03-02.json",
             )

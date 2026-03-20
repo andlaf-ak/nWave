@@ -18,7 +18,7 @@ Finalize a completed feature: verify all steps done|create evolution document|mi
 ## Usage
 
 ```
-/nw:finalize @{agent} "{feature-id}"
+/nw-finalize @{agent} "{feature-id}"
 ```
 
 ## Context Files Required
@@ -92,7 +92,7 @@ These are process scaffolding — valuable during delivery, disposable after:
 
 1. Verify all migrated files exist in their destinations
 2. Update architecture doc statuses from "FUTURE DESIGN" to "IMPLEMENTED"
-3. Optionally invoke /nw:document for reference docs (skip with --skip-docs)
+3. Optionally invoke /nw-document for reference docs (skip with --skip-docs)
 4. Commit in logical groups:
    - Commit 1: evolution doc + migrated artifacts
    - Commit 2: workspace cleanup (removal)
@@ -154,7 +154,7 @@ docs/
 | Error | Response |
 |-------|----------|
 | Invalid agent name | "Invalid agent. Available: nw-researcher, nw-software-crafter, nw-solution-architect, nw-product-owner, nw-acceptance-designer, nw-platform-architect" |
-| Missing feature ID | "Usage: /nw:finalize @agent 'feature-id'" |
+| Missing feature ID | "Usage: /nw-finalize @agent 'feature-id'" |
 | Project directory not found | "Project not found: docs/feature/{feature-id}/" |
 | Incomplete steps | Block finalization, list incomplete steps |
 | No files to migrate | Log "No lasting artifacts found — skipping Phase B" and proceed to cleanup |
@@ -163,13 +163,13 @@ docs/
 
 ### Example 1: Standard finalization
 ```
-/nw:finalize @nw-platform-architect "auth-upgrade"
+/nw-finalize @nw-platform-architect "auth-upgrade"
 ```
 Verifies all steps done. Creates evolution doc. Migrates `design/architecture-design.md` → `docs/architecture/auth-upgrade/`, ADRs → `docs/adrs/`, test-scenarios → `docs/scenarios/auth-upgrade/`. Shows remaining files, user approves, removes workspace. Commits.
 
 ### Example 2: Blocked by incomplete steps
 ```
-/nw:finalize @nw-platform-architect "data-pipeline"
+/nw-finalize @nw-platform-architect "data-pipeline"
 ```
 Pre-dispatch gate finds step 02-03 status IN_PROGRESS. Returns: "BLOCKED: 1 incomplete step - 02-03: IN_PROGRESS. Complete all steps before finalizing."
 

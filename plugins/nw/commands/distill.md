@@ -122,7 +122,7 @@ Context files: see above.
 
 ### Example 1: Core feature acceptance tests
 ```
-/nw:distill payment-webhook --test-framework=pytest-bdd --integration=real-services
+/nw-distill payment-webhook --test-framework=pytest-bdd --integration=real-services
 ```
 Quinn creates Given-When-Then acceptance tests from requirements and architecture, establishes walking skeleton first, then milestone features with @skip tags for one-at-a-time implementation.
 

@@ -49,7 +49,7 @@ Start the DELIVER wave, which creates a comprehensive roadmap where each step ex
 
 **Command**:
 ```
-/nw:deliver
+/nw-deliver
 ```
 
 **Pre-Check** (Agent will verify this):
@@ -112,10 +112,10 @@ Execute steps sequentially, with each step focusing on a single acceptance scena
 
 **Command** (execute each step):
 ```
-/nw:execute "{project_id}" "01-01"
-/nw:execute "{project_id}" "01-02"
-/nw:execute "{project_id}" "01-03"
-/nw:execute "{project_id}" "01-04"
+/nw-execute "{project_id}" "01-01"
+/nw-execute "{project_id}" "01-02"
+/nw-execute "{project_id}" "01-03"
+/nw-execute "{project_id}" "01-04"
 ```
 
 **For Each Step**:
@@ -147,7 +147,7 @@ After all steps complete successfully, finalize the wave (archival and reporting
 
 **Command**:
 ```
-/nw:finalize "{project_id}"
+/nw-finalize "{project_id}"
 ```
 
 **Deliverables**:

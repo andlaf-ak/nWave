@@ -21,8 +21,8 @@ MANDATORY SECTIONS (9):
 MANDATORY TDD PHASES (5 from schema):
 1. PREPARE, 2. RED_ACCEPTANCE, 3. RED_UNIT, 4. GREEN (merged GREEN_UNIT + GREEN_ACCEPTANCE)
 5. COMMIT (absorbs FINAL_VALIDATE)
-Note: REVIEW moved to deliver-level Phase 4 (Adversarial Review via /nw:review)
-Note: REFACTOR moved to deliver-level Phase 3 (Complete Refactoring L1-L4 via /nw:refactor)
+Note: REVIEW moved to deliver-level Phase 4 (Adversarial Review via /nw-review)
+Note: REFACTOR moved to deliver-level Phase 3 (Complete Refactoring L1-L4 via /nw-refactor)
 """
 
 from __future__ import annotations
@@ -83,7 +83,7 @@ class MandatorySectionChecker:
         "RECORDING_INTEGRITY": (
             "Add RECORDING_INTEGRITY section with valid skip prefixes "
             "(NOT_APPLICABLE, BLOCKED_BY_DEPENDENCY, APPROVED_SKIP, CHECKPOINT_PENDING) "
-            "and anti-fraud rules. See ~/.claude/commands/nw/execute.md"
+            "and anti-fraud rules. See ~/.claude/skills/nw-execute/SKILL.md"
         ),
         "BOUNDARY_RULES": "Add BOUNDARY_RULES section specifying which files can be modified",
         "TIMEOUT_INSTRUCTION": "Add TIMEOUT_INSTRUCTION section with turn budget guidance",

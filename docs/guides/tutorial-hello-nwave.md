@@ -32,7 +32,7 @@ Three commands. You review at each step. The machine never runs without your app
 ## Step 1: Define What You Want
 
 ```
-/nw:discuss "ASCII art banner generator: a pure Python function that takes a string and returns multi-line ASCII block letters. Only uppercase A-Z and spaces. No external dependencies."
+/nw-discuss "ASCII art banner generator: a pure Python function that takes a string and returns multi-line ASCII block letters. Only uppercase A-Z and spaces. No external dependencies."
 ```
 
 The `@product-owner` agent asks clarifying questions — answer simply. When it finishes, you'll find requirements under:
@@ -50,7 +50,7 @@ docs/feature/{feature-id}/discuss/
 ## Step 2: Define "Done"
 
 ```
-/nw:distill
+/nw-distill
 ```
 
 The `@acceptance-designer` creates Given-When-Then test scenarios. You'll find them under `tests/`.
@@ -70,7 +70,7 @@ If there are more than 5 scenarios, ask the agent to consolidate. Fewer scenario
 ## Step 3: Build It
 
 ```
-/nw:deliver
+/nw-deliver
 ```
 
 This is where the magic happens. The `@software-crafter` implements your feature using Outside-In TDD:
@@ -111,9 +111,9 @@ Three commands. Three human checkpoints. One working feature with tests.
 ```
 You typed          Agent did                    You checked
 ─────────          ─────────                    ───────────
-/nw:discuss        Wrote requirements           ✓ Scope right?
-/nw:distill        Created acceptance tests     ✓ Scenarios cover it?
-/nw:deliver        TDD implementation           ✓ Tests pass?
+/nw-discuss        Wrote requirements           ✓ Scope right?
+/nw-distill        Created acceptance tests     ✓ Scenarios cover it?
+/nw-deliver        TDD implementation           ✓ Tests pass?
 ```
 
 The feature is tested, committed, and ready to use.
