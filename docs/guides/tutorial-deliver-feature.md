@@ -40,13 +40,13 @@ tests/acceptance/bookmark_cli/acceptance/milestone-2-tagging.feature
 Verify your architecture document exists:
 
 ```bash
-ls docs/architecture/architecture-design.md
+ls docs/feature/bookmark-cli/design/architecture-design.md
 ```
 
 You should see:
 
 ```
-docs/architecture/architecture-design.md
+docs/feature/bookmark-cli/design/architecture-design.md
 ```
 
 > **If either is missing**: Complete the prerequisite tutorials first. `/nw-deliver` reads both acceptance tests and architecture documents to build the roadmap. [Tutorial 6](./tutorial-design.md) produces architecture; [Tutorial 7](./tutorial-distill.md) produces acceptance tests.
@@ -86,7 +86,7 @@ The architect takes 30-60 seconds. It reads your acceptance tests to know what "
 While the delivery runs (or after it completes), find the roadmap:
 
 ```bash
-cat docs/feature/bookmark-cli/roadmap.json
+cat docs/feature/bookmark-cli/deliver/roadmap.json
 ```
 
 You should see something like:
@@ -247,7 +247,7 @@ Mutation testing makes small changes to your production code (like changing `>` 
 
 > **If kill rate is below 80%**: The pipeline asks the crafter to add tests for the surviving mutants. You will see additional test commits. This is automatic -- no action needed from you.
 
-> **If you want to inspect surviving mutants**: After the pipeline completes, check `docs/feature/bookmark-cli/mutation/mutation-report.md` for details on which mutations survived and why.
+> **If you want to inspect surviving mutants**: After the pipeline completes, check `docs/feature/bookmark-cli/deliver/mutation-report.md` for details on which mutations survived and why.
 
 *Next: you will verify the final result yourself.*
 
@@ -342,6 +342,11 @@ bookmark-cli/
     unit/                  # TDD unit tests
   docs/
     evolution/bookmark-cli.md  # Permanent delivery record
+    feature/bookmark-cli/
+      design/                  # Architecture docs
+      discuss/                 # Requirements + journey
+      distill/                 # Test design docs
+      deliver/                 # Roadmap + execution log
 ```
 
 > **Your file structure will differ.** The crafter organizes files based on your architecture document. The pattern is what matters: domain layer with no adapter dependencies, adapters that implement ports.
@@ -381,11 +386,11 @@ Each wave constrained the next. Requirements shaped the architecture. Architectu
 |---------|-----|
 | `/nw-deliver` does not start | Make sure nWave is installed. Run `/nw-help` to verify. |
 | Architect cannot find acceptance tests | Ensure `.feature` files exist under `tests/acceptance/`. Run `find tests -name "*.feature"` to check. |
-| Architect cannot find architecture docs | Ensure `docs/architecture/architecture-design.md` exists. Complete [Tutorial 6](./tutorial-design.md) if missing. |
+| Architect cannot find architecture docs | Ensure `docs/feature/bookmark-cli/design/architecture-design.md` exists. Complete [Tutorial 6](./tutorial-design.md) if missing. |
 | Roadmap has many more steps than expected | The architect breaks work into small, testable increments. More steps means more granularity, not more complexity. |
 | Crafter stuck on RED for more than 5 minutes | The step may be too large for one TDD cycle. Let it continue -- the crafter often needs multiple attempts. If it truly hangs, press Ctrl+C and run `/nw-deliver` again. It resumes from the last committed step. |
 | Review requests changes repeatedly (3+ rounds) | The pipeline stops after 2 rounds. Review the requested changes manually and fix them, then run `/nw-deliver` again. |
-| Mutation kill rate below 80% after retries | Check `docs/feature/bookmark-cli/mutation/mutation-report.md`. Some surviving mutants are semantically equivalent (the change does not affect behavior). If the gap is small, this may be acceptable. |
+| Mutation kill rate below 80% after retries | Check `docs/feature/bookmark-cli/deliver/mutation-report.md`. Some surviving mutants are semantically equivalent (the change does not affect behavior). If the gap is small, this may be acceptable. |
 | `pytest` cannot find tests after delivery | Make sure `pytest-bdd` is installed: `pip install pytest-bdd`. Also check that `conftest.py` exists in the test directory. |
 | Import errors when running the CLI | The module path depends on what the crafter created. Check `setup.py` or `pyproject.toml` for the package name and entry points. |
 | Want to start fresh | Run `git log --oneline` to find the commit before delivery started, then `git reset --hard <commit>` and run `/nw-deliver` again. |

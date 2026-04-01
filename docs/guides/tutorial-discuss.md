@@ -11,7 +11,7 @@
 
 A complete requirements package -- user stories with Given/When/Then acceptance criteria, ready for architecture design.
 
-**Before**: You have a validated problem from Tutorial 4 (developers lose track of useful links) and a `docs/discovery/problem-validation.md` with evidence. But you have no requirements, no user stories, and no definition of "done."
+**Before**: You have a validated problem from Tutorial 4 (developers lose track of useful links) and a `docs/feature/bookmark-cli/discover/problem-validation.md` with evidence. But you have no requirements, no user stories, and no definition of "done."
 
 **After**: You have a UX journey map showing how the bookmark CLI should *feel* to use, structured user stories with real-world examples, BDD acceptance criteria, and a Definition of Ready validation confirming everything is ready for the DESIGN wave.
 
@@ -26,24 +26,24 @@ You should be in the `bookmark-cli` project from Tutorial 4, with discovery arti
 Verify:
 
 ```bash
-ls docs/discovery/problem-validation.md
+ls docs/feature/bookmark-cli/discover/problem-validation.md
 ```
 
 You should see:
 
 ```
-docs/discovery/problem-validation.md
+docs/feature/bookmark-cli/discover/problem-validation.md
 ```
 
 Check that your discovery recommended proceeding:
 
 ```bash
-head -30 docs/discovery/problem-validation.md
+head -30 docs/feature/bookmark-cli/discover/problem-validation.md
 ```
 
 You should see your problem validation document with a recommendation (likely "PROCEED" or "PROCEED WITH CAUTION").
 
-> **If `docs/discovery/` does not exist**: Complete [Tutorial 4](./tutorial-discovery.md) first. This tutorial builds directly on its output.
+> **If `docs/feature/bookmark-cli/discover/` does not exist**: Complete [Tutorial 4](./tutorial-discovery.md) first. This tutorial builds directly on its output.
 
 > **If your discovery recommended KILL**: You can still follow this tutorial for practice. `/nw-discuss` works regardless of the discovery outcome -- but in a real project, you would pick a different idea first.
 
@@ -71,7 +71,7 @@ Luna (the product owner agent) will ask three setup questions before starting. Y
 
 ```
 I'm Luna, your Experience-Driven Requirements Analyst. I've read your
-discovery artifacts from docs/discovery/.
+discovery artifacts from docs/feature/bookmark-cli/discover/.
 
 Before we begin, I need to understand the scope:
 
@@ -93,7 +93,7 @@ For this tutorial, answer:
 
 After your answers, Luna begins Phase 1: Deep Discovery. She will ask questions about how the bookmark CLI should feel to use.
 
-**What just happened?** Luna read your `docs/discovery/problem-validation.md` to understand the validated problem. The three setup questions configure how deep the requirements process goes. "Comprehensive" gives you the full UX journey experience without the extended research of a deep-dive.
+**What just happened?** Luna read your `docs/feature/bookmark-cli/discover/problem-validation.md` to understand the validated problem. The three setup questions configure how deep the requirements process goes. "Comprehensive" gives you the full UX journey experience without the extended research of a deep-dive.
 
 *Next: you will answer Luna's discovery questions about the user experience.*
 
@@ -150,12 +150,12 @@ Luna will continue for 3-5 more questions, covering the save, search, and retrie
 After discovery, Luna produces visual journey artifacts. You will see her write files:
 
 ```
-Creating docs/ux/bookmark-cli/journey-core-visual.md
-Creating docs/ux/bookmark-cli/journey-core.yaml
-Creating docs/ux/bookmark-cli/journey-core.feature
+Creating docs/feature/bookmark-cli/discuss/journey-core-visual.md
+Creating docs/feature/bookmark-cli/discuss/journey-core.yaml
+Creating docs/feature/bookmark-cli/discuss/journey-core.feature
 ```
 
-> **You may see different file names.** Luna names artifacts based on the journey she discovers. The path pattern `docs/ux/{epic}/journey-{name}.*` is what matters.
+> **You may see different file names.** Luna names artifacts based on the journey she discovers. The path pattern `docs/feature/{name}/discuss/journey-{name}.*` is what matters.
 
 The journey visual maps the complete experience from start to finish. Luna designed it using two ideas:
 
@@ -242,11 +242,10 @@ Two things to notice:
 1. **Given/When/Then format** -- Each scenario has exactly three parts: a starting condition (Given), an action (When), and a verifiable outcome (Then). You can read each scenario and know exactly what to test.
 2. **Persona-driven** -- The scenarios use "Carlos" (the persona from the story), not abstract "the user." This keeps acceptance criteria grounded in the real use case Luna designed.
 
-Luna writes these scenarios to a separate file:
+Luna writes these scenarios to the discuss artifacts:
 
 ```
-Creating docs/requirements/user-stories.md
-Creating docs/requirements/acceptance-criteria.md
+Creating docs/feature/bookmark-cli/discuss/user-stories.md
 ```
 
 **What just happened?** Luna translated the user stories into testable acceptance criteria. These Given/When/Then scenarios become the basis for automated tests when you reach the DELIVER wave. The format comes from Behavior-Driven Development (BDD), which bridges the gap between requirements and test code.
@@ -297,8 +296,8 @@ Review result: APPROVED
 Luna then writes the final artifacts:
 
 ```
-Creating docs/requirements/requirements.md
-Creating docs/requirements/dor-checklist.md
+Creating docs/feature/bookmark-cli/discuss/dor-validation.md
+Creating docs/feature/bookmark-cli/discuss/peer-review.md
 ```
 
 **What just happened?** The Definition of Ready applies the same "validate before you proceed" principle from Tutorial 4, but at the requirements level. In Tutorial 4, the gate checked whether the *problem* was real. Here, the gate checks whether the *requirements* are complete. Each nWave wave validates before the next one begins.
@@ -312,32 +311,23 @@ Creating docs/requirements/dor-checklist.md
 Check what Luna created:
 
 ```bash
-ls docs/ux/bookmark-cli/
+ls docs/feature/bookmark-cli/discuss/
 ```
 
 You should see:
 
 ```
+dor-validation.md
 journey-core-visual.md
 journey-core.yaml
 journey-core.feature
+peer-review.md
 shared-artifacts-registry.md
-```
-
-> **Your file names will differ.** Luna names files based on the journey she designed. The pattern `docs/ux/{epic}/journey-*.{md,yaml,feature}` is what matters.
-
-```bash
-ls docs/requirements/
-```
-
-You should see:
-
-```
-requirements.md
 user-stories.md
-acceptance-criteria.md
-dor-checklist.md
+wave-decisions.md
 ```
+
+> **Your file names will differ.** Luna names files based on the journey she designed. The path pattern `docs/feature/{name}/discuss/` is what matters, with journey files, user stories, and validation artifacts inside.
 
 Commit everything:
 
@@ -391,7 +381,7 @@ Each wave validates before the next one begins. No handoff without evidence.
 ## Next Steps
 
 - **[Tutorial 6: Architecture Design](./TUTORIAL-INDEX.md)** -- Take your requirements into `/nw-design` to make architecture decisions before writing code
-- **Review the journey visual** -- Open `docs/ux/bookmark-cli/journey-core-visual.md` and trace the emotional arc from frustration to relief
+- **Review the journey visual** -- Open `docs/feature/bookmark-cli/discuss/journey-core-visual.md` and trace the emotional arc from frustration to relief
 - **Read a user story aloud** -- If the Given/When/Then reads naturally, the acceptance criteria are well-written. If it sounds awkward, Luna may have been too technical.
 
 ---
@@ -403,9 +393,9 @@ Each wave validates before the next one begins. No handoff without evidence.
 | Luna does not start after `/nw-discuss` | Make sure nWave is installed. Run `/nw-help` to verify. |
 | Luna skips the journey and goes straight to stories | Say `*journey "bookmark-cli"` to explicitly start the journey phase. |
 | DoR validation fails repeatedly | Say "let's simplify -- focus on the 2 most important stories only." Fewer stories are easier to validate. |
-| No `docs/ux/` directory after the session | Luna writes journey artifacts after the discovery questions. If you ended the session early, run `/nw-discuss bookmark-cli` again. |
+| No `docs/feature/bookmark-cli/discuss/` directory after the session | Luna writes journey artifacts after the discovery questions. If you ended the session early, run `/nw-discuss bookmark-cli` again. |
 | Luna asks too many questions | Say "I think you have enough to sketch the journey now." Luna will proceed to visualization. |
-| Want to start fresh | Delete `docs/ux/` and `docs/requirements/` and run `/nw-discuss` again. |
+| Want to start fresh | Delete `docs/feature/bookmark-cli/discuss/` and run `/nw-discuss` again. |
 
 ---
 

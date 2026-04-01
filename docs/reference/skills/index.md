@@ -10,7 +10,7 @@
 
 ## nw-ad-critique-dimensions
 
-- [nw-ad-critique-dimensions](../../../nWave/skills/nw-ad-critique-dimensions/SKILL.md) — Review dimensions for acceptance test quality - happy path bias, GWT compliance, business language purity, coverage completeness, walking skeleton user-centricity, priority validation, observable behavior assertions, and traceability coverage
+- [nw-ad-critique-dimensions](../../../nWave/skills/nw-ad-critique-dimensions/SKILL.md) — Review dimensions for acceptance test quality - happy path bias, GWT compliance, business language purity, coverage completeness, walking skeleton user-centricity, priority validation, observable behavior assertions, traceability coverage, and walking skeleton boundary proof
 
 ## nw-agent-creation-workflow
 
@@ -190,7 +190,7 @@
 
 ## nw-distill
 
-- [nw-distill](../../../nWave/skills/nw-distill/SKILL.md) — Creates E2E acceptance tests in Given-When-Then format from requirements and architecture. Use when preparing executable specifications before implementation.
+- [nw-distill](../../../nWave/skills/nw-distill/SKILL.md) — Acceptance test creation methodology for the DISTILL wave. Domain knowledge for the acceptance designer agent: port-to-port principle, prior wave reading, wave-decision reconciliation, graceful degradation, and document back-propagation.
 
 ## nw-divio-framework
 

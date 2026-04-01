@@ -3,7 +3,7 @@ name: nw-acceptance-designer
 description: Use for DISTILL wave - designs E2E acceptance tests from user stories and architecture using Given-When-Then format. Creates executable specifications that drive Outside-In TDD development.
 model: inherit
 tools: Read, Write, Edit, Bash, Glob, Grep, Task
-maxTurns: 30
+maxTurns: 50
 skills:
   - nw-bdd-methodology
   - nw-test-design-mandates
@@ -85,9 +85,11 @@ Load: `test-design-mandates` — read it NOW before proceeding.
 1. Write walking skeleton scenarios first (simplest user journey with observable value)
 2. Write happy path scenarios for remaining stories
 3. Add error path scenarios (target 40%+ of total)
-4. Add boundary/edge case scenarios
-5. **Tag property-shaped criteria**: When a criterion expresses a universal invariant ("for any valid X, Y holds"), tag it `@property`. Signals DELIVER wave crafter to implement as property-based test.
-6. Verify business language purity -- zero technical terms in Gherkin
+4. Add infrastructure failure scenarios for EVERY driven adapter (adapter list from DESIGN component boundaries): disk full, permission denied, subprocess timeout, network error, corrupt file, concurrent access, missing env var, malformed config. Tag with `@infrastructure-failure @in-memory`.
+5. **Add adapter integration scenarios for EVERY NEW driven adapter**: at least ONE scenario per adapter that exercises REAL I/O (real filesystem, real subprocess, real git, real ruff). Tag with `@real-io @adapter-integration`. These prove the adapter works against real infrastructure — InMemory doubles cannot catch wiring bugs, path resolution errors, or output format mismatches. The WS covers SOME adapters via @real-io; this step covers the REST. Audit: for each adapter in DESIGN component boundaries, verify at least one @real-io scenario exists (in WS or in a dedicated adapter scenario). If missing, add it.
+7. Add boundary/edge case scenarios
+8. **Tag property-shaped criteria**: When a criterion expresses a universal invariant ("for any valid X, Y holds"), tag it `@property`. Signals DELIVER wave crafter to implement as property-based test.
+9. Verify business language purity -- zero technical terms in Gherkin
 
 Property-shaped signals: "any"|"all"|"never"|"always"|"regardless of"|roundtrips|idempotence|ordering guarantees.
 
@@ -135,6 +137,7 @@ Phase tracking uses execution-log.json.
 4. Gherkin contains zero technical terms.
 5. One scenario enabled at a time. Multiple failing tests break TDD feedback loop.
 6. Handoff requires peer review approval and DoD validation.
+7. **No Fixture Theater**: Given steps set up PRECONDITIONS (input state), never the EXPECTED OUTPUT. If a test passes without production code changes, the fixtures are doing the feature's work — this is an acceptance test design flaw, not a valid GREEN.
 
 ## Examples
 

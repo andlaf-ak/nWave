@@ -133,6 +133,9 @@ RED phase: `assert result.total == Decimal("150.00")`. GREEN phase: same test no
 ### Example 7: Testing Theater -- Fully Mocked SUT
 Test mocks all 3 dependencies of OrderService, then asserts `mock_repo.save.assert_called_once()`. Production code could be empty and test still passes. Testing theater (fully-mocked SUT pattern). BLOCKER. REJECTED with D1 (testing theater), instruction to test through driving port with real in-memory adapters.
 
+### Example 8: Fixture Theater -- Tests Pass Without Production Changes
+Agent reports GREEN but `git diff --name-only` shows only test files changed. Production files in `files_to_modify` are untouched. Tests pass because Given steps create the expected end-state in fixtures, not because production code implements the feature. BLOCKER. REJECTED with D1 (fixture theater). Verify: `git diff --stat` must include production files. If only test files changed after RED→GREEN flip, the feature was never implemented.
+
 ## Commands
 
 All commands require `*` prefix.

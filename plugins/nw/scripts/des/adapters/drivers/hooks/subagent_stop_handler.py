@@ -265,7 +265,6 @@ def handle_subagent_stop() -> int:
             stdin_result = read_and_parse_stdin("subagent_stop")
 
             if stdin_result.is_empty:
-                print(json.dumps({"decision": "allow"}))
                 return 0
 
             if stdin_result.parse_error:
@@ -309,7 +308,6 @@ def handle_subagent_stop() -> int:
                     },
                     hook_id=hook_id,
                 )
-                print(json.dumps(response))
                 return exit_code
             execution_log_path, project_id, step_id = des_context_result
 
@@ -354,7 +352,6 @@ def handle_subagent_stop() -> int:
 
             # Translate HookDecision to protocol response
             if decision.action == "allow":
-                print(json.dumps({"decision": "allow"}))
                 exit_code = 0
                 return exit_code
 

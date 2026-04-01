@@ -9,6 +9,7 @@ Architecture design and patterns review specialist - Optimized for cost-efficien
 
 ## Commands
 
+- [`/nw-distill`](../commands/index.md)
 - [`/nw-review`](../commands/index.md)
 
 ## Skills

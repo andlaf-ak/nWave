@@ -165,8 +165,10 @@ class TestSubagentStopWithClaudeCodeProtocol:
         exit_code = handle_subagent_stop()
 
         assert exit_code == 0
-        response = json.loads(captured[0])
-        assert response["decision"] == "allow"
+        # Allow path: no stdout (Claude Code protocol)
+        assert len(captured) == 0, (
+            f"Allow path should produce no output. Got: {captured}"
+        )
 
     def test_des_subagent_with_valid_execution_log(self, tmp_path, monkeypatch):
         """DES agent with complete execution log should be allowed."""
@@ -231,8 +233,10 @@ class TestSubagentStopWithClaudeCodeProtocol:
         exit_code = handle_subagent_stop()
 
         assert exit_code == 0
-        response = json.loads(captured[0])
-        assert response["decision"] == "allow"
+        # Allow path: no stdout (Claude Code protocol)
+        assert len(captured) == 0, (
+            f"Allow path should produce no output. Got: {captured}"
+        )
 
     def test_des_subagent_with_incomplete_execution_log_blocked(
         self, tmp_path, monkeypatch

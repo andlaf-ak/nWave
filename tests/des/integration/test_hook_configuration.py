@@ -296,12 +296,15 @@ class TestHookAdapterFunctionality:
 
             exit_code = claude_code_hook_adapter.handle_pre_tool_use()
 
-            output = json.loads(captured.getvalue())
+            stdout_content = captured.getvalue().strip()
             assert exit_code == 0, (
                 f"Expected allow (exit 0) for non-DES task, "
-                f"got exit {exit_code}: {output}"
+                f"got exit {exit_code}: {stdout_content}"
             )
-            assert output["decision"] == "allow"
+            # Allow path: no stdout (Claude Code protocol)
+            assert stdout_content == "", (
+                f"Allow path should produce no stdout. Got: {stdout_content!r}"
+            )
         finally:
             sys.stdin = original_stdin
             sys.stdout = original_stdout

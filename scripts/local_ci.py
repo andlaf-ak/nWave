@@ -210,7 +210,7 @@ class LocalCIValidator:
             self.run_command(["pipenv", "run", "build"], "Build process")
         except FileNotFoundError:
             # Fall back to direct Python if pipenv not available
-            build_script = self.project_root / "tools" / "build.py"
+            build_script = self.project_root / "scripts" / "build_dist.py"
             if build_script.exists():
                 self.run_command([sys.executable, str(build_script)], "Build process")
             else:
@@ -290,7 +290,7 @@ class LocalCIValidator:
             try:
                 subprocess.run(["ruff", "--version"], capture_output=True, check=True)
                 self.run_command(
-                    ["ruff", "check", "scripts/", "tools/", "tests/"],
+                    ["ruff", "check", "src/", "scripts/", "tests/"],
                     "Ruff linting passed",
                 )
             except (FileNotFoundError, subprocess.CalledProcessError):
@@ -312,7 +312,7 @@ class LocalCIValidator:
             try:
                 subprocess.run(["ruff", "--version"], capture_output=True, check=True)
                 self.run_command(
-                    ["ruff", "format", "--check", "scripts/", "tools/", "tests/"],
+                    ["ruff", "format", "--check", "src/", "scripts/", "tests/"],
                     "Ruff formatting check passed",
                 )
             except (FileNotFoundError, subprocess.CalledProcessError):
@@ -377,7 +377,7 @@ class LocalCIValidator:
         # Check command/task definitions
         tasks_dir = self.project_root / "nWave" / "tasks"
         if tasks_dir.exists():
-            command_count = len(list(tasks_dir.glob("*.md")))
+            command_count = len(list(tasks_dir.rglob("*.md")))
             self.print_success(f"Command definitions: {command_count} found")
             self.tests_passed += 1
         else:
@@ -389,7 +389,7 @@ class LocalCIValidator:
 
         required_docs = [
             "README.md",
-            "docs/installation/INSTALL.md",
+            "docs/guides/installation-guide.md",
         ]
 
         doc_errors = 0

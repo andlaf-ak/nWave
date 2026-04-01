@@ -236,10 +236,8 @@ def test_logging_exception_preserves_fail_open_behavior(monkeypatch, tmp_path):
     assert exit_code == 0
     # Verify it attempted to log (writer was called)
     assert call_count > 0, "Expected audit writer to be called even though it raised"
-    # Verify it printed allow response
-    assert any('"allow"' in str(p) for p in printed), (
-        "Expected allow decision in output"
-    )
+    # Allow path: no stdout (Claude Code protocol — silent exit 0)
+    assert len(printed) == 0, f"Allow path should produce no output. Got: {printed}"
 
 
 # --- Test 6: Execution log Write always blocked — guides to des.cli.init_log ---

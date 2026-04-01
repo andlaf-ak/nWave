@@ -42,13 +42,13 @@ PASSED
 Verify your architecture document exists:
 
 ```bash
-ls docs/architecture/architecture-design.md
+ls docs/feature/bookmark-cli/design/architecture-design.md
 ```
 
 You should see:
 
 ```
-docs/architecture/architecture-design.md
+docs/feature/bookmark-cli/design/architecture-design.md
 ```
 
 Verify your evolution document exists:
@@ -118,7 +118,7 @@ After your answers, Apex designs a CI/CD pipeline. You will see:
 ● nw-platform-architect(Analyzing existing infrastructure...)
 ● nw-platform-architect(Designing CI/CD pipeline...)
 ● nw-platform-architect(Creating .github/workflows/bookmark-cli.yml)
-● nw-platform-architect(Creating docs/feature/bookmark-cli/deliver/ci-cd-pipeline.md)
+● nw-platform-architect(Creating docs/feature/bookmark-cli/devops/ci-cd-pipeline.md)
 ```
 
 The generated GitHub Actions workflow will look something like:
@@ -189,15 +189,15 @@ After the pipeline, Apex designs deployment and infrastructure:
 
 ```
 ● nw-platform-architect(Designing deployment strategy...)
-● nw-platform-architect(Creating docs/feature/bookmark-cli/deliver/deployment-strategy.md)
+● nw-platform-architect(Creating docs/feature/bookmark-cli/devops/deployment-strategy.md)
 ● nw-platform-architect(Designing infrastructure recommendations...)
-● nw-platform-architect(Creating docs/feature/bookmark-cli/deliver/platform-architecture.md)
+● nw-platform-architect(Creating docs/feature/bookmark-cli/devops/platform-architecture.md)
 ```
 
 Check the deployment strategy:
 
 ```bash
-ls docs/feature/bookmark-cli/deliver/
+ls docs/feature/bookmark-cli/devops/
 ```
 
 You should see something like:
@@ -220,7 +220,7 @@ The deployment strategy for a CLI tool typically covers:
 
 **What just happened?** Apex applied Principle 4 (simplest infrastructure first) from its methodology. A CLI tool does not need Kubernetes, load balancers, or canary deployments. It needs a build, a publish, and a version strategy. Apex documented why simpler alternatives were chosen over complex ones.
 
-> **If you see Kubernetes or container recommendations**: Apex may have misread the project type. This is rare but possible. Check `docs/architecture/architecture-design.md` to confirm it describes a CLI tool, not a web service.
+> **If you see Kubernetes or container recommendations**: Apex may have misread the project type. This is rare but possible. Check `docs/feature/bookmark-cli/design/architecture-design.md` to confirm it describes a CLI tool, not a web service.
 
 *Next: Apex will generate the production readiness checklist.*
 
@@ -232,7 +232,7 @@ Apex generates a production readiness assessment:
 
 ```
 ● nw-platform-architect(Generating production readiness checklist...)
-● nw-platform-architect(Creating docs/feature/bookmark-cli/deliver/production-readiness.md)
+● nw-platform-architect(Creating docs/feature/bookmark-cli/devops/production-readiness.md)
 ```
 
 The checklist covers items like:
@@ -313,11 +313,11 @@ find docs/feature/bookmark-cli/deliver -type f | sort
 You should see something like:
 
 ```
-docs/feature/bookmark-cli/deliver/branching-strategy.md
-docs/feature/bookmark-cli/deliver/ci-cd-pipeline.md
-docs/feature/bookmark-cli/deliver/deployment-strategy.md
-docs/feature/bookmark-cli/deliver/platform-architecture.md
-docs/feature/bookmark-cli/deliver/production-readiness.md
+docs/feature/bookmark-cli/devops/branching-strategy.md
+docs/feature/bookmark-cli/devops/ci-cd-pipeline.md
+docs/feature/bookmark-cli/devops/deployment-strategy.md
+docs/feature/bookmark-cli/devops/platform-architecture.md
+docs/feature/bookmark-cli/devops/production-readiness.md
 ```
 
 Check for the GitHub Actions workflow:
@@ -352,11 +352,14 @@ bookmark-cli/
     acceptance/                # BDD scenarios (all green)
     unit/                      # TDD unit tests
   docs/
-    requirements/              # User stories + acceptance criteria
-    architecture/              # Hexagonal design + ADRs
     feature/bookmark-cli/
+      discover/                # Problem validation
+      discuss/                 # User stories + acceptance criteria
+      design/                  # Hexagonal design
       distill/                 # Test design docs
-      deliver/                 # DevOps artifacts (this tutorial)
+      deliver/                 # Roadmap + execution log
+      devops/                  # DevOps artifacts (this tutorial)
+    adrs/                      # Architecture decision records
     evolution/bookmark-cli.md  # Permanent delivery record
   .github/workflows/
     bookmark-cli.yml           # CI/CD pipeline
@@ -388,7 +391,7 @@ You went from "I have an idea for a bookmark CLI" to a production-ready, fully t
 
 ## Next Steps
 
-- **Act on the checklist** -- Open `docs/feature/bookmark-cli/deliver/production-readiness.md` and work through the unchecked items. Each one brings you closer to a real release.
+- **Act on the checklist** -- Open `docs/feature/bookmark-cli/devops/production-readiness.md` and work through the unchecked items. Each one brings you closer to a real release.
 - **Run the pipeline** -- Commit the GitHub Actions workflow, push to a repository, and watch the pipeline execute. The quality gates should all pass on the first run.
 - **Try a different project** -- Run through tutorials 4-9 again on a new idea. The wave process works the same way regardless of the feature.
 - **Explore standalone tutorials** -- [Tutorial 10: Safe Refactoring](./TUTORIAL-INDEX.md) and [Tutorial 11: Debugging with 5 Whys](./TUTORIAL-INDEX.md) cover everyday tasks that do not require the full wave.
@@ -400,13 +403,13 @@ You went from "I have an idea for a bookmark CLI" to a production-ready, fully t
 | Symptom | Fix |
 |---------|-----|
 | `/nw-devops` does not start | Make sure nWave is installed. Run `/nw-help` to verify. |
-| Apex cannot find architecture docs | Ensure `docs/architecture/architecture-design.md` exists. Complete [Tutorial 6](./tutorial-design.md) if missing. |
+| Apex cannot find architecture docs | Ensure `docs/feature/bookmark-cli/design/architecture-design.md` exists. Complete [Tutorial 6](./tutorial-design.md) if missing. |
 | Apex designs overly complex infrastructure (Kubernetes for a CLI) | Interrupt and clarify: "This is a CLI tool distributed via PyPI, not a web service." Apex will simplify. |
 | Pipeline workflow has syntax errors | Copy the workflow to `.github/workflows/`, push to a branch, and check the GitHub Actions tab for validation errors. Fix inline. |
 | Reviewer rejects repeatedly (3+ rounds) | The pipeline stops after 2 rounds. Review the findings manually, make the changes Apex could not, and run `/nw-devops` again. |
-| No `.github/workflows/` directory created | Apex may have placed the workflow in `docs/feature/bookmark-cli/deliver/` as a design document rather than a live file. Copy it to `.github/workflows/`. |
+| No `.github/workflows/` directory created | Apex may have placed the workflow in `docs/feature/bookmark-cli/devops/` as a design document rather than a live file. Copy it to `.github/workflows/`. |
 | Production readiness checklist shows items you already completed | Apex may not have detected all prior artifacts. Manually check the items you know are done. |
-| Want to start fresh | Delete `docs/feature/bookmark-cli/deliver/` and `.github/workflows/bookmark-cli.yml`, then run `/nw-devops` again. |
+| Want to start fresh | Delete `docs/feature/bookmark-cli/devops/` and `.github/workflows/bookmark-cli.yml`, then run `/nw-devops` again. |
 
 ---
 

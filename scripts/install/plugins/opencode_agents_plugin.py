@@ -221,7 +221,11 @@ class OpenCodeAgentsPlugin(InstallationPlugin):
             target_dir = _opencode_agents_dir()
             target_dir.mkdir(parents=True, exist_ok=True)
 
-            public_agents = load_public_agents(context.project_root / "nWave")
+            public_agents = (
+                set()
+                if context.dev_mode
+                else load_public_agents(context.project_root / "nWave")
+            )
 
             agent_files = sorted(agents_source.glob("nw-*.md"))
             if not agent_files:

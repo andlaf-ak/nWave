@@ -233,24 +233,25 @@ Three possible outcomes at the gate:
 
 ## Step 6 of 7: Review the Artifacts (~2 minutes)
 
-Scout saves its findings to `docs/discovery/`. Check what was created:
+Scout saves its findings to `docs/feature/bookmark-cli/discover/`. Check what was created:
 
 ```bash
-ls docs/discovery/
+ls docs/feature/bookmark-cli/discover/
 ```
 
 You should see:
 
 ```
 problem-validation.md
+wave-decisions.md
 ```
 
-> **You may see additional files** like `opportunity-tree.md` or `interview-log.md` depending on how far your discovery progressed. That is expected.
+> **You may see additional files** like `opportunity-tree.md`, `lean-canvas.md`, or `interview-guide.md` depending on how far your discovery progressed. That is expected.
 
 Open the problem validation document:
 
 ```bash
-cat docs/discovery/problem-validation.md
+cat docs/feature/bookmark-cli/discover/problem-validation.md
 ```
 
 You will see a structured document containing:
@@ -275,7 +276,7 @@ You should see:
 [main ...] docs: problem validation from discovery session
 ```
 
-> **If `docs/discovery/` does not exist**: Scout may not have reached the point of writing artifacts. This happens if the conversation was very short. Run `/nw-discover bookmark-cli` again -- it picks up where it left off.
+> **If `docs/feature/bookmark-cli/discover/` does not exist**: Scout may not have reached the point of writing artifacts. This happens if the conversation was very short. Run `/nw-discover bookmark-cli` again -- it picks up where it left off.
 
 *Next: a recap of what you learned and where to go from here.*
 
@@ -321,9 +322,9 @@ You started with an idea ("bookmark manager CLI tool") and three untested assump
 |---------|-----|
 | Scout does not start after `/nw-discover` | Make sure nWave is installed. Run `/nw-help` to verify. |
 | Scout asks too many questions | Say "let's evaluate the gate now" -- Scout will run the evaluation with whatever evidence exists. |
-| No `docs/discovery/` directory after the session | Scout writes artifacts at phase transitions. If you ended the session early, run `/nw-discover bookmark-cli` again to resume. |
+| No `docs/feature/bookmark-cli/discover/` directory after the session | Scout writes artifacts at phase transitions. If you ended the session early, run `/nw-discover bookmark-cli` again to resume. |
 | Scout recommended KILL and you disagree | That is fine -- Scout advises, you decide. But document why you are overriding the evidence. |
-| Want to start discovery fresh | Delete `docs/discovery/` and run `/nw-discover` again. |
+| Want to start discovery fresh | Delete `docs/feature/bookmark-cli/discover/` and run `/nw-discover` again. |
 
 ---
 

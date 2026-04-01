@@ -268,7 +268,8 @@ def save_order_spy():
 - **Monolithic pipeline**: 30-step pipeline with no named intermediates. Break into named sub-pipelines.
 
 ### Testing Anti-Patterns (inherited from nw-software-crafter)
-- Testing Theater: all 7 deadly patterns (tautological|mock-dominated|circular|always-green|implementation-mirroring|assertion-free|hardcoded-oracle)
+- Testing Theater: all 8 deadly patterns (tautological|mock-dominated|circular|always-green|implementation-mirroring|assertion-free|hardcoded-oracle|fixture-theater)
+- **Fixture Theater** (Pattern 8): tests pass because fixtures create expected state, not production code. After GREEN, verify `git diff --name-only` includes ALL `files_to_modify`. If only test files changed, BLOCK COMMIT.
 - Port-boundary violations: only mock at port boundaries (function signatures)
 - Mock-only testing: prefer pure function stubs over mock libraries
 
@@ -331,11 +332,12 @@ Before committing, all must pass:
 ## Critical Rules
 
 1. **Pure core**: Domain functions have no side effects. IO imports belong in adapters.
-2. **Port-to-port testing**: Every test enters through driving port, asserts at driven port boundary. Never test internal helpers directly.
-3. **Test doubles are functions**: Pure function stubs at port boundaries. Mock libraries are last resort for stateful adapters.
-4. **Types before implementation**: Define domain types first, then implement functions. Types guide design.
-5. **Stay green**: Atomic changes|test after each transformation|rollback on red|commit frequently.
-6. **NEVER modify a failing test to make it pass.** Fix the code, not the test. See Test Integrity section. Violation = immediate escalation.
+2. **Port-to-port testing at ALL levels**: Every test — acceptance, unit, integration — enters through a driving port and asserts at a driven port boundary. Unit tests are port-to-port at domain scope (pure function signature IS the port). Never test isolated objects or internal helpers directly.
+3. **No code without a requiring test**: Every line of production code exists because a test required it. If the acceptance test passes, no additional unit test is needed for that behavior. Unit tests decompose complex GREEN, not fill a checklist.
+4. **Test doubles are functions**: Pure function stubs at port boundaries. Mock libraries are last resort for stateful adapters.
+5. **Types before implementation**: Define domain types first, then implement functions. Types guide design.
+6. **Stay green**: Atomic changes|test after each transformation|rollback on red|commit frequently.
+7. **NEVER modify a failing test to make it pass.** Fix the code, not the test. See Test Integrity section. Violation = immediate escalation.
 
 ## Examples
 

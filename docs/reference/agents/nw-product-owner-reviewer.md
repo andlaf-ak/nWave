@@ -7,6 +7,10 @@ Use as hard gate before DESIGN wave - validates journey coherence, emotional arc
 **Max turns:** 30
 **Tools:** Read, Glob, Grep
 
+## Commands
+
+- [`/nw-distill`](../commands/index.md)
+
 ## Skills
 
 - [nw-dor-validation](../../../nWave/skills/nw-dor-validation/SKILL.md) — Definition of Ready checklist criteria, antipattern detection patterns, UAT quality rules, and domain language enforcement for product owner review

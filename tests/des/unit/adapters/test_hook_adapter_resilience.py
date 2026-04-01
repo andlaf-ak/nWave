@@ -46,25 +46,25 @@ class TestEmptyStdinResilience:
         """UT-14: PreToolUse with empty stdin exits 0 with allow."""
         exit_code, response = _invoke_hook("pre-tool-use", "")
         assert exit_code == 0
-        assert response.get("decision") == "allow"
+        assert response == {}, f"Allow path should produce no stdout. Got: {response}"
 
     def test_empty_stdin_subagent_stop_exits_0(self) -> None:
         """UT-15: SubagentStop with empty stdin exits 0 with allow."""
         exit_code, response = _invoke_hook("subagent-stop", "")
         assert exit_code == 0
-        assert response.get("decision") == "allow"
+        assert response == {}, f"Allow path should produce no stdout. Got: {response}"
 
     def test_whitespace_only_stdin_pre_tool_use_exits_0(self) -> None:
         """PreToolUse with whitespace-only stdin exits 0."""
         exit_code, response = _invoke_hook("pre-tool-use", "   \n  ")
         assert exit_code == 0
-        assert response.get("decision") == "allow"
+        assert response == {}, f"Allow path should produce no stdout. Got: {response}"
 
     def test_whitespace_only_stdin_subagent_stop_exits_0(self) -> None:
         """SubagentStop with whitespace-only stdin exits 0."""
         exit_code, response = _invoke_hook("subagent-stop", "   \n  ")
         assert exit_code == 0
-        assert response.get("decision") == "allow"
+        assert response == {}, f"Allow path should produce no stdout. Got: {response}"
 
 
 class TestMissingTranscriptResilience:

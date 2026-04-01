@@ -135,11 +135,24 @@ def copy_skills_to_target(
     Returns count of skills copied.
     """
     if clean_existing:
+        # Manifest-based selective cleanup: only remove skills previously
+        # installed by the framework, preserving user-created nw-* skills.
+        manifest = read_manifest(target_dir)
+        framework_skills = set(manifest["installed_skills"]) if manifest else None
+
         for existing in target_dir.iterdir():
             if existing.is_dir() and existing.name.startswith("nw-"):
-                shutil.rmtree(existing)
+                if framework_skills is None:
+                    # No manifest (first install after this change): fall back
+                    # to removing all nw-* dirs (backward compat)
+                    shutil.rmtree(existing)
+                elif existing.name in framework_skills:
+                    # Known framework skill: safe to remove (will be reinstalled)
+                    shutil.rmtree(existing)
+                # else: user-created skill, preserve it
 
     count = 0
+    new_skill_names = []
     for entry in entries:
         destination = target_dir / entry.name
         if entry.source_path.is_dir():
@@ -147,7 +160,13 @@ def copy_skills_to_target(
         else:
             destination.mkdir(parents=True, exist_ok=True)
             shutil.copy2(entry.source_path, destination / entry.source_path.name)
+        new_skill_names.append(entry.name)
         count += 1
+
+    # Write manifest for next install's selective cleanup
+    if new_skill_names:
+        write_manifest(target_dir, new_skill_names)
+
     return count
 
 

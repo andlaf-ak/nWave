@@ -11,7 +11,7 @@
 
 A complete architecture package for the bookmark CLI -- component boundaries, technology decisions, and visual diagrams.
 
-**Before**: You have validated requirements from Tutorial 5 (user stories, acceptance criteria, UX journey) in `docs/requirements/`. But you have no architecture, no technology decisions, and no component design.
+**Before**: You have validated requirements from Tutorial 5 (user stories, acceptance criteria, UX journey) in `docs/feature/bookmark-cli/discuss/`. But you have no architecture, no technology decisions, and no component design.
 
 **After**: You have an architecture document defining how the bookmark CLI is structured (domain layer, CLI adapter, storage adapter), ADRs explaining each technology choice, and Mermaid diagrams you can render in any markdown viewer.
 
@@ -26,24 +26,24 @@ You should be in the `bookmark-cli` project from Tutorial 5, with requirements a
 Verify:
 
 ```bash
-ls docs/requirements/requirements.md
+ls docs/feature/bookmark-cli/discuss/user-stories.md
 ```
 
 You should see:
 
 ```
-docs/requirements/requirements.md
+docs/feature/bookmark-cli/discuss/user-stories.md
 ```
 
 Check that your requirements include user stories:
 
 ```bash
-head -5 docs/requirements/user-stories.md
+head -5 docs/feature/bookmark-cli/discuss/user-stories.md
 ```
 
 You should see the beginning of your user stories file from Tutorial 5 (content varies based on your discuss session).
 
-> **If `docs/requirements/` does not exist**: Complete [Tutorial 5](./tutorial-discuss.md) first. This tutorial builds directly on its output.
+> **If `docs/feature/bookmark-cli/discuss/` does not exist**: Complete [Tutorial 5](./tutorial-discuss.md) first. This tutorial builds directly on its output.
 
 *Next: you will launch the design command and answer architecture questions.*
 
@@ -106,9 +106,9 @@ Searching existing codebase for related functionality...
 Existing system analysis: greenfield project, no reuse opportunities.
 
 Designing component architecture...
-  Creating docs/architecture/architecture-design.md
-  Creating docs/architecture/component-boundaries.md
-  Creating docs/architecture/technology-stack.md
+  Creating docs/feature/bookmark-cli/design/architecture-design.md
+  Creating docs/feature/bookmark-cli/design/component-boundaries.md
+  Creating docs/feature/bookmark-cli/design/technology-stack.md
 
 Writing Architecture Decision Records...
   Creating docs/adrs/ADR-001-hexagonal-architecture.md
@@ -133,7 +133,7 @@ Lines containing `PreToolUse` or `DES_MARKERS` are internal quality gates -- nor
 **Verify the design completed** by checking that the architecture directory was created:
 
 ```bash
-ls docs/architecture/
+ls docs/feature/bookmark-cli/design/
 ```
 
 You should see files like:
@@ -156,7 +156,7 @@ data-models.md
 Check what Morgan created:
 
 ```bash
-ls docs/architecture/
+ls docs/feature/bookmark-cli/design/
 ```
 
 You should see:
@@ -168,12 +168,12 @@ technology-stack.md
 data-models.md
 ```
 
-> **Your file names may differ slightly.** Morgan names files based on your specific design. The pattern `docs/architecture/*.md` is what matters.
+> **Your file names may differ slightly.** Morgan names files based on your specific design. The pattern `docs/feature/{name}/design/*.md` is what matters.
 
 Look at the component boundaries:
 
 ```bash
-head -40 docs/architecture/component-boundaries.md
+head -40 docs/feature/bookmark-cli/design/component-boundaries.md
 ```
 
 You will see something like:
@@ -217,7 +217,7 @@ head -30 docs/adrs/ADR-001-hexagonal-architecture.md
 
 Each ADR follows a standard template: **Status**, **Context**, **Decision**, **Alternatives Considered**, **Consequences**. This is your decision record -- if someone asks "why hexagonal?" six months from now, the answer is documented.
 
-> **If `docs/adrs/` does not exist**: Morgan may have placed ADRs inside `docs/architecture/`. Check there instead.
+> **If `docs/adrs/` does not exist**: Morgan may have placed ADRs inside `docs/feature/bookmark-cli/design/`. Check there instead.
 
 *Next: you will generate visual architecture diagrams.*
 
@@ -235,8 +235,8 @@ Morgan reads the architecture documents and produces Mermaid diagrams. You will 
 
 ```
 Generating diagrams from architecture documents...
-  Creating docs/architecture/diagrams/system-context.md
-  Creating docs/architecture/diagrams/component-architecture.md
+  Creating docs/feature/bookmark-cli/design/diagrams/system-context.md
+  Creating docs/feature/bookmark-cli/design/diagrams/component-architecture.md
 ```
 
 > **Your file names and count may differ.** Morgan generates diagrams based on the complexity of your architecture. A simple CLI tool typically gets 2-3 diagrams.
@@ -244,7 +244,7 @@ Generating diagrams from architecture documents...
 Open the component diagram:
 
 ```bash
-cat docs/architecture/diagrams/component-architecture.md
+cat docs/feature/bookmark-cli/design/diagrams/component-architecture.md
 ```
 
 You will see a Mermaid code block like:
@@ -287,7 +287,7 @@ To render the diagram, paste the Mermaid block into any Mermaid-compatible viewe
 Check the full artifact tree:
 
 ```bash
-find docs/architecture docs/adrs -type f 2>/dev/null | sort
+find docs/feature/bookmark-cli/design docs/adrs -type f 2>/dev/null | sort
 ```
 
 You should see something like:
@@ -296,12 +296,11 @@ You should see something like:
 docs/adrs/ADR-001-hexagonal-architecture.md
 docs/adrs/ADR-002-sqlite-storage.md
 docs/adrs/ADR-003-click-cli-framework.md
-docs/architecture/architecture-design.md
-docs/architecture/component-boundaries.md
-docs/architecture/data-models.md
-docs/architecture/diagrams/component-architecture.md
-docs/architecture/diagrams/system-context.md
-docs/architecture/technology-stack.md
+docs/feature/bookmark-cli/design/architecture-design.md
+docs/feature/bookmark-cli/design/component-boundaries.md
+docs/feature/bookmark-cli/design/data-models.md
+docs/feature/bookmark-cli/design/technology-stack.md
+docs/feature/bookmark-cli/design/wave-decisions.md
 ```
 
 > **Your file list will differ.** Count matters more than exact names. You should have: 1 architecture document, 1 component boundaries file, 1 technology stack file, 2+ ADRs, and 1+ diagrams.
@@ -377,10 +376,10 @@ Each wave builds on the previous one. The architecture document references your 
 | Morgan does not start after `/nw-design` | Make sure nWave is installed. Run `/nw-help` to verify. |
 | Morgan skips the four decisions and designs immediately | Say `*design-architecture bookmark-cli` to explicitly start the interactive flow. |
 | Peer review fails repeatedly | Say "let's simplify -- focus on the core components only." Fewer components are easier to validate. |
-| No `docs/architecture/` directory after the session | Morgan writes architecture artifacts after the four decisions. If you ended the session early, run `/nw-design bookmark-cli` again. |
+| No `docs/feature/bookmark-cli/design/` directory after the session | Morgan writes architecture artifacts after the four decisions. If you ended the session early, run `/nw-design bookmark-cli` again. |
 | `/nw-diagram` says "No architecture documents found" | Run `/nw-design` first. Diagrams require the architecture documents as input. |
 | Diagrams do not render | Verify the Mermaid syntax at [mermaid.live](https://mermaid.live). If it fails, the diagram file may have a formatting issue -- copy just the content between the triple backticks. |
-| Want to start fresh | Delete `docs/architecture/` and `docs/adrs/` and run `/nw-design` again. |
+| Want to start fresh | Delete `docs/feature/bookmark-cli/design/` and `docs/adrs/` and run `/nw-design bookmark-cli` again. |
 
 ---
 

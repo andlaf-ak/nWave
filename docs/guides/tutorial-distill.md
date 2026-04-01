@@ -26,25 +26,25 @@ You should be in the `bookmark-cli` project from Tutorial 6, with architecture a
 Verify your requirements exist:
 
 ```bash
-ls docs/requirements/user-stories.md
+ls docs/feature/bookmark-cli/discuss/user-stories.md
 ```
 
 You should see:
 
 ```
-docs/requirements/user-stories.md
+docs/feature/bookmark-cli/discuss/user-stories.md
 ```
 
 Verify your architecture exists:
 
 ```bash
-ls docs/architecture/architecture-design.md
+ls docs/feature/bookmark-cli/design/architecture-design.md
 ```
 
 You should see:
 
 ```
-docs/architecture/architecture-design.md
+docs/feature/bookmark-cli/design/architecture-design.md
 ```
 
 > **If either file is missing**: Complete the prerequisite tutorial first. `/nw-distill` reads both requirements and architecture to generate tests. [Tutorial 5](./tutorial-discuss.md) produces requirements; [Tutorial 6](./tutorial-design.md) produces architecture.

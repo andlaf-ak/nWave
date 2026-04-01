@@ -59,7 +59,11 @@ class AgentsPlugin(InstallationPlugin):
                 shutil.rmtree(target_agent_dir)
             target_agent_dir.mkdir(parents=True, exist_ok=True)
 
-            public_agents = load_public_agents(context.project_root / "nWave")
+            public_agents = (
+                set()
+                if context.dev_mode
+                else load_public_agents(context.project_root / "nWave")
+            )
 
             all_agents = list(source_agent_dir.glob("nw-*.md"))
             source_agent_count = sum(

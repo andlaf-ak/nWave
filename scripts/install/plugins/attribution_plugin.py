@@ -44,7 +44,7 @@ class AttributionPlugin(InstallationPlugin):
         try:
             return self._do_install(context)
         except Exception as e:
-            context.logger.warning(
+            context.logger.warn(
                 f"  Attribution setup encountered an error: {e}. "
                 "Enable manually: nwave-ai attribution on"
             )

@@ -107,8 +107,10 @@ class TestWalkingSkeletonValidDispatch:
             f"stdout: {result.stdout}\nstderr: {result.stderr}"
         )
 
-        response = json.loads(result.stdout)
-        assert response.get("decision") == "allow"
+        # Allow path: silent exit 0, no stdout (Claude Code protocol)
+        assert result.stdout.strip() == "", (
+            f"Allow path should produce no stdout. Got: {result.stdout!r}"
+        )
 
 
 class TestWalkingSkeletonMissingMarkers:

@@ -129,15 +129,20 @@ class NWaveInstaller:
     """nWave framework installer."""
 
     def __init__(
-        self, dry_run: bool = False, platform_override: set[str] | None = None
+        self,
+        dry_run: bool = False,
+        platform_override: set[str] | None = None,
+        dev_mode: bool = False,
     ):
         """Initialize installer.
 
         Args:
             dry_run: When True, show what would be done without making changes.
             platform_override: Override auto-detected platforms. None means auto-detect.
+            dev_mode: When True, install ALL agents/skills (not just public).
         """
         self.dry_run = dry_run
+        self.dev_mode = dev_mode
         self._platform_override = platform_override
         self.script_dir = Path(__file__).parent
         self.project_root = PathUtils.get_project_root(self.script_dir)
@@ -309,6 +314,7 @@ class NWaveInstaller:
             project_root=self.project_root,
             framework_source=self.framework_source,
             dry_run=self.dry_run,
+            dev_mode=self.dev_mode,
             target_platforms=detected_platforms,
         )
 
@@ -417,6 +423,7 @@ class NWaveInstaller:
             logger=self.logger,
             project_root=self.project_root,
             framework_source=self.framework_source,
+            dev_mode=self.dev_mode,
         )
         plugin_results = plugin_registry.verify_all(plugin_context)
         plugin_failures = {
@@ -429,7 +436,7 @@ class NWaveInstaller:
         all_synced = True
 
         # Agents: dist/agents/nw/ or nWave/agents/
-        # Only public agents are installed, so only count public source files
+        # In dev_mode, all agents are installed; otherwise only public
         dist_agents = self.framework_source / "agents" / "nw"
         if dist_agents.exists():
             agents_source = dist_agents
@@ -437,7 +444,11 @@ class NWaveInstaller:
             agents_source = self.project_root / "nWave" / "agents"
         agents_target = self.claude_config_dir / "agents" / "nw"
         if agents_source.exists():
-            public_agents = load_public_agents(self.project_root / "nWave")
+            public_agents = (
+                set()
+                if self.dev_mode
+                else load_public_agents(self.project_root / "nWave")
+            )
             agent_source_files = sorted(
                 f
                 for f in agents_source.glob("nw-*.md")
@@ -657,6 +668,7 @@ def show_help():
     --backup-only     Create backup of existing nWave installation without installing
     --restore         Restore from the most recent backup
     --dry-run         Show what would be installed without making any changes
+    --dev             Install ALL agents and skills (including private/unreleased)
     --help            Show this help message
 
 {B}EXAMPLES:{N}
@@ -718,6 +730,11 @@ def main():
         default="auto",
         help="Target platform (default: auto-detect)",
     )
+    parser.add_argument(
+        "--dev",
+        action="store_true",
+        help="Install ALL agents and skills (not just public). For local dev only.",
+    )
 
     args = parser.parse_args()
 
@@ -729,7 +746,9 @@ def main():
     platform_override = _resolve_platform_override(args.platform)
 
     installer = NWaveInstaller(
-        dry_run=args.dry_run, platform_override=platform_override
+        dry_run=args.dry_run,
+        platform_override=platform_override,
+        dev_mode=args.dev,
     )
 
     # Show title panel at startup

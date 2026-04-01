@@ -246,7 +246,11 @@ class OpenCodeSkillsPlugin(InstallationPlugin):
             target_dir = _opencode_skills_dir()
             target_dir.mkdir(parents=True, exist_ok=True)
 
-            public_agents = load_public_agents(context.project_root / "nWave")
+            public_agents = (
+                set()
+                if context.dev_mode
+                else load_public_agents(context.project_root / "nWave")
+            )
 
             # Build ownership map for flat namespace filtering (ADR-003)
             from scripts.shared.agent_catalog import build_ownership_map

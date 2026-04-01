@@ -38,8 +38,14 @@ class DesEnforcementPolicy:
     DES monitoring.
     """
 
-    # Negative lookbehind prevents matching date substrings like "2026-02-09"
-    STEP_ID_PATTERN = re.compile(r"(?<!\d{4}-)\b\d{2}-\d{2}\b")
+    # Keyword-anchored pattern: requires "step" keyword or DES-STEP-ID marker
+    # to avoid false positives on dates (03-29), line ranges (50-80), ports (80-82)
+    STEP_ID_PATTERN = re.compile(
+        r"(?i)(?:"
+        r"\bstep\s*[:\-]?\s*\d{2}-\d{2}\b"
+        r"|DES-STEP-ID\s*:\s*\d{2}-\d{2}"
+        r")"
+    )
     DES_MARKER = "DES-VALIDATION : required"
     EXEMPT_MARKER = "DES-ENFORCEMENT : exempt"
 

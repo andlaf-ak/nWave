@@ -9,18 +9,24 @@ argument-hint: "[story-id] - Optional: --test-framework=[cucumber|specflow|pytes
 
 ## Overview
 
-Create E2E acceptance tests from requirements|architecture|infrastructure design using Given-When-Then format. Produces executable specifications bridging business requirements and technical implementation. Infrastructure design from DEVOPS informs test environment setup.
+Orchestrate acceptance test creation from prior wave artifacts, then gate the result through parallel reviews before handoff to DELIVER. You (main Claude instance) are the orchestrator. You dispatch agents and enforce gates.
 
-## Interactive Decision Points
+## REVIEW GATE SUMMARY (read this first)
 
-### Decision 1: Feature Scope
+After the acceptance designer produces scenarios, you MUST dispatch 3 parallel reviewers if scenario count exceeds 3. This is the single most important orchestration step in DISTILL. The procedure is: dispatch designer -> count scenarios -> dispatch 3 reviewers in parallel -> AND-gate results -> handoff. Details in Phase 3 below.
+
+## Phase 1: Decisions and Context
+
+### Interactive Decision Points
+
+#### Decision 1: Feature Scope
 **Question**: What is the scope of this feature?
 **Options**:
 1. Core feature -- primary application functionality
 2. Extension -- modular add-on or integration
 3. Bug fix -- regression tests for a known defect
 
-### Decision 2: Test Framework
+#### Decision 2: Test Framework
 **Question**: Which test framework to use?
 **Options**:
 1. pytest-bdd -- Python BDD framework
@@ -28,115 +34,193 @@ Create E2E acceptance tests from requirements|architecture|infrastructure design
 3. SpecFlow -- .NET BDD framework
 4. Custom -- user provides details
 
-### Decision 3: Integration Approach
+#### Decision 3: Integration Approach
 **Question**: How should integration tests connect to services?
 **Options**:
 1. Real services -- test against actual running services
 2. Test containers -- ephemeral containers for dependencies
 3. Mocks for external only -- real internal, mocked external services
 
-### Decision 4: Infrastructure Testing
+#### Decision 4: Infrastructure Testing
 **Question**: Should acceptance tests cover infrastructure concerns?
 **Options**:
 1. Yes -- include CI/CD validation, deployment smoke tests
 2. No -- functional acceptance tests only
 
-## Acceptance Criteria: Port-to-Port Principle
+### Prior Wave Consultation
 
-Every AC MUST name the driving port (entry point) through which the behavior is exercised. This enables port-to-port acceptance tests that make TBU (Tested But Unwired) defects structurally impossible.
+Read targeted prior wave artifacts before dispatching the acceptance designer:
 
-Each AC includes:
-1. **Observable outcome**: what the user/system sees
-2. **Driving port**: the entry point that triggers the behavior (service, handler, endpoint, CLI command)
-
-Without the driving port, a crafter can write correct code that is never wired into the system.
-
-**Features**: "When user {action} via {driving_port}, {observable_outcome}"
-**Bug fixes**: "When {trigger}, {modified_code_path} produces {correct_outcome} instead of {current_broken_behavior}"
-
-## Prior Wave Consultation
-
-Before beginning DISTILL work, read targeted prior wave artifacts:
-
-1. **DISCOVER** (skip): DISCUSS already synthesized DISCOVER evidence into requirements and acceptance criteria.
+1. **DISCOVER** (skip): DISCUSS already synthesized DISCOVER evidence.
 2. **DISCUSS** (primary input): Read from `docs/feature/{feature-id}/discuss/`:
-   - `acceptance-criteria.md` — primary input for test creation
-   - `story-map.md` — drives walking skeleton priority and release slicing
-   - `user-stories.md` — story-to-test traceability
-   - `wave-decisions.md` — quick check for upstream changes
+   - `acceptance-criteria.md` | `story-map.md` | `user-stories.md` | `wave-decisions.md`
 3. **DESIGN** (structural context): Read from `docs/feature/{feature-id}/design/`:
-   - `architecture-design.md` — port boundaries define test scope
-   - `component-boundaries.md` — determines which components tests exercise
-   - `wave-decisions.md` — check for upstream changes from DISCUSS
+   - `architecture-design.md` | `component-boundaries.md` | `wave-decisions.md`
 4. **DEVOPS** (test environment): Read from `docs/feature/{feature-id}/devops/`:
-   - `platform-architecture.md` — test environment setup
-   - `ci-cd-pipeline.md` — test execution context
-   - `wave-decisions.md` — check for infrastructure constraints affecting tests
+   - `platform-architecture.md` | `ci-cd-pipeline.md` | `wave-decisions.md`
 
-DISTILL is the major synthesis point. Its job is to translate all prior wave knowledge into executable acceptance tests. The acceptance criteria from DISCUSS + architecture from DESIGN + infra from DEVOPS are sufficient. Raw DISCOVER artifacts are not needed — they were already synthesized into DISCUSS requirements.
+**READING ENFORCEMENT**: Read every file above using the Read tool. Output confirmation checklist (`+ {file}` for each read, `- {file} (not found)` for missing). Do NOT skip files that exist.
 
-**READING ENFORCEMENT**: You MUST read every file listed in Prior Wave Consultation above using the Read tool before proceeding. After reading, output a confirmation checklist (`✓ {file}` for each read, `⊘ {file} (not found)` for missing). Do NOT skip files that exist — skipping causes acceptance tests disconnected from requirements and architecture.
+### Graceful Degradation
 
-After reading, check whether any acceptance test assumptions contradict prior wave decisions. Use `wave-decisions.md` files to detect upstream changes. Example: DISCUSS acceptance criteria reference a "notification email" but DESIGN's wave-decisions.md notes email was removed in favor of in-app notifications — tests must reflect the DESIGN decision.
+- **DEVOPS missing**: Log warning, use default environment matrix (clean, with-pre-commit, with-stale-config). Proceed.
+- **DISCUSS missing**: Log warning, derive AC from DESIGN. Skip story-to-scenario traceability. Proceed.
+- **DESIGN missing**: BLOCK. Ask user to identify driving ports. Without them, hexagonal boundary is unverifiable.
 
-## Document Update (Back-Propagation)
+### Rigor Profile
 
-When DISTILL work reveals gaps or contradictions in prior waves:
-1. Document findings in `docs/feature/{feature-id}/distill/upstream-issues.md`
-2. Reference the original prior-wave document and describe the gap
-3. If acceptance criteria from DISCUSS are untestable as written, note the specific criteria and why
-4. Resolve with user before writing tests against ambiguous or contradictory requirements
+Read rigor config from `.nwave/des-config.json` (key: `rigor`). If absent, use standard defaults.
+- `agent_model`: Pass as `model` to acceptance designer. If `"inherit"`, omit.
+- `reviewer_model`: Pass as `model` to all 3 reviewers. If `"skip"`, skip Triple Review Gate entirely.
 
-## Rigor Profile Integration
+### Wave-Decision Reconciliation
 
-Before dispatching the acceptance designer, read rigor config from `.nwave/des-config.json` (key: `rigor`). If absent, use standard defaults.
+BEFORE dispatching the acceptance designer:
+1. Read ALL `wave-decisions.md` files from prior waves
+2. Check for contradictions between DISCUSS, DESIGN, and DEVOPS decisions
+3. If ANY contradiction: list them all, BLOCK until user resolves each one
+4. If zero contradictions: log "Reconciliation passed" and proceed
 
-- **`agent_model`**: Pass as `model` parameter to Task tool. If `"inherit"`, omit `model` (inherits from session).
-
-## Agent Invocation
+## Phase 2: Dispatch Acceptance Designer
 
 @nw-acceptance-designer
 
 Execute \*create-acceptance-tests for {feature-id}.
 
-Context files: see above.
+**Prompt must include:**
+- All prior wave context read in Phase 1
+- Decisions 1-4 configuration
+- Instruction to load skills at `~/.claude/skills/nw-{skill-name}/SKILL.md`
 
 **Configuration:**
 - model: rigor.agent_model (omit if "inherit")
-- test_type: {Decision 1: core|extension|bugfix}
-- test_framework: {Decision 2: specflow|cucumber|pytest-bdd}
+- test_type: {Decision 1} | test_framework: {Decision 2}
 - integration_approach: {Decision 3} | infrastructure_testing: {Decision 4}
 - interactive: moderate | output_format: gherkin
 
-## Success Criteria
+**After the agent returns**: Count the total scenarios produced. Store this number. You need it for Phase 3.
 
-- [ ] All user stories have corresponding acceptance tests
-- [ ] Step methods call real production services (no mocks at acceptance level)
-- [ ] One-at-a-time implementation strategy established (@skip/@pending tags)
-- [ ] Tests exercise driving ports, not internal components (hexagonal boundary)
-- [ ] Walking skeleton created first with user-centric scenarios (features only; optional for bugs)
-- [ ] Infrastructure test scenarios included (if Decision 4 = Yes)
-- [ ] Handoff package ready for nw-software-crafter (DELIVER wave)
+## Phase 3: TRIPLE REVIEW GATE (mandatory orchestrator action)
 
-## Examples
+This phase determines whether the acceptance tests are ready for DELIVER handoff. You MUST execute this phase. There is no path to Phase 5 (Handoff) that bypasses this gate.
 
-### Example 1: Core feature acceptance tests
+### Step 3.1: Count scenarios
+
+Count total scenarios across all `.feature` files produced by the acceptance designer. Store the count.
+
+### Step 3.2: Fast-path (3 or fewer scenarios)
+
+If total scenarios <= 3:
+1. Skip the triple review. Run ONE acceptance-designer review pass only:
+   - Dispatch `@nw-acceptance-designer-reviewer` with the feature files
+2. Run behavioral smoke test:
+   ```bash
+   pipenv run pytest tests/acceptance/{feature-id}/ -v --tb=short -x
+   ```
+   First scenario MUST fail for a business logic reason (not import error, not missing fixture).
+3. Proceed to Phase 4.
+
+### Step 3.3: Triple review (more than 3 scenarios)
+
+If total scenarios > 3, DISPATCH ALL THREE REVIEWERS IN PARALLEL. Use the Agent tool three times in a single response — do not wait for one to finish before dispatching the next.
+
+**Reviewer 1 — Product Owner (@nw-product-owner-reviewer)**:
 ```
-/nw-distill payment-webhook --test-framework=pytest-bdd --integration=real-services
+Agent(
+    subagent_type="nw-product-owner-reviewer",
+    model=rigor.reviewer_model,  # omit if "inherit"
+    prompt="""
+    Review the acceptance tests for feature {feature-id}.
+
+    TASK: Verify story-to-scenario traceability.
+    For EACH user story in docs/feature/{feature-id}/discuss/user-stories.md,
+    confirm at least one scenario in tests/acceptance/{feature-id}/ covers it.
+
+    OUTPUT: mapping table [story_id -> scenario_name].
+    Flag unmapped stories as BLOCKER.
+
+    Acceptance test files: tests/{test-type-path}/{feature-id}/acceptance/
+    Story files: docs/feature/{feature-id}/discuss/user-stories.md
+
+    Load your skills from ~/.claude/skills/nw-{skill-name}/SKILL.md before starting.
+
+    Return structured YAML with approval_status: approved | rejected_pending_revisions
+    """,
+    description="PO review: story-to-scenario traceability for {feature-id}"
+)
 ```
-Quinn creates Given-When-Then acceptance tests from requirements and architecture, establishes walking skeleton first, then milestone features with @skip tags for one-at-a-time implementation.
 
-## Next Wave
+**Reviewer 2 — Solution Architect (@nw-solution-architect-reviewer)**:
+```
+Agent(
+    subagent_type="nw-solution-architect-reviewer",
+    model=rigor.reviewer_model,  # omit if "inherit"
+    prompt="""
+    Review the acceptance tests for feature {feature-id}.
 
-**Handoff To**: nw-software-crafter (DELIVER wave)
-**Deliverables**: Feature files|step definitions|test-scenarios.md|walking-skeleton.md
+    TASK: Verify hexagonal boundary compliance.
+    For EACH scenario in tests/{test-type-path}/{feature-id}/acceptance/,
+    confirm Then steps assert observable outcomes through driving ports -- not internal state.
+    Cross-reference with docs/feature/{feature-id}/design/architecture-design.md for port definitions.
 
-## Wave Decisions Summary
+    Flag scenarios that assert internal state, mock calls, or private fields as BLOCKER.
+
+    Acceptance test files: tests/{test-type-path}/{feature-id}/acceptance/
+    Architecture: docs/feature/{feature-id}/design/architecture-design.md
+
+    Load your skills from ~/.claude/skills/nw-{skill-name}/SKILL.md before starting.
+
+    Return structured YAML with approval_status: approved | rejected_pending_revisions
+    """,
+    description="SA review: hexagonal boundary compliance for {feature-id}"
+)
+```
+
+**Reviewer 3 — Platform Architect (@nw-platform-architect-reviewer)**:
+```
+Agent(
+    subagent_type="nw-platform-architect-reviewer",
+    model=rigor.reviewer_model,  # omit if "inherit"
+    prompt="""
+    Review the acceptance tests for feature {feature-id}.
+
+    TASK: Verify environment coverage.
+    For EACH target environment in docs/feature/{feature-id}/devops/ inventory,
+    confirm at least one walking skeleton scenario includes that environment's preconditions.
+    If DEVOPS artifacts are missing, check against defaults: clean, with-pre-commit, with-stale-config.
+
+    Flag uncovered environments as HIGH.
+
+    Acceptance test files: tests/{test-type-path}/{feature-id}/acceptance/
+    DEVOPS artifacts: docs/feature/{feature-id}/devops/
+
+    Load your skills from ~/.claude/skills/nw-{skill-name}/SKILL.md before starting.
+
+    Return structured YAML with approval_status: approved | rejected_pending_revisions
+    """,
+    description="PA review: environment coverage for {feature-id}"
+)
+```
+
+### Step 3.4: AND-Gate (all three must approve)
+
+After all three reviewers return:
+1. Check each reviewer's `approval_status`
+2. ANY `rejected_pending_revisions` BLOCKS the DISTILL handoff
+3. On rejection:
+   - Collect specific findings from rejecting reviewer(s)
+   - Re-dispatch `@nw-acceptance-designer` with reviewer findings attached
+   - After revision, re-submit ONLY to the rejecting reviewer(s) — do not re-run approving reviewers
+4. On ALL APPROVE: proceed to Phase 4
+
+Max 2 revision cycles. If still rejected after 2 cycles, STOP and escalate to user.
+
+## Phase 4: Produce Wave Decisions
 
 Before completing DISTILL, produce `docs/feature/{feature-id}/distill/wave-decisions.md`:
 
 ```markdown
-# DISTILL Decisions — {feature-id}
+# DISTILL Decisions -- {feature-id}
 
 ## Key Decisions
 - [D1] {decision}: {rationale} (see: {source-file})
@@ -148,16 +232,19 @@ Before completing DISTILL, produce `docs/feature/{feature-id}/distill/wave-decis
 - Test framework: {framework}
 - Integration approach: {approach}
 
-## Constraints Established
-- {test boundary constraint}
+## Review Gate Result
+- Review type: {triple-review | fast-path | skipped (reviewer_model=skip)}
+- PO reviewer: {approved | rejected -> revised -> approved}
+- SA reviewer: {approved | rejected -> revised -> approved}
+- PA reviewer: {approved | rejected -> revised -> approved}
 
 ## Upstream Issues
 - {any gaps found in prior wave artifacts}
 ```
 
-DISTILL is the major synthesis point. DELIVER reads DISTILL output as its authoritative specification — the acceptance tests encode all prior wave decisions into executable form.
+## Phase 5: Handoff to DELIVER
 
-## Expected Outputs
+Deliver these artifacts to the next wave:
 
 ```
 tests/{test-type-path}/{feature-id}/acceptance/
@@ -182,7 +269,37 @@ tests/regression/{component-or-module}/
   steps/
     conftest.py
     {domain}_steps.py
-
-tests/unit/{component-or-module}/
-  test_{module}_bug_{ticket-or-description}.py
 ```
+
+**Handoff To**: nw-software-crafter (DELIVER wave)
+**Deliverables**: Feature files | step definitions | test-scenarios.md | walking-skeleton.md
+
+## Success Criteria
+
+- [ ] All user stories have corresponding acceptance tests
+- [ ] Step methods call real production services (no mocks at acceptance level)
+- [ ] One-at-a-time implementation strategy established (@skip/@pending tags)
+- [ ] Tests exercise driving ports, not internal components (hexagonal boundary)
+- [ ] Walking skeleton created first with user-centric scenarios (features only; optional for bugs)
+- [ ] Infrastructure test scenarios included (if Decision 4 = Yes)
+- [ ] Triple Review Gate passed (or fast-path for <=3 scenarios)
+- [ ] Handoff package ready for nw-software-crafter (DELIVER wave)
+
+## Examples
+
+### Example 1: Core feature with triple review
+```
+/nw-distill payment-webhook --test-framework=pytest-bdd --integration=real-services
+```
+Orchestrator reads prior waves -> dispatches Quinn -> Quinn produces 12 scenarios -> orchestrator dispatches PO + SA + PA reviewers in parallel -> SA rejects (internal state assertion in scenario 7) -> Quinn revises -> SA re-reviews -> approved -> handoff to DELIVER.
+
+### Example 2: Small bug fix with fast-path
+```
+/nw-distill fix-timeout-bug --test-framework=pytest-bdd
+```
+Orchestrator reads prior waves -> dispatches Quinn -> Quinn produces 2 regression scenarios -> fast-path (<=3) -> single AD reviewer pass -> smoke test fails for business reason -> handoff to DELIVER.
+
+### Example 3: Reviewer model skip
+`.nwave/des-config.json` has `rigor.reviewer_model: "skip"`. Orchestrator dispatches Quinn -> scenarios produced -> Triple Review Gate skipped entirely -> handoff to DELIVER.
+
+DISTILL is the major synthesis point. DELIVER reads DISTILL output as its authoritative specification.

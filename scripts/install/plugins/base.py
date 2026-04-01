@@ -43,6 +43,7 @@ class InstallContext:
     installation_verifier: Any = None  # InstallationVerifier instance
     rich_logger: Any = None  # RichLogger instance
     dry_run: bool = False
+    dev_mode: bool = False  # --dev: install ALL agents/skills, not just public
     target_platforms: set[str] = field(default_factory=lambda: {"claude_code"})
     metadata: dict[str, Any] = field(default_factory=dict)
 

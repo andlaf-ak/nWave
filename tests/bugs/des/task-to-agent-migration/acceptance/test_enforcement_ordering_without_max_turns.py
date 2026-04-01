@@ -209,8 +209,10 @@ class TestEnforcementOrderingWithoutMaxTurns:
             f"Got exit code: {exit_code}, stdout: {stdout}"
         )
 
-        output = json.loads(stdout)
-        assert output.get("decision") == "allow"
+        # Allow path: silent exit 0, no stdout (Claude Code protocol)
+        assert stdout.strip() == "", (
+            f"Allow path should produce no stdout. Got: {stdout!r}"
+        )
 
 
 # =========================================================================

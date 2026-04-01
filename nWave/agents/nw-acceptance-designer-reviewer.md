@@ -60,6 +60,7 @@ Review against EVERY dimension from `critique-dimensions` skill:
 6. **Priority validation** -- verify tests address the right problems with evidence
 7. **Observable behavior assertions** -- apply mechanical checklist to EVERY Then step. Flag internal state assertions. REJECT scenarios asserting mock calls or private fields.
 8. **Traceability coverage** -- run Check A (story-to-scenario) and Check B (environment-to-scenario). Flag EVERY gap.
+9. **Fixture Theater detection** -- verify that Given steps set up PRECONDITIONS (input state), never the expected output. If a scenario's Given steps create the end-state that Then steps verify, the test will pass without production code. Flag as BLOCKER.
 **Sizing signal** (informational, not blocking): Count scenarios per roadmap step. If any step maps to 8+ scenarios, tag it `@sizing-review-needed` in the review output. This signals the crafter-reviewer to flag the step during roadmap review.
 Gate: all eight dimensions evaluated with findings.
 

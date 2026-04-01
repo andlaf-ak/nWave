@@ -46,7 +46,6 @@ def handle_pre_tool_use() -> int:
             stdin_result = read_and_parse_stdin("pre_tool_use")
 
             if stdin_result.is_empty:
-                print(json.dumps({"decision": "allow"}))
                 return 0
 
             if stdin_result.parse_error:
@@ -97,8 +96,6 @@ def handle_pre_tool_use() -> int:
                     task_correlation_id = des_task_signal.create_signal(
                         step_id=step_id_marker, project_id=project_id_marker
                     )
-                response = {"decision": "allow"}
-                print(json.dumps(response))
                 exit_code = 0
                 return exit_code
             else:

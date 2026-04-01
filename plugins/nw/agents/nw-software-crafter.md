@@ -67,23 +67,26 @@ def test_order_validator_validates_email():
     assert validator.is_valid_email("test@example.com")
 ```
 
-### Mandate 2: No Domain Layer Unit Tests
-Do not unit test domain entities|value objects|domain services directly. Test indirectly through application service (driving port) tests.
-
-Exception: complex standalone algorithms with stable public interface (rare -- 95% tested through app services).
+### Mandate 2: Port-to-Port at Domain Layer
+Domain entities and value objects are tested indirectly through application service (driving port) tests. Pure domain functions (e.g., `evaluate_gate`, `check_tier`, `resolve_phase_config`) ARE their own driving ports — calling them directly IS port-to-port testing because the function signature is the public interface.
 
 ```python
-# Correct - through driving port
+# Correct - through application service driving port
 def test_calculates_order_total_with_discount():
     order_service = OrderService(repo, pricing)
     result = order_service.create_order(customer_id, items)
     assert result.total == Money(90.00, "USD")
 
-# Wrong - domain entity directly
-def test_order_add_item():
+# Correct - pure domain function IS the driving port
+def test_gate_rejects_when_tests_pass():
+    result = evaluate_gate(spec, context, registry)
+    assert result.verdict == Verdict.FAIL
+
+# Wrong - testing internal state, not through a port
+def test_order_internal_state():
     order = Order(order_id, customer_id)
-    order.add_item(item)
-    assert order.total == expected_total
+    order._recalculate_totals()  # private method
+    assert order._line_items[0].subtotal == expected
 ```
 
 ### Mandate 3: Test Through Driving Ports
@@ -286,6 +289,19 @@ def test_pricing():
     assert pricing_service.calculate(items) == 42.5
 ```
 
+**8. Fixture Theater** -- Tests pass because fixtures create the expected end-state, not production code.
+```python
+# THEATER: fixture creates .gitignore directly, production code never touched
+def test_gitignore_created(tmp_path):
+    nwave_dir = tmp_path / ".nwave"
+    nwave_dir.mkdir()
+    (nwave_dir / ".gitignore").write_text("*\n")  # FIXTURE does the work!
+    plugin = DESPlugin(config_dir=nwave_dir)
+    plugin.install(context)  # Production install() never creates .gitignore
+    assert (nwave_dir / ".gitignore").exists()  # PASSES — but from fixture, not code
+```
+**Detection**: After GREEN, run `git diff --name-only`. If `files_to_modify` from the roadmap are NOT in the diff but tests flipped RED→GREEN, it's Fixture Theater. **Prevention**: Post-GREEN wiring check — every production file in `files_to_modify` MUST appear in `git diff`.
+
 ### Design Principle Integration
 When writing tests, internalize anti-patterns:
 1. **Falsifiability**: Every test MUST fail if you break the production code it covers.
@@ -375,11 +391,12 @@ Reviewer approval and Testing Theater detection enforced at deliver level (Phase
 ## Critical Rules
 
 1. Hexagonal boundary: ports define business interfaces, adapters implement infrastructure. Domain depends only on ports.
-2. Port-to-port: every test enters through driving port, asserts at driven port boundary. Never test internal classes.
-3. Test doubles ONLY at hexagonal port boundaries. Domain/application layers use real objects. `Mock<Order>` = violation. `Mock<IPaymentGateway>` = correct.
-4. Walking skeleton: at most one per feature. ONE E2E test proving wiring, thinnest slice, no business logic, no unit tests. Skip inner TDD loop.
-5. Stay green: atomic changes|test after each transformation|rollback on red|commit frequently.
-6. **NEVER modify a failing test to make it pass.** Fix the code, not the test. See Test Integrity section. Violation = immediate escalation.
+2. Port-to-port at ALL levels: every test — acceptance, unit, integration — enters through a driving port, asserts at driven port boundary. Unit tests are port-to-port at domain scope. Never test isolated objects or internal classes.
+3. No code without a requiring test: every line of production code exists because a test required it. If the acceptance test passes, no additional unit test is needed for that behavior. Unit tests decompose complex GREEN, not fill a checklist.
+4. Test doubles ONLY at hexagonal port boundaries. Domain/application layers use real objects. `Mock<Order>` = violation. `Mock<IPaymentGateway>` = correct.
+5. Walking skeleton: at most one per feature. ONE E2E test proving wiring with REAL adapters, thinnest slice. Integration tests for adapters are driven by the WS requirement for real I/O.
+6. Stay green: atomic changes|test after each transformation|rollback on red|commit frequently.
+7. **NEVER modify a failing test to make it pass.** Fix the code, not the test. See Test Integrity section. Violation = immediate escalation.
 
 ## Commands
 

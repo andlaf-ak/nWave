@@ -41,7 +41,7 @@ Before dispatching any agent, read the rigor profile from `.nwave/des-config.jso
 
 **Task invocation with rigor model:**
 ```python
-Task(
+Agent(
     subagent_type="{agent}",
     model=rigor_agent_model,  # omit this line entirely if "inherit"
     max_turns=45,
@@ -122,24 +122,47 @@ INPUT: "{feature-description}"
      d. @nw-software-crafter-reviewer reviews (read ~/.claude/skills/nw-review/SKILL.md)
      e. Retry once on rejection → stop for manual intervention
   |
-  3. Phase 2 — Execute All Steps
-     a. Extract steps from roadmap.json in dependency order
-     b. Check execution-log.json for prior completion (resume)
-     c. {selected-crafter} executes 5-phase TDD cycle (read ~/.claude/skills/nw-execute/SKILL.md)
-        Use crafter from step 1.5|@nw-functional-software-crafter → PBT default|@property tags signal PBT
-        IMPORTANT: Use DES Prompt Template from execute.md|Include DES markers (DES-VALIDATION|DES-PROJECT-ID|DES-STEP-ID) + all mandatory sections
-        OUTCOME_RECORDING: agents use DES CLI (PYTHONPATH=$HOME/.claude/lib/python $(command -v python3 || command -v python) -m des.cli.log_phase)|CLI bypass → SubagentStop hook corrects timestamps
-     d. Verify COMMIT/PASS in execution-log.json per step
-     e. Missing phase → RE-DISPATCH agent. NEVER write entries yourself.
-     f. Stop on first failure
-     g. Timeout recovery: GREEN completed → resume (~5 turns)|GREEN partial → resume|Otherwise → restart higher max_turns
-     h. Wiring smoke check: for each step, verify every new function defined in
-        production files has at least one call site in production code (not just tests).
-        Flag "function X defined but only called from tests" → re-dispatch crafter.
-     i. Acceptance test gate: after each step's COMMIT/PASS, run the feature's acceptance
-        tests (tests matching the feature path, e.g., tests/acceptance/{feature-id}/).
-        If any acceptance test fails, fix the issue before proceeding to the next step.
-        Do NOT skip or defer failing tests. This applies to EVERY individual step, not just the final one.
+  3. Phase 2 — Execute All Steps (ATOMIC DISPATCH)
+     **INVARIANT: 1 Agent invocation = 1 roadmap step. No exceptions.**
+     A single Agent MUST NEVER execute more than one step. Each step gets its own
+     Agent invocation with exactly one DES-STEP-ID. Batching multiple steps into
+     one Agent prompt is a VIOLATION — DES integrity verification will reject it.
+     a. Extract steps from roadmap.json in dependency order (respect `depends_on` fields).
+        PREREQUISITE: Phase 1 roadmap quality gate validates the dependency graph (no cycles,
+        all `depends_on` references resolve to existing step IDs). Phase 2 assumes validation passed.
+     b. Check execution-log.json for prior completion — skip steps with COMMIT/PASS
+     c. **Dispatch loop** — for EACH pending step:
+        c1. Extract step context from roadmap (grep step_id ~50 lines, extract fields)
+        c2. Dispatch ONE Agent with ONE DES-STEP-ID using DES Prompt Template from execute.md
+            Use crafter from step 1.5|@nw-functional-software-crafter → PBT default|@property tags signal PBT
+            Include DES markers (DES-VALIDATION|DES-PROJECT-ID|DES-STEP-ID) + all mandatory sections
+            OUTCOME_RECORDING: agents use DES CLI (PYTHONPATH=$HOME/.claude/lib/python $(command -v python3 || command -v python) -m des.cli.log_phase)|CLI bypass → SubagentStop hook corrects timestamps
+        c3. WAIT for Agent to complete before dispatching next step
+        c4. Verify COMMIT/PASS in execution-log.json for THIS step
+        c5. Missing phase → RE-DISPATCH a NEW agent for the SAME step. NEVER write entries yourself.
+        c6. Wiring smoke check: verify every new function defined in production files
+            has at least one call site in production code (not just tests).
+            Flag "function X defined but only called from tests" → re-dispatch crafter.
+        c7. Acceptance test gate (two levels):
+            - Step-scoped: run the acceptance test for THIS step (from `test_file` + `scenario_name` in roadmap).
+              If it fails, fix before proceeding.
+            - Feature-scoped regression: run ALL feature acceptance tests (tests/acceptance/{feature-id}/).
+              If a test unrelated to this step fails, it means this step introduced a regression — fix before proceeding.
+            Do NOT skip or defer failing tests at either level.
+        c8. On failure → STOP. Do not proceed to next step.
+     d. **Parallel dispatch** — BLOCKED until DES CLI implements file locking.
+        The DES CLI (log_phase) uses read/modify/write on execution-log.json without serialization.
+        Concurrent agents cause last-write-wins data loss. Sequential dispatch (c1-c8) is
+        the ONLY safe mode. When file locking is implemented, parallel rules will be:
+        d1. Steps with disjoint `depends_on` chains AND disjoint `files_to_modify` may run concurrently
+        d2. Launch one Agent per step (never batch) using run_in_background=true
+        d3. Wait for ALL agents in the group to complete
+        d4. Run verification (c4-c7) for each step in the group
+        d5. On ANY failure in the group → STOP. Do not proceed to next group.
+        d6. Parallel group timeout: if ANY agent times out → wait for remaining agents to
+            finish or timeout → check execution-log.json for partial progress → re-dispatch
+            only timed-out steps individually. Do NOT re-run completed steps in the group.
+     e. Timeout recovery: GREEN completed → resume (~5 turns)|GREEN partial → resume|Otherwise → restart higher max_turns
   |
   4. Phase 3 — Complete Refactoring (L1-L4) [SKIP if rigor.refactor_pass = false]
      a. Collect modified files: git diff --name-only {base-commit}..HEAD -- '*.py' | sort -u
@@ -202,7 +225,7 @@ When dispatching steps via Agent tool, use the COMPLETE DES template from execut
 Copy the template from the code block in `~/.claude/skills/nw-execute/SKILL.md` (between ``` markers), fill placeholders, and pass as the Agent prompt. The template sections are defined in execute.md — do not hardcode the list here.
 
 ```python
-Task(
+Agent(
     subagent_type="{agent}",
     model=rigor_agent_model,  # omit if "inherit"
     prompt=f'''

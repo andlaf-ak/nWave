@@ -73,12 +73,10 @@ def handle_pre_write() -> int:
             )
 
             if stdin_result.is_empty:
-                print(json.dumps({"decision": "allow"}))
                 return 0
 
             if stdin_result.parse_error:
                 # Write/Edit fails open on parse errors
-                print(json.dumps({"decision": "allow"}))
                 return 0
 
             hook_input = stdin_result.hook_input
@@ -173,7 +171,6 @@ def handle_pre_write() -> int:
                     file_path=file_path,
                     reason=allow_reason,
                 )
-                print(json.dumps({"decision": "allow"}))
                 exit_code = 0
                 return exit_code
 
@@ -185,7 +182,6 @@ def handle_pre_write() -> int:
             e,
             stderr_capture,
         )
-        print(json.dumps({"decision": "allow"}))
         exit_code = 0
         return exit_code
     finally:

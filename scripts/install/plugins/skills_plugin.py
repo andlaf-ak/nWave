@@ -206,7 +206,11 @@ class SkillsPlugin(InstallationPlugin):
             )
 
         # Shared pipeline: enumerate -> filter -> copy
-        public_agents = load_public_agents(context.project_root / "nWave")
+        public_agents = (
+            set()
+            if context.dev_mode
+            else load_public_agents(context.project_root / "nWave")
+        )
         ownership_map = build_ownership_map(context.project_root / "nWave" / "agents")
         command_skills = detect_command_skills(skills_source)
 
@@ -248,7 +252,11 @@ class SkillsPlugin(InstallationPlugin):
         skills_target = context.claude_dir / "skills" / "nw"
 
         # Shared pipeline: enumerate -> filter -> copy
-        public_agents = load_public_agents(context.project_root / "nWave")
+        public_agents = (
+            set()
+            if context.dev_mode
+            else load_public_agents(context.project_root / "nWave")
+        )
         ownership_map = build_ownership_map(context.project_root / "nWave" / "agents")
 
         entries = enumerate_skills(skills_source)

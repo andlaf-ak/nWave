@@ -123,6 +123,11 @@ INPUT: "{feature-description}"
         test_file and scenario_name fields in each roadmap step from the distilled acceptance tests.
         Each step maps to one acceptance scenario (1 Step = 1 Scenario = 1 TDD Cycle).
      c. Automated quality gate (see below)
+     c2. Roadmap integrity verification (HARD GATE):
+         PYTHONPATH=$HOME/.claude/lib/python $(command -v python3 || command -v python) -m des.cli.verify_deliver_integrity docs/feature/{feature-id}/deliver/ --roadmap-only
+         Verify: project_id, created_at, total_steps, phases fields present. Step IDs match NN-NN format.
+         BLOCK if any format error. Fix roadmap BEFORE dispatching any crafter.
+         This catches format issues early — NOT at Phase 6 where they block finalization after hours of work.
      d. @nw-acceptance-designer-reviewer reviews roadmap:
         - "Does EVERY DISTILL scenario have a corresponding step? Flag orphan scenarios as BLOCKER."
         - "Does any step cover 8+ scenarios? Tag as @sizing-review-needed."

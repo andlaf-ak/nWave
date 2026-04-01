@@ -138,15 +138,9 @@ class TestAgentToolHookProcessing:
             f"Got exit code: {exit_code}, stdout: {stdout}"
         )
 
-        output = json.loads(stdout)
-        assert output.get("decision") == "allow", (
-            f"Decision should be 'allow'. Got: {output}"
-        )
-
-        # THEN: No max_turns error anywhere in the response
-        response_text = json.dumps(output).lower()
-        assert "max_turns" not in response_text, (
-            f"Response should not mention max_turns. Got: {output}"
+        # Allow path: silent exit 0, no stdout (Claude Code protocol)
+        assert stdout.strip() == "", (
+            f"Allow path should produce no stdout. Got: {stdout!r}"
         )
 
     def test_agent_tool_non_des_invocation_passes_through(self, claude_code_hook_stdin):
@@ -179,8 +173,10 @@ class TestAgentToolHookProcessing:
             f"Got exit code: {exit_code}, stdout: {stdout}"
         )
 
-        output = json.loads(stdout)
-        assert output.get("decision") == "allow"
+        # Allow path: silent exit 0, no stdout (Claude Code protocol)
+        assert stdout.strip() == "", (
+            f"Allow path should produce no stdout. Got: {stdout!r}"
+        )
 
     def test_agent_tool_invalid_des_prompt_still_blocked(self, claude_code_hook_stdin):
         """
@@ -256,9 +252,9 @@ class TestAgentToolHookProcessing:
             f"Got exit code: {exit_code}, stdout: {stdout}"
         )
 
-        output = json.loads(stdout)
-        assert output.get("decision") == "allow", (
-            f"Decision should be 'allow'. Got: {output}"
+        # Allow path: silent exit 0, no stdout (Claude Code protocol)
+        assert stdout.strip() == "", (
+            f"Allow path should produce no stdout. Got: {stdout!r}"
         )
 
 
